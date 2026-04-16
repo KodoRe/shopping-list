@@ -62,16 +62,36 @@ async function loadData() {
 
 async function addItem(name, category, qty, addedBy) {
   if (!name.trim()) return;
+  let parsedName = name.trim();
+  let parsedQty = qty || '';
+
+  // Parse quantity from item name: "3 apples", "2x milk", "milk x2", "dozen eggs"
+  if (!parsedQty) {
+    const patterns = [
+      /^(\d+(?:\.\d+)?)\s*[xX]\s+(.+)$/,   // "3x apples" or "3 x apples"
+      /^(\d+(?:\.\d+)?)\s+(.+)$/,             // "3 apples"
+      /^(.+?)\s*[xX](\d+(?:\.\d+)?)$/,        // "apples x3"
+      /^(a\s+)?dozen\s+(.+)$/i,               // "a dozen eggs" or "dozen eggs"
+      /^(half\s+)?(?:a\s+)?kilo?\s+(?:of\s+)?(.+)$/i, // "a kilo of chicken"
+    ];
+    let m;
+    if ((m = parsedName.match(patterns[0]))) { parsedQty = m[1]; parsedName = m[2]; }
+    else if ((m = parsedName.match(patterns[1])) && !isNaN(m[1])) { parsedQty = m[1]; parsedName = m[2]; }
+    else if ((m = parsedName.match(patterns[2]))) { parsedQty = m[2]; parsedName = m[1].trim(); }
+    else if ((m = parsedName.match(patterns[3]))) { parsedQty = '12'; parsedName = m[2]; }
+    else if ((m = parsedName.match(patterns[4]))) { parsedQty = m[1] ? '0.5 kg' : '1 kg'; parsedName = m[2]; }
+  }
+
   try {
     const res = await supabase.addItem({
-      name: name.trim(),
-      category: category || guessCategory(name),
-      qty: qty || '',
+      name: parsedName,
+      category: category || guessCategory(parsedName),
+      qty: parsedQty,
       added_by: addedBy || 'app',
     });
     if (res && res[0]) items.push(res[0]);
     renderList();
-    toast(`Added ${name.trim()} ✅`);
+    toast(`Added ${parsedName} ✅`);
   } catch (e) {
     console.error('Add error:', e);
     toast('Failed to add item ❌');
