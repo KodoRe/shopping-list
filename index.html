@@ -9,55 +9,85 @@
 </head>
 <body>
   <div class="app">
-    <header class="header">
-      <h1>🛒 Shopping List</h1>
-      <div class="header-actions">
-        <button class="btn-icon" id="btn-sync" title="Sync">🔄</button>
-        <button class="btn-icon" id="btn-clear-done" title="Clear checked">🧹</button>
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab active" data-tab="list">🛒 List</button>
+      <button class="tab" data-tab="recipes">🍳 Recipes</button>
+    </div>
+
+    <!-- ===== LIST TAB ===== -->
+    <div class="tab-content active" id="tab-list">
+      <header class="header">
+        <h1>🛒 Shopping List</h1>
+        <div class="header-actions">
+          <button class="btn-icon" id="btn-sync" title="Sync">🔄</button>
+          <button class="btn-icon" id="btn-clear-done" title="Clear checked">🧹</button>
+        </div>
+      </header>
+
+      <div class="add-bar">
+        <input type="text" id="input-item" placeholder="Add item..." autocomplete="off">
+        <select id="input-category">
+          <option value="other">Category</option>
+          <option value="produce">🥬 Produce</option>
+          <option value="dairy">🧀 Dairy</option>
+          <option value="meat">🥩 Meat & Fish</option>
+          <option value="bakery">🍞 Bakery</option>
+          <option value="frozen">🧊 Frozen</option>
+          <option value="drinks">🥤 Drinks</option>
+          <option value="snacks">🍿 Snacks</option>
+          <option value="pantry">🥫 Pantry</option>
+          <option value="household">🧹 Household</option>
+          <option value="personal">🧴 Personal Care</option>
+          <option value="other">📦 Other</option>
+        </select>
+        <button id="btn-add" class="btn-add">+</button>
       </div>
-    </header>
 
-    <!-- Add item -->
-    <div class="add-bar">
-      <input type="text" id="input-item" placeholder="Add item..." autocomplete="off">
-      <select id="input-category">
-        <option value="other">Category</option>
-        <option value="produce">🥬 Produce</option>
-        <option value="dairy">🧀 Dairy</option>
-        <option value="meat">🥩 Meat & Fish</option>
-        <option value="bakery">🍞 Bakery</option>
-        <option value="frozen">🧊 Frozen</option>
-        <option value="drinks">🥤 Drinks</option>
-        <option value="snacks">🍿 Snacks</option>
-        <option value="pantry">🥫 Pantry</option>
-        <option value="household">🧹 Household</option>
-        <option value="personal">🧴 Personal Care</option>
-        <option value="other">📦 Other</option>
-      </select>
-      <button id="btn-add" class="btn-add">+</button>
+      <div class="list-meta">
+        <span id="item-count">0 items</span>
+        <div class="view-toggle">
+          <button class="toggle-btn active" data-view="list">List</button>
+          <button class="toggle-btn" data-view="category">By Aisle</button>
+        </div>
+      </div>
+
+      <div class="list-container" id="list-container"></div>
+
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">🛒</div>
+        <p>Your list is empty</p>
+        <p class="empty-sub">Add items above or ask Watson in Telegram!</p>
+      </div>
+
+      <div class="sync-info" id="sync-info"></div>
     </div>
 
-    <!-- Item count -->
-    <div class="list-meta">
-      <span id="item-count">0 items</span>
-      <div class="view-toggle">
-        <button class="toggle-btn active" data-view="list">List</button>
-        <button class="toggle-btn" data-view="category">By Aisle</button>
+    <!-- ===== RECIPES TAB ===== -->
+    <div class="tab-content" id="tab-recipes">
+      <header class="header">
+        <h1>🍳 Recipes</h1>
+        <div class="header-actions">
+          <button class="btn-icon" id="btn-sync-recipes" title="Sync recipes">🔄</button>
+        </div>
+      </header>
+
+      <!-- Recipe list view -->
+      <div id="recipes-list-view">
+        <div class="empty-state show" id="recipes-empty">
+          <div class="empty-icon">🍳</div>
+          <p>No recipes yet</p>
+          <p class="empty-sub">Send Watson a video link in Telegram and ask him to extract the recipe!</p>
+        </div>
+        <div class="recipes-grid" id="recipes-grid"></div>
+      </div>
+
+      <!-- Recipe detail view -->
+      <div id="recipe-detail-view" style="display:none">
+        <button class="back-btn" id="recipe-back">← Back to Recipes</button>
+        <div class="recipe-card" id="recipe-card"></div>
       </div>
     </div>
-
-    <!-- Shopping list -->
-    <div class="list-container" id="list-container"></div>
-
-    <!-- Empty state -->
-    <div class="empty-state" id="empty-state">
-      <div class="empty-icon">🛒</div>
-      <p>Your list is empty</p>
-      <p class="empty-sub">Add items above or ask Watson in Telegram!</p>
-    </div>
-
-    <!-- Last sync info -->
-    <div class="sync-info" id="sync-info"></div>
   </div>
 
   <script src="app.js"></script>
