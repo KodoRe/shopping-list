@@ -1,9 +1,4 @@
-// Shopping List App with Recipes
-const CATEGORIES = {
-  produce:'produce',dairy:'dairy',meat:'meat',bakery:'bakery',frozen:'frozen',
-  drinks:'drinks',snacks:'snacks',pantry:'pantry',household:'household',personal:'personal',other:'other'
-};
-
+// Shopping List App - Supabase Edition
 const CAT_INFO = {
   produce:   { emoji: '🥬', label: 'Produce', order: 1 },
   dairy:     { emoji: '🧀', label: 'Dairy', order: 2 },
@@ -18,113 +13,117 @@ const CAT_INFO = {
   other:     { emoji: '📦', label: 'Other', order: 11 },
 };
 
-const AUTO_CATEGORY = {
-  apple:'produce',banana:'produce',tomato:'produce',potato:'produce',
-  onion:'produce',garlic:'produce',lemon:'produce',lime:'produce',
-  avocado:'produce',cucumber:'produce',pepper:'produce',lettuce:'produce',
-  carrot:'produce',broccoli:'produce',spinach:'produce',mushroom:'produce',
-  orange:'produce',strawberry:'produce',grape:'produce',mango:'produce',
-  ginger:'produce',cilantro:'produce',parsley:'produce',basil:'produce',
-  corn:'produce',celery:'produce',zucchini:'produce',eggplant:'produce',
-  milk:'dairy',cheese:'dairy',yogurt:'dairy',butter:'dairy',
-  cream:'dairy',eggs:'dairy',egg:'dairy',cottage:'dairy',
-  mozzarella:'dairy',cheddar:'dairy',parmesan:'dairy',
-  chicken:'meat',beef:'meat',pork:'meat',fish:'meat',
-  salmon:'meat',tuna:'meat',turkey:'meat',steak:'meat',
-  shrimp:'meat',bacon:'meat',sausage:'meat',
-  bread:'bakery',pita:'bakery',tortilla:'bakery',baguette:'bakery',
-  challah:'bakery',bagel:'bakery',croissant:'bakery',
+const AUTO_CAT = {
+  apple:'produce',banana:'produce',tomato:'produce',potato:'produce',onion:'produce',
+  garlic:'produce',lemon:'produce',lime:'produce',avocado:'produce',cucumber:'produce',
+  pepper:'produce',lettuce:'produce',carrot:'produce',broccoli:'produce',spinach:'produce',
+  mushroom:'produce',orange:'produce',strawberry:'produce',grape:'produce',mango:'produce',
+  ginger:'produce',cilantro:'produce',parsley:'produce',basil:'produce',corn:'produce',
+  celery:'produce',zucchini:'produce',eggplant:'produce',
+  milk:'dairy',cheese:'dairy',yogurt:'dairy',butter:'dairy',cream:'dairy',eggs:'dairy',
+  egg:'dairy',cottage:'dairy',mozzarella:'dairy',cheddar:'dairy',parmesan:'dairy',
+  chicken:'meat',beef:'meat',pork:'meat',fish:'meat',salmon:'meat',tuna:'meat',
+  turkey:'meat',steak:'meat',shrimp:'meat',bacon:'meat',sausage:'meat',
+  bread:'bakery',pita:'bakery',tortilla:'bakery',challah:'bakery',bagel:'bakery',
   'ice cream':'frozen',pizza:'frozen',
-  water:'drinks',juice:'drinks',soda:'drinks',coffee:'drinks',
-  tea:'drinks',beer:'drinks',wine:'drinks',
-  chips:'snacks',crackers:'snacks',cookies:'snacks',chocolate:'snacks',
-  nuts:'snacks',popcorn:'snacks',
-  rice:'pantry',pasta:'pantry',flour:'pantry',sugar:'pantry',
-  oil:'pantry',salt:'pantry',sauce:'pantry',beans:'pantry',
-  cereal:'pantry',oats:'pantry',honey:'pantry',vinegar:'pantry',
-  ketchup:'pantry',mustard:'pantry',mayo:'pantry',tahini:'pantry',hummus:'pantry',
-  noodle:'pantry',lentil:'pantry',
-  soap:'household',detergent:'household',sponge:'household',
-  bleach:'household',cleaner:'household',foil:'household',
-  shampoo:'personal',toothpaste:'personal',deodorant:'personal',
-  'toilet paper':'personal',tissue:'personal',
+  water:'drinks',juice:'drinks',soda:'drinks',coffee:'drinks',tea:'drinks',beer:'drinks',wine:'drinks',
+  chips:'snacks',crackers:'snacks',cookies:'snacks',chocolate:'snacks',nuts:'snacks',
+  rice:'pantry',pasta:'pantry',flour:'pantry',sugar:'pantry',oil:'pantry',salt:'pantry',
+  sauce:'pantry',beans:'pantry',cereal:'pantry',honey:'pantry',tahini:'pantry',hummus:'pantry',
+  soap:'household',detergent:'household',sponge:'household',foil:'household',
+  shampoo:'personal',toothpaste:'personal',deodorant:'personal','toilet paper':'personal',
 };
 
 function guessCategory(name) {
-  const lower = name.toLowerCase();
-  for (const [keyword, cat] of Object.entries(AUTO_CATEGORY)) {
-    if (lower.includes(keyword)) return cat;
-  }
+  const l = name.toLowerCase();
+  for (const [k, v] of Object.entries(AUTO_CAT)) { if (l.includes(k)) return v; }
   return 'other';
 }
 
-// ===== STATE =====
+// State
 let items = [];
 let recipes = [];
 let viewMode = 'list';
-const STORAGE_KEY = 'shopping-list-v1';
-const RECIPES_KEY = 'shopping-recipes-v1';
+let loading = true;
 
-function load() {
+// ===== DATA OPERATIONS =====
+async function loadData() {
+  loading = true;
   try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    if (s) items = JSON.parse(s);
-  } catch(e) { items = []; }
-  try {
-    const r = localStorage.getItem(RECIPES_KEY);
-    if (r) recipes = JSON.parse(r);
-  } catch(e) { recipes = []; }
-}
-
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    [items, recipes] = await Promise.all([supabase.getItems(), supabase.getRecipes()]);
+  } catch (e) {
+    console.error('Load error:', e);
+    toast('Failed to load data ❌');
+  }
+  loading = false;
   renderList();
-}
-
-function saveRecipes() {
-  localStorage.setItem(RECIPES_KEY, JSON.stringify(recipes));
   renderRecipesList();
 }
 
-// ===== LIST FUNCTIONS =====
-function addItem(name, category, qty, addedBy) {
+async function addItem(name, category, qty, addedBy) {
   if (!name.trim()) return;
-  const cat = category || guessCategory(name);
-  items.push({
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    name: name.trim(),
-    category: cat,
-    qty: qty || '',
-    checked: false,
-    addedAt: new Date().toISOString(),
-    addedBy: addedBy || 'app',
-  });
-  save();
-}
-
-function toggleItem(id) {
-  const item = items.find(i => i.id === id);
-  if (item) { item.checked = !item.checked; save(); }
-}
-
-function removeItem(id) {
-  items = items.filter(i => i.id !== id);
-  save();
-}
-
-function updateQty(id, qty) {
-  const item = items.find(i => i.id === id);
-  if (item) { item.qty = qty; save(); }
-}
-
-function clearChecked() {
-  const count = items.filter(i => i.checked).length;
-  if (count === 0) return;
-  if (confirm(`Remove ${count} checked item${count>1?'s':''}?`)) {
-    items = items.filter(i => !i.checked);
-    save();
-    toast(`Cleared ${count} item${count>1?'s':''}`);
+  try {
+    const res = await supabase.addItem({
+      name: name.trim(),
+      category: category || guessCategory(name),
+      qty: qty || '',
+      added_by: addedBy || 'app',
+    });
+    if (res && res[0]) items.push(res[0]);
+    renderList();
+    toast(`Added ${name.trim()} ✅`);
+  } catch (e) {
+    console.error('Add error:', e);
+    toast('Failed to add item ❌');
   }
+}
+
+async function toggleItem(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  item.checked = !item.checked;
+  renderList();
+  try {
+    await supabase.updateItem(id, { checked: item.checked });
+  } catch (e) {
+    item.checked = !item.checked;
+    renderList();
+    toast('Sync failed ❌');
+  }
+}
+
+async function removeItem(id) {
+  const idx = items.findIndex(i => i.id === id);
+  if (idx < 0) return;
+  const removed = items.splice(idx, 1)[0];
+  renderList();
+  try {
+    await supabase.deleteItem(id);
+  } catch (e) {
+    items.splice(idx, 0, removed);
+    renderList();
+    toast('Delete failed ❌');
+  }
+}
+
+async function updateQty(id, qty) {
+  const item = items.find(i => i.id === id);
+  if (item) {
+    item.qty = qty;
+    try { await supabase.updateItem(id, { qty }); } catch (e) {}
+  }
+}
+
+async function clearChecked() {
+  const checked = items.filter(i => i.checked);
+  if (!checked.length) return;
+  if (!confirm(`Remove ${checked.length} checked item${checked.length > 1 ? 's' : ''}?`)) return;
+  for (const item of checked) {
+    try { await supabase.deleteItem(item.id); } catch (e) {}
+  }
+  items = items.filter(i => !i.checked);
+  renderList();
+  toast(`Cleared ${checked.length} item${checked.length > 1 ? 's' : ''}`);
 }
 
 // ===== RENDER LIST =====
@@ -133,73 +132,64 @@ function renderList() {
   const emptyState = document.getElementById('empty-state');
   const countEl = document.getElementById('item-count');
 
+  if (loading) { countEl.textContent = 'Loading...'; return; }
+
   const unchecked = items.filter(i => !i.checked).length;
   const total = items.length;
-  countEl.textContent = `${unchecked} item${unchecked!==1?'s':''}${total>unchecked?` (${total-unchecked} done)`:''}`;
+  countEl.textContent = `${unchecked} item${unchecked !== 1 ? 's' : ''}${total > unchecked ? ` (${total - unchecked} done)` : ''}`;
 
-  if (items.length === 0) {
+  if (!items.length) {
     container.innerHTML = '';
     emptyState.classList.add('show');
     return;
   }
   emptyState.classList.remove('show');
 
-  if (viewMode === 'category') {
-    renderByCategory(container);
-  } else {
-    renderFlat(container);
-  }
+  if (viewMode === 'category') renderByCategory(container);
+  else renderFlat(container);
 }
 
 function renderFlat(container) {
-  const sorted = [...items].sort((a,b) => a.checked !== b.checked ? (a.checked?1:-1) : 0);
+  const sorted = [...items].sort((a, b) => a.checked !== b.checked ? (a.checked ? 1 : -1) : 0);
   container.innerHTML = sorted.map(renderItem).join('');
   bindItemEvents(container);
 }
 
 function renderByCategory(container) {
   const groups = {};
-  items.forEach(item => {
-    const cat = item.category || 'other';
-    if (!groups[cat]) groups[cat] = [];
-    groups[cat].push(item);
-  });
-
-  const sortedCats = Object.keys(groups).sort((a,b) => (CAT_INFO[a]?.order||99)-(CAT_INFO[b]?.order||99));
+  items.forEach(i => { const c = i.category || 'other'; (groups[c] = groups[c] || []).push(i); });
+  const cats = Object.keys(groups).sort((a, b) => (CAT_INFO[a]?.order || 99) - (CAT_INFO[b]?.order || 99));
   let html = '';
-  sortedCats.forEach(cat => {
-    const info = CAT_INFO[cat] || {emoji:'📦',label:cat};
-    const catItems = groups[cat].sort((a,b) => a.checked?1:b.checked?-1:0);
+  cats.forEach(c => {
+    const info = CAT_INFO[c] || { emoji: '📦', label: c };
     html += `<div class="category-header">${info.emoji} ${info.label}</div>`;
-    html += catItems.map(renderItem).join('');
+    html += groups[c].sort((a, b) => a.checked ? 1 : b.checked ? -1 : 0).map(renderItem).join('');
   });
   container.innerHTML = html;
   bindItemEvents(container);
 }
 
 function renderItem(item) {
-  const catInfo = CAT_INFO[item.category] || {emoji:'📦'};
-  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}">
-    <div class="item-checkbox">${item.checked?'✓':''}</div>
+  const info = CAT_INFO[item.category] || { emoji: '📦' };
+  const who = item.added_by === 'jarvis' ? ' 🏠' : item.added_by === 'watson' ? ' 🤖' : item.added_by === 'recipe' ? ' 🍳' : '';
+  return `<div class="item ${item.checked ? 'checked' : ''}" data-id="${item.id}">
+    <div class="item-checkbox">${item.checked ? '✓' : ''}</div>
     <div class="item-content">
       <div class="item-name">${esc(item.name)}</div>
-      <div class="item-meta">${catInfo.emoji}${item.addedBy==='watson'?' 🤖':item.addedBy==='recipe'?' 🍳':''}</div>
+      <div class="item-meta">${info.emoji}${who}</div>
     </div>
-    <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}">
+    <input type="text" class="item-qty" value="${esc(item.qty || '')}" placeholder="qty" data-id="${item.id}">
     <button class="item-delete" data-id="${item.id}">✕</button>
   </div>`;
 }
 
 function bindItemEvents(container) {
-  container.querySelectorAll('.item-checkbox').forEach(cb => {
-    cb.addEventListener('click', () => toggleItem(cb.closest('.item').dataset.id));
-  });
-  container.querySelectorAll('.item-delete').forEach(btn => {
-    btn.addEventListener('click', () => removeItem(btn.dataset.id));
-  });
-  container.querySelectorAll('.item-qty').forEach(input => {
-    input.addEventListener('change', () => updateQty(input.dataset.id, input.value));
-  });
+  container.querySelectorAll('.item-checkbox').forEach(cb =>
+    cb.addEventListener('click', () => toggleItem(cb.closest('.item').dataset.id)));
+  container.querySelectorAll('.item-delete').forEach(btn =>
+    btn.addEventListener('click', () => removeItem(btn.dataset.id)));
+  container.querySelectorAll('.item-qty').forEach(input =>
+    input.addEventListener('change', () => updateQty(input.dataset.id, input.value)));
 }
 
 // ===== RECIPES =====
@@ -207,135 +197,82 @@ function renderRecipesList() {
   const grid = document.getElementById('recipes-grid');
   const empty = document.getElementById('recipes-empty');
 
-  if (recipes.length === 0) {
-    grid.innerHTML = '';
-    empty.classList.add('show');
-    return;
-  }
+  if (!recipes.length) { grid.innerHTML = ''; empty.classList.add('show'); return; }
   empty.classList.remove('show');
 
   grid.innerHTML = recipes.map(r => `
     <div class="recipe-preview" data-id="${r.id}">
       <div class="recipe-preview-title">${esc(r.name)}</div>
       <div class="recipe-preview-meta">
-        <span>🍽️ ${r.servings||'?'} servings</span>
-        <span>⏱️ ${r.time||'?'}</span>
-        <span>📝 ${r.ingredients?.length||0} ingredients</span>
+        <span>🍽️ ${r.servings || '?'} servings</span>
+        <span>⏱️ ${r.time || '?'}</span>
+        <span>📝 ${(r.ingredients || []).length} ingredients</span>
       </div>
       <div class="recipe-preview-ingredients">
-        ${(r.ingredients||[]).slice(0,5).map(i=>i.name).join(', ')}${r.ingredients?.length>5?'...':''}
+        ${(r.ingredients || []).slice(0, 5).map(i => i.name).join(', ')}${(r.ingredients || []).length > 5 ? '...' : ''}
       </div>
-      ${r.source?`<span class="recipe-source-badge">${esc(r.sourceType||'Link')}</span>`:''}
+      ${r.source ? `<span class="recipe-source-badge">${esc(r.source_type || 'Link')}</span>` : ''}
     </div>
   `).join('');
 
-  grid.querySelectorAll('.recipe-preview').forEach(el => {
-    el.addEventListener('click', () => showRecipeDetail(el.dataset.id));
-  });
+  grid.querySelectorAll('.recipe-preview').forEach(el =>
+    el.addEventListener('click', () => showRecipeDetail(el.dataset.id)));
 }
 
 function showRecipeDetail(id) {
   const recipe = recipes.find(r => r.id === id);
   if (!recipe) return;
-
   document.getElementById('recipes-list-view').style.display = 'none';
   document.getElementById('recipe-detail-view').style.display = 'block';
 
   const card = document.getElementById('recipe-card');
-  const ingHtml = (recipe.ingredients||[]).map((ing, idx) => {
-    const alreadyInList = items.some(i => i.name.toLowerCase() === ing.name.toLowerCase() && !i.checked);
+  const ings = recipe.ingredients || [];
+  const ingHtml = ings.map((ing, idx) => {
+    const inList = items.some(i => i.name.toLowerCase() === ing.name.toLowerCase() && !i.checked);
     return `<div class="ingredient-row">
       <span class="ing-text">${esc(ing.name)}</span>
-      <span class="ing-qty">${esc(ing.qty||'')}</span>
-      <button class="ing-add-btn ${alreadyInList?'added':''}" data-recipe="${id}" data-idx="${idx}">
-        ${alreadyInList?'✓ Added':'+ Add'}
-      </button>
+      <span class="ing-qty">${esc(ing.qty || '')}</span>
+      <button class="ing-add-btn ${inList ? 'added' : ''}" data-idx="${idx}">${inList ? '✓ Added' : '+ Add'}</button>
     </div>`;
   }).join('');
 
-  const stepsHtml = (recipe.steps||[]).map((s,i) => `<li>${esc(s)}</li>`).join('');
+  const stepsHtml = (recipe.steps || []).map(s => `<li>${esc(s)}</li>`).join('');
 
   card.innerHTML = `
     <div class="recipe-title">${esc(recipe.name)}</div>
     <div class="recipe-meta">
-      <span>🍽️ ${recipe.servings||'?'} servings</span>
-      <span>⏱️ ${recipe.time||'?'}</span>
-      ${recipe.cuisine?`<span>🌍 ${esc(recipe.cuisine)}</span>`:''}
+      <span>🍽️ ${recipe.servings || '?'}</span>
+      <span>⏱️ ${recipe.time || '?'}</span>
+      ${recipe.cuisine ? `<span>🌍 ${esc(recipe.cuisine)}</span>` : ''}
     </div>
-    ${recipe.source?`<a class="recipe-source-link" href="${esc(recipe.source)}" target="_blank">📎 ${esc(recipe.sourceType||'Source')}</a>`:''}
-    ${recipe.notes?`<p style="font-size:13px;color:var(--text-dim);margin-bottom:16px">${esc(recipe.notes)}</p>`:''}
+    ${recipe.source ? `<a class="recipe-source-link" href="${esc(recipe.source)}" target="_blank">📎 ${esc(recipe.source_type || 'Source')}</a>` : ''}
     <div class="recipe-section-title">Ingredients</div>
-    <button class="recipe-btn-add-all" data-recipe="${id}">🛒 Add All to Shopping List</button>
+    <button class="recipe-btn-add-all" id="add-all-btn">🛒 Add All to Shopping List</button>
     ${ingHtml}
-    ${stepsHtml?`<div class="recipe-section-title">Instructions</div><div class="recipe-instructions"><ol>${stepsHtml}</ol></div>`:''}
+    ${stepsHtml ? `<div class="recipe-section-title">Instructions</div><div class="recipe-instructions"><ol>${stepsHtml}</ol></div>` : ''}
   `;
 
-  // Bind add buttons
   card.querySelectorAll('.ing-add-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const r = recipes.find(x => x.id === btn.dataset.recipe);
-      const ing = r.ingredients[parseInt(btn.dataset.idx)];
-      if (!btn.classList.contains('added')) {
-        addItem(ing.name, null, ing.qty, 'recipe');
-        btn.textContent = '✓ Added';
-        btn.classList.add('added');
-        toast(`Added ${ing.name}`);
-      }
+    btn.addEventListener('click', async () => {
+      if (btn.classList.contains('added')) return;
+      const ing = ings[parseInt(btn.dataset.idx)];
+      await addItem(ing.name, null, ing.qty, 'recipe');
+      btn.textContent = '✓ Added';
+      btn.classList.add('added');
     });
   });
 
-  // Add all button
-  card.querySelector('.recipe-btn-add-all').addEventListener('click', () => {
+  document.getElementById('add-all-btn').addEventListener('click', async () => {
     let added = 0;
-    (recipe.ingredients||[]).forEach(ing => {
-      const exists = items.some(i => i.name.toLowerCase() === ing.name.toLowerCase() && !i.checked);
-      if (!exists) {
-        addItem(ing.name, null, ing.qty, 'recipe');
+    for (const ing of ings) {
+      if (!items.some(i => i.name.toLowerCase() === ing.name.toLowerCase() && !i.checked)) {
+        await addItem(ing.name, null, ing.qty, 'recipe');
         added++;
       }
-    });
-    card.querySelectorAll('.ing-add-btn').forEach(b => { b.textContent='✓ Added'; b.classList.add('added'); });
-    toast(`Added ${added} ingredient${added!==1?'s':''} to shopping list`);
+    }
+    card.querySelectorAll('.ing-add-btn').forEach(b => { b.textContent = '✓ Added'; b.classList.add('added'); });
+    toast(`Added ${added} ingredient${added !== 1 ? 's' : ''}`);
   });
-}
-
-// ===== SYNC =====
-async function syncFromFile() {
-  try {
-    const res = await fetch('shopping-list.json?t='+Date.now());
-    if (!res.ok) throw new Error('No sync file');
-    const data = await res.json();
-
-    if (data.items && Array.isArray(data.items)) {
-      let added = 0;
-      data.items.forEach(wi => {
-        const exists = items.find(i => i.id === wi.id || i.name.toLowerCase() === wi.name.toLowerCase());
-        if (!exists) { items.push({...wi, addedBy: wi.addedBy||'watson'}); added++; }
-      });
-      if (data.removed && Array.isArray(data.removed)) {
-        items = items.filter(i => !data.removed.includes(i.id) && !data.removed.includes(i.name.toLowerCase()));
-      }
-      save();
-      if (added > 0) toast(`Synced ${added} item${added>1?'s':''} from Watson 🤖`);
-    }
-
-    // Sync recipes
-    if (data.recipes && Array.isArray(data.recipes)) {
-      let addedR = 0;
-      data.recipes.forEach(wr => {
-        const exists = recipes.find(r => r.id === wr.id || r.name.toLowerCase() === wr.name.toLowerCase());
-        if (!exists) { recipes.push(wr); addedR++; }
-      });
-      if (addedR > 0) {
-        saveRecipes();
-        toast(`${addedR} new recipe${addedR>1?'s':''}! 🍳`);
-      }
-    }
-
-    document.getElementById('sync-info').textContent = `Last sync: ${new Date().toLocaleTimeString()}`;
-  } catch(e) {
-    document.getElementById('sync-info').textContent = 'Sync: offline (using local data)';
-  }
 }
 
 // ===== HELPERS =====
@@ -347,17 +284,11 @@ function toast(msg) {
   setTimeout(() => el.remove(), 2500);
 }
 
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s || '';
-  return d.innerHTML;
-}
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  load();
-  renderList();
-  renderRecipesList();
+  loadData();
 
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
@@ -372,24 +303,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add item
   const input = document.getElementById('input-item');
   const catSelect = document.getElementById('input-category');
-  const addBtn = document.getElementById('btn-add');
-
-  function doAdd() {
-    const cat = catSelect.value !== 'other' ? catSelect.value : null;
-    addItem(input.value, cat);
+  document.getElementById('btn-add').addEventListener('click', () => {
+    addItem(input.value, catSelect.value !== 'other' ? catSelect.value : null);
     input.value = '';
     catSelect.value = 'other';
     input.focus();
-  }
-  addBtn.addEventListener('click', doAdd);
-  input.addEventListener('keypress', e => { if (e.key === 'Enter') doAdd(); });
+  });
+  input.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+      addItem(input.value, catSelect.value !== 'other' ? catSelect.value : null);
+      input.value = '';
+      catSelect.value = 'other';
+    }
+  });
 
-  // Clear checked
+  // Clear & refresh
   document.getElementById('btn-clear-done').addEventListener('click', clearChecked);
-
-  // Sync buttons
-  document.getElementById('btn-sync').addEventListener('click', syncFromFile);
-  document.getElementById('btn-sync-recipes').addEventListener('click', syncFromFile);
+  document.getElementById('btn-sync').addEventListener('click', loadData);
+  document.getElementById('btn-sync-recipes').addEventListener('click', loadData);
 
   // View toggle
   document.querySelectorAll('.toggle-btn').forEach(btn => {
@@ -400,13 +331,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Recipe back button
+  // Recipe back
   document.getElementById('recipe-back').addEventListener('click', () => {
     document.getElementById('recipes-list-view').style.display = '';
     document.getElementById('recipe-detail-view').style.display = 'none';
   });
 
-  // Auto-sync
-  syncFromFile();
-  setInterval(syncFromFile, 30000);
+  // Realtime subscription
+  try {
+    supabase.subscribeToItems(() => loadData());
+  } catch (e) {
+    // Fallback: poll every 15 seconds
+    setInterval(loadData, 15000);
+  }
+
+  // Also poll as backup
+  setInterval(loadData, 30000);
 });
