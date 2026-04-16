@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🛒 Shopping List</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>🛒 Shopping List</h1>
+      <div class="header-actions">
+        <button class="btn-icon" id="btn-sync" title="Sync">🔄</button>
+        <button class="btn-icon" id="btn-clear-done" title="Clear checked">🧹</button>
+      </div>
+    </header>
+
+    <!-- Add item -->
+    <div class="add-bar">
+      <input type="text" id="input-item" placeholder="Add item..." autocomplete="off">
+      <select id="input-category">
+        <option value="other">Category</option>
+        <option value="produce">🥬 Produce</option>
+        <option value="dairy">🧀 Dairy</option>
+        <option value="meat">🥩 Meat & Fish</option>
+        <option value="bakery">🍞 Bakery</option>
+        <option value="frozen">🧊 Frozen</option>
+        <option value="drinks">🥤 Drinks</option>
+        <option value="snacks">🍿 Snacks</option>
+        <option value="pantry">🥫 Pantry</option>
+        <option value="household">🧹 Household</option>
+        <option value="personal">🧴 Personal Care</option>
+        <option value="other">📦 Other</option>
+      </select>
+      <button id="btn-add" class="btn-add">+</button>
+    </div>
+
+    <!-- Item count -->
+    <div class="list-meta">
+      <span id="item-count">0 items</span>
+      <div class="view-toggle">
+        <button class="toggle-btn active" data-view="list">List</button>
+        <button class="toggle-btn" data-view="category">By Aisle</button>
+      </div>
+    </div>
+
+    <!-- Shopping list -->
+    <div class="list-container" id="list-container"></div>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">🛒</div>
+      <p>Your list is empty</p>
+      <p class="empty-sub">Add items above or ask Watson in Telegram!</p>
+    </div>
+
+    <!-- Last sync info -->
+    <div class="sync-info" id="sync-info"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
