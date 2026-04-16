@@ -59,6 +59,23 @@ const supabase = {
     return this.query('recipes', 'POST', { body: recipe });
   },
 
+  async updateRecipe(id, updates) {
+    return this.query('recipes', 'PATCH', { body: updates, filters: `id=eq.${id}` });
+  },
+
+  // Pantry
+  async getPantry() {
+    return this.query('pantry', 'GET', { select: '*', order: 'created_at.asc' });
+  },
+
+  async addPantryItem(item) {
+    return this.query('pantry', 'POST', { body: item });
+  },
+
+  async deletePantryItem(id) {
+    return this.query('pantry', 'DELETE', { filters: `id=eq.${id}`, prefer: 'return=minimal' });
+  },
+
   // Realtime subscription
   subscribeToItems(callback) {
     const wsUrl = SUPABASE_URL.replace('https://', 'wss://') + 

@@ -475,6 +475,203 @@ body {
   animation: fadeIn 0.2s ease;
 }
 
+/* In-pantry badge */
+.in-pantry {
+  font-size: 10px;
+  color: #4ade80;
+  background: #4ade8020;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+/* Tag filter */
+.tag-filter {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.tag-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.tag-btn.active {
+  background: var(--accent-recipe);
+  color: #000;
+  border-color: var(--accent-recipe);
+  font-weight: 600;
+}
+
+.recipe-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--accent-recipe);
+  margin-right: 4px;
+  margin-top: 4px;
+}
+
+.recipe-tags { margin-top: 6px; }
+
+/* Nutrition card */
+.nutrition-card {
+  background: var(--bg-dark);
+  border-radius: 10px;
+  padding: 14px;
+  margin: 12px 0;
+  border: 1px solid var(--border);
+}
+
+.nutrition-title {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.nutr-item {
+  text-align: center;
+}
+
+.nutr-val {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-recipe);
+}
+
+.nutr-label {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Cook button in recipe */
+.cook-start-btn {
+  width: 100%;
+  padding: 14px;
+  background: #4ade80;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: transform 0.1s;
+}
+
+.cook-start-btn:active { transform: scale(0.97); }
+
+/* Guided Cooking */
+.cook-select { padding: 0 16px; }
+.cook-prompt { padding: 16px 0 8px; color: var(--text-dim); font-size: 14px; }
+
+.cook-header { padding: 0 16px; }
+.cook-header h2 { font-size: 20px; margin-bottom: 8px; }
+
+.cook-progress {
+  height: 6px;
+  background: var(--bg-surface);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.cook-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.cook-ings { padding: 0 16px 16px; }
+
+.cook-ing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #ffffff06;
+  cursor: pointer;
+  font-size: 14px;
+  transition: opacity 0.2s;
+}
+
+.cook-ing.checked {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.cook-step-card {
+  margin: 0 16px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 24px 20px;
+  border: 1px solid var(--border);
+}
+
+.cook-step-num {
+  font-size: 12px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.cook-step-text {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.cook-step-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.cook-nav-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cook-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.cook-nav-next {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+  border-color: var(--accent);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateX(-50%) translateY(8px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
