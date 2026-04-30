@@ -2,140 +2,167 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🛒 Home Kitchen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f7fb">
+  <title>Home Kitchen — Shopping, Pantry &amp; Recipes</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app">
-    <!-- Tab bar -->
-    <div class="tab-bar">
-      <button class="tab active" data-tab="list">🛒</button>
-      <button class="tab" data-tab="recipes">🍳</button>
-      <button class="tab" data-tab="pantry">🏪</button>
-      <button class="tab" data-tab="cook">👨‍🍳</button>
-    </div>
 
     <!-- ===== LIST TAB ===== -->
-    <div class="tab-content active" id="tab-list">
+    <main class="tab-content active" id="tab-list" role="tabpanel" aria-labelledby="nav-list">
       <header class="header">
-        <h1>🛒 Shopping List</h1>
+        <h1>Shopping List</h1>
         <div class="header-actions">
-          <button class="btn-icon" id="btn-sync" title="Sync">🔄</button>
-          <button class="btn-icon" id="btn-clear-done" title="Clear checked">🧹</button>
+          <button class="btn-icon" id="btn-sync" title="Refresh from server" aria-label="Refresh shopping list">🔄</button>
+          <button class="btn-icon" id="btn-clear-done" title="Clear checked items" aria-label="Clear checked items">🧹</button>
         </div>
       </header>
-      <div class="add-bar">
-        <input type="text" id="input-item" placeholder="Add item (e.g. 3 apples)..." autocomplete="off">
-        <select id="input-category">
+
+      <div class="add-bar" role="group" aria-label="Add new shopping item">
+        <input type="text" id="input-item" placeholder="Add item (e.g. 3 apples)…" autocomplete="off" aria-label="New item name">
+        <select id="input-category" aria-label="Item category">
           <option value="auto">Auto</option>
-          <option value="produce">🥬</option>
-          <option value="dairy">🧀</option>
-          <option value="meat">🥩</option>
-          <option value="bakery">🍞</option>
-          <option value="frozen">🧊</option>
-          <option value="drinks">🥤</option>
-          <option value="snacks">🍿</option>
-          <option value="pantry">🥫</option>
-          <option value="household">🧹</option>
-          <option value="personal">🧴</option>
+          <option value="produce" aria-label="Produce">🥬</option>
+          <option value="dairy" aria-label="Dairy">🧀</option>
+          <option value="meat" aria-label="Meat and Fish">🥩</option>
+          <option value="bakery" aria-label="Bakery">🍞</option>
+          <option value="frozen" aria-label="Frozen">🧊</option>
+          <option value="drinks" aria-label="Drinks">🥤</option>
+          <option value="snacks" aria-label="Snacks">🍿</option>
+          <option value="pantry" aria-label="Pantry">🥫</option>
+          <option value="household" aria-label="Household">🧹</option>
+          <option value="personal" aria-label="Personal care">🧴</option>
         </select>
-        <button id="btn-add" class="btn-add">+</button>
+        <button id="btn-add" class="btn-add" aria-label="Add item to shopping list">+</button>
       </div>
+
       <div class="list-meta">
         <span id="item-count">0 items</span>
-        <div class="view-toggle">
-          <button class="toggle-btn active" data-view="list">List</button>
-          <button class="toggle-btn" data-view="category">Aisle</button>
+        <div class="view-toggle" role="group" aria-label="List view mode">
+          <button class="toggle-btn active" data-view="list" aria-pressed="true">List</button>
+          <button class="toggle-btn" data-view="category" aria-pressed="false">By Aisle</button>
         </div>
       </div>
-      <div class="list-container" id="list-container"></div>
+
+      <div class="list-container" id="list-container" aria-live="polite"></div>
+
       <div class="empty-state" id="empty-state">
-        <div class="empty-icon">🛒</div>
+        <div class="empty-icon" aria-hidden="true">🛒</div>
         <p>Your list is empty</p>
-        <p class="empty-sub">Add items above or ask Jarvis!</p>
+        <p class="empty-sub">Add items above, or pull ingredients from a saved recipe.</p>
       </div>
+
       <div class="sync-info" id="sync-info"></div>
-    </div>
+    </main>
 
     <!-- ===== RECIPES TAB ===== -->
-    <div class="tab-content" id="tab-recipes">
+    <main class="tab-content" id="tab-recipes" role="tabpanel" aria-labelledby="nav-recipes">
       <header class="header">
-        <h1>🍳 Recipes</h1>
+        <h1>Recipes</h1>
         <div class="header-actions">
-          <button class="btn-icon" id="btn-sync-recipes">🔄</button>
+          <button class="btn-icon" id="btn-sync-recipes" title="Refresh recipes" aria-label="Refresh recipes">🔄</button>
         </div>
       </header>
-      <!-- Tag filter -->
-      <div class="tag-filter" id="tag-filter">
-        <button class="tag-btn active" data-tag="all">All</button>
-        <button class="tag-btn" data-tag="breakfast">🌅 Breakfast</button>
-        <button class="tag-btn" data-tag="lunch">☀️ Lunch</button>
-        <button class="tag-btn" data-tag="dinner">🌙 Dinner</button>
-        <button class="tag-btn" data-tag="snack">🍿 Snack</button>
-        <button class="tag-btn" data-tag="dessert">🍰 Dessert</button>
+
+      <div class="tag-filter" id="tag-filter" role="group" aria-label="Filter recipes by meal">
+        <button class="tag-btn active" data-tag="all" aria-pressed="true">All</button>
+        <button class="tag-btn" data-tag="breakfast" aria-pressed="false">🌅 Breakfast</button>
+        <button class="tag-btn" data-tag="lunch" aria-pressed="false">☀️ Lunch</button>
+        <button class="tag-btn" data-tag="dinner" aria-pressed="false">🌙 Dinner</button>
+        <button class="tag-btn" data-tag="snack" aria-pressed="false">🍿 Snack</button>
+        <button class="tag-btn" data-tag="dessert" aria-pressed="false">🍰 Dessert</button>
       </div>
+
       <div id="recipes-list-view">
         <div class="empty-state show" id="recipes-empty">
-          <div class="empty-icon">🍳</div>
+          <div class="empty-icon" aria-hidden="true">🍳</div>
           <p>No recipes yet</p>
-          <p class="empty-sub">Send Jarvis a video link to extract a recipe!</p>
+          <p class="empty-sub">Save a recipe and it will appear here.</p>
         </div>
         <div class="recipes-grid" id="recipes-grid"></div>
       </div>
+
       <div id="recipe-detail-view" style="display:none">
-        <button class="back-btn" id="recipe-back">← Back</button>
+        <button class="back-btn" id="recipe-back" aria-label="Back to recipes list">← Back to recipes</button>
         <div class="recipe-card" id="recipe-card"></div>
       </div>
-    </div>
+    </main>
 
     <!-- ===== PANTRY TAB ===== -->
-    <div class="tab-content" id="tab-pantry">
+    <main class="tab-content" id="tab-pantry" role="tabpanel" aria-labelledby="nav-pantry">
       <header class="header">
-        <h1>🏪 Pantry</h1>
+        <h1>Pantry</h1>
         <div class="header-actions">
-          <button class="btn-icon" id="btn-sync-pantry">🔄</button>
+          <button class="btn-icon" id="btn-sync-pantry" title="Refresh pantry" aria-label="Refresh pantry">🔄</button>
         </div>
       </header>
-      <div class="add-bar">
-        <input type="text" id="input-pantry" placeholder="Add pantry item..." autocomplete="off">
-        <button id="btn-add-pantry" class="btn-add">+</button>
+
+      <div class="add-bar" role="group" aria-label="Add new pantry item">
+        <input type="text" id="input-pantry" placeholder="Add pantry item…" autocomplete="off" aria-label="New pantry item">
+        <button id="btn-add-pantry" class="btn-add" aria-label="Add to pantry">+</button>
       </div>
+
       <div class="list-meta">
         <span id="pantry-count">0 items</span>
       </div>
-      <div class="list-container" id="pantry-container"></div>
+
+      <div class="list-container" id="pantry-container" aria-live="polite"></div>
+
       <div class="empty-state" id="pantry-empty">
-        <div class="empty-icon">🏪</div>
+        <div class="empty-icon" aria-hidden="true">🏪</div>
         <p>Pantry is empty</p>
-        <p class="empty-sub">Track what you already have at home</p>
+        <p class="empty-sub">Track what you already have at home so it won't be re-added.</p>
       </div>
-    </div>
+    </main>
 
     <!-- ===== GUIDED COOKING TAB ===== -->
-    <div class="tab-content" id="tab-cook">
+    <main class="tab-content" id="tab-cook" role="tabpanel" aria-labelledby="nav-cook">
       <header class="header">
-        <h1>👨‍🍳 Guided Cooking</h1>
+        <h1>Guided Cooking</h1>
       </header>
+
       <div id="cook-select" class="cook-select">
-        <p class="cook-prompt">Choose a recipe to cook:</p>
+        <p class="cook-prompt">Choose a recipe to start cooking:</p>
         <div class="recipes-grid" id="cook-recipes-grid"></div>
         <div class="empty-state show" id="cook-empty">
-          <div class="empty-icon">👨‍🍳</div>
+          <div class="empty-icon" aria-hidden="true">👨‍🍳</div>
           <p>No recipes to cook</p>
-          <p class="empty-sub">Add recipes first!</p>
+          <p class="empty-sub">Save a recipe first, then come back here.</p>
         </div>
       </div>
+
       <div id="cook-mode" style="display:none">
-        <button class="back-btn" id="cook-back">← Exit Cooking</button>
+        <button class="back-btn" id="cook-back" aria-label="Exit guided cooking">← Exit cooking</button>
         <div id="cook-content"></div>
       </div>
-    </div>
+    </main>
+
+    <!-- ===== Bottom tab bar ===== -->
+    <nav class="tab-bar" role="tablist" aria-label="Main sections">
+      <button class="tab active" data-tab="list" id="nav-list" role="tab" aria-selected="true" aria-controls="tab-list">
+        <span class="tab-icon" aria-hidden="true">🛒</span>
+        <span class="tab-label">List</span>
+      </button>
+      <button class="tab" data-tab="recipes" id="nav-recipes" role="tab" aria-selected="false" aria-controls="tab-recipes">
+        <span class="tab-icon" aria-hidden="true">🍳</span>
+        <span class="tab-label">Recipes</span>
+      </button>
+      <button class="tab" data-tab="pantry" id="nav-pantry" role="tab" aria-selected="false" aria-controls="tab-pantry">
+        <span class="tab-icon" aria-hidden="true">🏪</span>
+        <span class="tab-label">Pantry</span>
+      </button>
+      <button class="tab" data-tab="cook" id="nav-cook" role="tab" aria-selected="false" aria-controls="tab-cook">
+        <span class="tab-icon" aria-hidden="true">👨‍🍳</span>
+        <span class="tab-label">Cook</span>
+      </button>
+    </nav>
   </div>
 
-  <script src="config.js?v=4"></script>
-  <script src="supabase-client.js?v=4"></script>
-  <script src="app.js?v=4"></script>
+  <script src="config.js?v=5"></script>
+  <script src="supabase-client.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
