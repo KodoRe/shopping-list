@@ -170,14 +170,15 @@ function renderItem(item) {
   const info = CAT_INFO[item.category]||{emoji:'📦'};
   const who = {jarvis:' 🏠',watson:' 🤖',recipe:' 🍳'}[item.added_by]||'';
   const inPantry = pantryItems.some(p => p.name.toLowerCase() === item.name.toLowerCase());
+  const safeName = esc(item.name);
   return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}">
-    <div class="item-checkbox">${item.checked?'✓':''}</div>
+    <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
     <div class="item-content">
-      <div class="item-name">${esc(item.name)}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
+      <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
       <div class="item-meta">${info.emoji}${who}</div>
     </div>
-    <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}">
-    <button class="item-delete" data-id="${item.id}">✕</button>
+    <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}" aria-label="Quantity for ${safeName}">
+    <button class="item-delete" data-id="${item.id}" aria-label="Remove ${safeName}">✕</button>
   </div>`;
 }
 
@@ -413,9 +414,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t=>{
+        t.classList.remove('active');
+        t.setAttribute('aria-selected','false');
+      });
       document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
       tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
       document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
     });
   });
@@ -443,7 +448,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       viewMode = btn.dataset.view;
-      document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.toggle('active', b===btn));
+      document.querySelectorAll('.toggle-btn').forEach(b=>{
+        const on = b===btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
       renderList();
     });
   });
@@ -452,7 +461,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.tag-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       recipeFilter = btn.dataset.tag;
-      document.querySelectorAll('.tag-btn').forEach(b=>b.classList.toggle('active', b===btn));
+      document.querySelectorAll('.tag-btn').forEach(b=>{
+        const on = b===btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
       renderRecipesList();
     });
   });
