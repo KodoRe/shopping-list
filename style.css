@@ -94,7 +94,7 @@ button { font-family: inherit; }
   border-top: 1px solid var(--border);
   box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.06);
   z-index: 100;
-  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0));
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
   max-width: 560px;
   margin: 0 auto;
 }
