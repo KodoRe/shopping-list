@@ -38,7 +38,9 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(ROOT, "data")
+# DATA_DIR is overridable via HK_DATA_DIR so tests and the nightly renderer can
+# target an explicit location without touching the repo's canonical data/.
+DATA_DIR = os.environ.get("HK_DATA_DIR") or os.path.join(ROOT, "data")
 MAX_BODY = 256 * 1024  # 256 KB — generous for a recipe, hostile to abuse.
 
 # Collections we persist. Each maps to data/<name>.json holding a JSON array.

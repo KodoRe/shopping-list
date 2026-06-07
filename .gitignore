@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Atomic-write staging files (server.py writes data/<c>.json.tmp.* then os.replace)
+data/*.tmp.*
+
+# Local/editor cruft
+.DS_Store
+*.swp
+
+# NOTE: data/*.json (items, recipes, pantry) IS committed on purpose — it's the
+# canonical source of truth and the real restore point. The nightly cron renders
+# it to markdown and commits both. Do not ignore the .json data files.
