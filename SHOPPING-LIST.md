@@ -1,5 +1,14 @@
 # 🛒 Shopping List
 
-_Auto-generated from the Home Kitchen app — 2026-06-07 17:14 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-06-07 20:12 UTC. Do not edit by hand._
 
-_List is empty._
+**3 to buy**
+
+### 🥬 Produce
+- [ ] Apples
+
+### 🧀 Dairy
+- [ ] Heavy cream
+
+### 🥩 Meat & Fish
+- [ ] Chicken breast

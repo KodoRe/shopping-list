@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": "c13fcd2f-37b8-4fdd-9f7d-d786a0ac6de2",
+    "name": "Apples",
+    "category": "produce",
+    "qty": "",
+    "checked": false,
+    "added_by": "app",
+    "created_at": "2026-06-07T19:17:32.624Z"
+  },
+  {
+    "id": "bbac770c-f7fc-4dca-950d-5582ce54acbd",
+    "name": "Chicken breast",
+    "category": "meat",
+    "qty": "",
+    "checked": false,
+    "added_by": "app",
+    "created_at": "2026-06-07T19:17:44.449Z"
+  },
+  {
+    "id": "d27b0dc3-39cf-4fd1-bdc7-6d3e30b50b34",
+    "name": "Heavy cream",
+    "category": "dairy",
+    "qty": "",
+    "checked": false,
+    "added_by": "app",
+    "created_at": "2026-06-07T19:17:57.181Z"
+  }
+]

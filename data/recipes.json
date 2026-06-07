@@ -1,1 +1,189 @@
-[]
+[
+  {
+    "id": "vault-horseradish-yogurt-sauce",
+    "name": "Horseradish Yogurt Sauce",
+    "tags": [
+      "sauce",
+      "condiment",
+      "to-try",
+      "vault"
+    ],
+    "servings": "~200g sauce",
+    "time": "5 min + 15-20 min rest",
+    "cuisine": "British / condiment",
+    "source": "vault: 30-knowledge/nutrition/recipes/horseradish-yogurt-sauce.md",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Greek yogurt (full-fat better; 0% works)",
+        "qty": "200g"
+      },
+      {
+        "name": "Prepared horseradish (Israel: white chrein)",
+        "qty": "2-3 tbsp"
+      },
+      {
+        "name": "Dijon mustard",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Lemon juice (or white vinegar)",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Salt + cracked pepper",
+        "qty": "pinch"
+      },
+      {
+        "name": "Honey (optional, to round)",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Garlic, minced (optional)",
+        "qty": "1 small clove"
+      }
+    ],
+    "steps": [
+      "Stir everything together in a bowl.",
+      "Taste, adjust horseradish/salt/lemon.",
+      "Rest in fridge 15-20 min -- flavors marry, horseradish blooms."
+    ],
+    "nutrition": {},
+    "added_by": "agent",
+    "created_at": "2026-06-07T20:07:50.621548+00:00"
+  },
+  {
+    "id": "vault-pot-roast",
+    "name": "Pot Roast (House Version)",
+    "tags": [
+      "beef",
+      "braise",
+      "family-friendly",
+      "dinner",
+      "vault"
+    ],
+    "servings": "family (4-6)",
+    "time": "~5 hr",
+    "cuisine": "American / braise",
+    "source": "https://youtu.be/eVuXwv1yxo0",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Beef chuck roast (chuck only)",
+        "qty": "3-5 lb"
+      },
+      {
+        "name": "Salt",
+        "qty": "~1 tbsp per side"
+      },
+      {
+        "name": "Onions, rough chopped (house swap from shallots)",
+        "qty": "225g"
+      },
+      {
+        "name": "Celery, Lego-brick pieces",
+        "qty": "225g"
+      },
+      {
+        "name": "Carrots, cut on the oblique",
+        "qty": "3 chunky"
+      },
+      {
+        "name": "Garlic, crushed",
+        "qty": "4 cloves"
+      },
+      {
+        "name": "Cooking fat, wine, stock (stock not bouillon)",
+        "qty": "per recipe"
+      },
+      {
+        "name": "Russet potatoes (for loaded mash)",
+        "qty": "6 large"
+      },
+      {
+        "name": "Butter (for mash)",
+        "qty": "1 stick"
+      },
+      {
+        "name": "Sour cream (for mash)",
+        "qty": "1 dollop"
+      }
+    ],
+    "steps": [
+      "Salt the roast generously on all sides (~20g/side). Rest 20+ min while you prep veg.",
+      "Prep mirepoix: rough-chop onions, celery, carrots (obliques), crush garlic.",
+      "Sear the chuck hard on all sides -- color = flavor.",
+      "Sweat the veg in the same pot until edges catch color.",
+      "Deglaze with wine, scrape the fond, reduce.",
+      "Add stock (no bouillon), nestle the roast back in.",
+      "Braise covered in oven, low (~300F/150C), 4-4.5 hours until shreddable but holding together.",
+      "Rest 30 min before serving so the meat reabsorbs liquid.",
+      "Loaded mash: wrap 6 russets each in foil, slow-roast alongside roast ~2 hr until tender; smash with salt, 1 stick butter, a dollop of sour cream.",
+      "Plate: rip a chunk of beef onto the potatoes, spoon over veg, glaze with sauce."
+    ],
+    "nutrition": {},
+    "added_by": "agent",
+    "created_at": "2026-06-07T20:07:50.530814+00:00"
+  },
+  {
+    "id": "vault-morning-oats",
+    "name": "Morning Oats (non-jump days)",
+    "tags": [
+      "breakfast",
+      "oats",
+      "high-protein",
+      "vault"
+    ],
+    "servings": "1",
+    "time": "10 min",
+    "cuisine": "Breakfast",
+    "source": "vault: 30-knowledge/nutrition/recipes/morning-oats.md",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Oats",
+        "qty": "4 tbsp"
+      },
+      {
+        "name": "Water",
+        "qty": "1 cup"
+      },
+      {
+        "name": "Chia seeds",
+        "qty": "1 tbsp"
+      },
+      {
+        "name": "Protein powder (in addition to whey)",
+        "qty": "1 tbsp"
+      },
+      {
+        "name": "Pecans + almonds/walnuts, chopped",
+        "qty": "1 handful"
+      },
+      {
+        "name": "Smooth peanut butter",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Maple syrup",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Whey protein (ONE scoop -- never two)",
+        "qty": "1 scoop"
+      },
+      {
+        "name": "Cracked sea salt",
+        "qty": "to finish"
+      }
+    ],
+    "steps": [
+      "Cook the oats in the water.",
+      "Move to a bowl, mix in all remaining ingredients.",
+      "Finish with cracked sea salt."
+    ],
+    "nutrition": {},
+    "added_by": "agent",
+    "created_at": "2026-06-07T20:12:23.882213+00:00"
+  }
+]
