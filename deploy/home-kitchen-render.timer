@@ -1,0 +1,13 @@
+[Unit]
+Description=Home Kitchen — nightly markdown snapshot timer (02:00 Asia/Jerusalem)
+
+[Timer]
+# 02:00 Asia/Jerusalem (Nitai's timezone), pinned explicitly because the host TZ
+# is Etc/UTC — a bare "02:00:00" would otherwise fire at 05:00 local. Persistent=true
+# so a missed run (VM asleep/off) fires on next boot rather than silently skipping.
+OnCalendar=*-*-* 02:00:00 Asia/Jerusalem
+Persistent=true
+Unit=home-kitchen-render.service
+
+[Install]
+WantedBy=timers.target

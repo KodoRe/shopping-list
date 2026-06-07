@@ -229,9 +229,13 @@ def git_commit_push():
     # Stage canonical data + rendered markdown.
     git("add", "data/items.json", "data/recipes.json", "data/pantry.json",
         "SHOPPING-LIST.md", "PANTRY.md", "RECIPES.md")
-    status = git("status", "--porcelain").stdout.strip()
-    if not status:
-        print("nothing to commit (no changes)")
+    # Did anything we care about actually get staged? Check the INDEX, not the work
+    # tree — unrelated untracked files (e.g. new deploy units) must not trigger a
+    # commit, and an unchanged dataset must be a clean no-op. `git diff --cached
+    # --quiet` exits 0 when the index matches HEAD (nothing staged), 1 when it differs.
+    staged = git("diff", "--cached", "--quiet")
+    if staged.returncode == 0:
+        print("nothing to commit (data + markdown unchanged)")
         return 0
     msg = f"chore(data): nightly kitchen snapshot {datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
     c = git("commit", "-m", msg)
