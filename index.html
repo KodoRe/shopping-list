@@ -14,7 +14,7 @@
     <!-- ===== LIST TAB ===== -->
     <main class="tab-content active" id="tab-list" role="tabpanel" aria-labelledby="nav-list">
       <header class="header">
-        <h1>Shopping List</h1>
+        <h1>Shopping List <span class="sync-dot offline" id="sync-dot" title="Offline — changes saved on this device" aria-hidden="true"></span></h1>
         <div class="header-actions">
           <button class="btn-icon" id="btn-sync" title="Refresh from server" aria-label="Refresh shopping list">🔄</button>
           <button class="btn-icon" id="btn-clear-done" title="Clear checked items" aria-label="Clear checked items">🧹</button>
@@ -161,8 +161,9 @@
     </nav>
   </div>
 
-  <script src="config.js?v=5"></script>
-  <script src="supabase-client.js?v=5"></script>
-  <script src="app.js?v=5"></script>
+  <script src="config.js?v=6"></script>
+  <script src="supabase-client.js?v=6"></script>
+  <script src="js/store.js?v=6"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

@@ -79,19 +79,52 @@ let items = [], recipes = [], pantryItems = [];
 let viewMode = 'list', recipeFilter = 'all';
 
 // ===== DATA =====
-async function loadData() {
-  try {
-    const [i, r] = await Promise.all([supabase.getItems(), supabase.getRecipes()]);
-    items = i || []; recipes = r || [];
-    try { pantryItems = await supabase.getPantry() || []; } catch(e) { pantryItems = []; }
-  } catch(e) { console.error('Load error:', e); toast('Failed to load ❌'); }
+// localStorage is the source of truth (via Store). Reads are synchronous and instant;
+// the network is a best-effort sync that happens quietly in the background.
+function loadLocal() {
+  items = Store.getItems();
+  recipes = Store.getRecipes();
+  pantryItems = Store.getPantry();
   renderAll();
+}
+
+// Background sync. Never shows an error toast — offline is a normal state, not a failure.
+// Updates the subtle status dot instead. Store.hydrate() repaints via its onChange hook.
+async function syncData() {
+  await Store.hydrate();          // pulls server state if reachable, flushes queued writes
+  updateSyncStatus();
+}
+
+function updateSyncStatus() {
+  const dot = document.getElementById('sync-dot');
+  if (!dot) return;
+  const pending = Store.pendingCount();
+  if (Store.online) {
+    dot.className = 'sync-dot online';
+    dot.title = pending ? `Synced — ${pending} change(s) pending` : 'Synced';
+    maybeSubscribeRealtime();   // only open the websocket once we know the backend is alive
+  } else {
+    dot.className = 'sync-dot offline';
+    dot.title = 'Offline — changes saved on this device';
+  }
+}
+
+// Open the realtime websocket exactly once, and only after a successful online sync.
+// This avoids a perpetual 5s reconnect loop hammering a dead backend (battery/network drain).
+let _realtimeWired = false;
+function maybeSubscribeRealtime() {
+  if (_realtimeWired) return;
+  if (typeof supabase === 'undefined') return;
+  _realtimeWired = true;
+  try { supabase.subscribeToItems(() => syncData()); } catch (e) { _realtimeWired = false; }
 }
 
 function renderAll() { renderList(); renderRecipesList(); renderPantry(); renderCookSelect(); }
 
 // ===== SHOPPING LIST =====
-async function addItem(name, category, qty, addedBy) {
+// All mutations go through Store: they apply to localStorage instantly (optimistic) and
+// sync in the background. No await on the network → add can never silently fail.
+function addItem(name, category, qty, addedBy) {
   if (!name.trim()) return;
   let parsedName = name.trim(), parsedQty = qty || '';
   if (!parsedQty) {
@@ -101,43 +134,41 @@ async function addItem(name, category, qty, addedBy) {
     else if ((m = parsedName.match(/^(.+?)\s*[xX](\d+(?:\.\d+)?)$/))) { parsedQty = m[2]; parsedName = m[1].trim(); }
     else if ((m = parsedName.match(/^(?:a\s+)?dozen\s+(.+)$/i))) { parsedQty = '12'; parsedName = m[1]; }
   }
-  try {
-    const res = await supabase.addItem({
-      name: parsedName, category: category || guessCategory(parsedName),
-      qty: parsedQty, added_by: addedBy || 'app',
-    });
-    if (res?.[0]) items.push(res[0]);
-    renderList(); toast(`Added ${parsedName} ✅`);
-  } catch(e) { toast('Failed to add ❌'); }
+  Store.addItem({
+    name: parsedName, category: category || guessCategory(parsedName),
+    qty: parsedQty, added_by: addedBy || 'app',
+  });
+  items = Store.getItems();
+  renderList(); updateSyncStatus(); toast(`Added ${parsedName} ✅`);
 }
 
-async function toggleItem(id) {
+function toggleItem(id) {
   const item = items.find(i => i.id === id);
   if (!item) return;
-  item.checked = !item.checked; renderList();
-  try { await supabase.updateItem(id, { checked: item.checked }); }
-  catch(e) { item.checked = !item.checked; renderList(); }
+  Store.updateItem(id, { checked: !item.checked });
+  items = Store.getItems();
+  renderList(); updateSyncStatus();
 }
 
-async function removeItem(id) {
-  const idx = items.findIndex(i => i.id === id);
-  if (idx < 0) return;
-  const rm = items.splice(idx, 1)[0]; renderList();
-  try { await supabase.deleteItem(id); } catch(e) { items.splice(idx, 0, rm); renderList(); }
+function removeItem(id) {
+  Store.removeItem(id);
+  items = Store.getItems();
+  renderList(); updateSyncStatus();
 }
 
-async function updateQty(id, qty) {
-  const item = items.find(i => i.id === id);
-  if (item) { item.qty = qty; try { await supabase.updateItem(id, { qty }); } catch(e) {} }
+function updateQty(id, qty) {
+  Store.updateItem(id, { qty });
+  items = Store.getItems();
+  updateSyncStatus();
 }
 
-async function clearChecked() {
-  const checked = items.filter(i => i.checked);
-  if (!checked.length) return;
-  if (!confirm(`Remove ${checked.length} checked?`)) return;
-  for (const item of checked) { try { await supabase.deleteItem(item.id); } catch(e) {} }
-  items = items.filter(i => !i.checked); renderList();
-  toast(`Cleared ${checked.length} items`);
+function clearChecked() {
+  const checkedCount = items.filter(i => i.checked).length;
+  if (!checkedCount) return;
+  if (!confirm(`Remove ${checkedCount} checked?`)) return;
+  const n = Store.clearChecked();
+  items = Store.getItems();
+  renderList(); updateSyncStatus(); toast(`Cleared ${n} items`);
 }
 
 function renderList() {
@@ -277,20 +308,17 @@ function showRecipeDetail(id) {
 }
 
 // ===== PANTRY =====
-async function addPantryItem(name) {
+function addPantryItem(name) {
   if (!name.trim()) return;
-  try {
-    const res = await supabase.addPantryItem({ name: name.trim(), category: guessCategory(name) });
-    if (res?.[0]) pantryItems.push(res[0]);
-    renderPantry(); renderList(); toast(`${name.trim()} added to pantry 🏪`);
-  } catch(e) { toast('Failed ❌'); }
+  Store.addPantryItem({ name: name.trim(), category: guessCategory(name) });
+  pantryItems = Store.getPantry();
+  renderPantry(); renderList(); updateSyncStatus(); toast(`${name.trim()} added to pantry 🏪`);
 }
 
-async function removePantryItem(id) {
-  const idx = pantryItems.findIndex(i => i.id === id);
-  if (idx < 0) return;
-  pantryItems.splice(idx, 1); renderPantry();
-  try { await supabase.deletePantryItem(id); } catch(e) {}
+function removePantryItem(id) {
+  Store.removePantryItem(id);
+  pantryItems = Store.getPantry();
+  renderPantry(); renderList(); updateSyncStatus();
 }
 
 function renderPantry() {
@@ -409,7 +437,17 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s||''
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  loadData();
+  // Wire the offline-first store: localStorage truth, Supabase as best-effort sync.
+  // Repaint whenever the store changes (e.g. a background hydrate brings server data).
+  Store.init(typeof supabase !== 'undefined' ? supabase : null, () => {
+    items = Store.getItems();
+    recipes = Store.getRecipes();
+    pantryItems = Store.getPantry();
+    renderAll();
+    updateSyncStatus();
+  });
+  loadLocal();          // instant paint from local data
+  syncData();           // quiet background sync (no error toast if offline)
 
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
@@ -438,11 +476,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-add-pantry').addEventListener('click', doAddPantry);
   pInput.addEventListener('keypress', e => { if (e.key==='Enter') doAddPantry(); });
 
-  // Clear & sync
+  // Clear & sync. Sync buttons trigger a quiet background hydrate (no nagging toast).
   document.getElementById('btn-clear-done').addEventListener('click', clearChecked);
-  document.getElementById('btn-sync').addEventListener('click', loadData);
-  document.getElementById('btn-sync-recipes').addEventListener('click', loadData);
-  document.getElementById('btn-sync-pantry').addEventListener('click', loadData);
+  document.getElementById('btn-sync').addEventListener('click', syncData);
+  document.getElementById('btn-sync-recipes').addEventListener('click', syncData);
+  document.getElementById('btn-sync-pantry').addEventListener('click', syncData);
 
   // View toggle
   document.querySelectorAll('.toggle-btn').forEach(btn => {
@@ -477,7 +515,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('cook-back').addEventListener('click', exitCooking);
 
-  // Realtime + polling
-  try { supabase.subscribeToItems(()=>loadData()); } catch(e) {}
-  setInterval(loadData, 30000);
+  // Background sync. The realtime websocket is opened lazily by maybeSubscribeRealtime()
+  // only after a successful online sync — so a dead backend doesn't trigger an endless
+  // 5s reconnect loop. The interval is a gentle best-effort retry that NEVER shows an
+  // error toast when offline (that was the old 30s "Failed to load ❌" spam).
+  setInterval(syncData, 60000);
 });

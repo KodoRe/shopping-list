@@ -155,6 +155,20 @@ button { font-family: inherit; }
   color: var(--text);
 }
 
+/* Sync status dot — communicates online/offline without a nagging toast */
+.sync-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-left: 4px;
+  vertical-align: middle;
+  background: var(--text-muted);
+  transition: background .3s ease;
+}
+.sync-dot.online  { background: var(--success); }
+.sync-dot.offline { background: var(--text-muted); }
+
 .header-actions { display: flex; gap: 6px; }
 
 .btn-icon {
