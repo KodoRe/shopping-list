@@ -78,6 +78,40 @@ function estimateNutrition(ingredients) {
 let items = [], recipes = [], pantryItems = [];
 let viewMode = 'list', recipeFilter = 'all';
 
+// ===== THEME (dark mode) =====
+// Applied as early as possible to avoid a flash of the wrong theme.
+const Theme = {
+  KEY: 'hk_theme',
+  get() {
+    try { return localStorage.getItem(this.KEY); } catch (e) { return null; }
+  },
+  // Resolve effective theme: saved choice → system preference → light.
+  resolve() {
+    const saved = this.get();
+    if (saved === 'dark' || saved === 'light') return saved;
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    } catch (e) {}
+    return 'light';
+  },
+  apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const btn = document.getElementById('btn-theme');
+    if (btn) {
+      btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+  },
+  init() { this.apply(this.resolve()); },
+  toggle() {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem(this.KEY, next); } catch (e) {}
+    this.apply(next);
+  },
+};
+// Apply immediately (before DOMContentLoaded) so first paint is correct.
+Theme.init();
+
 // ===== DATA =====
 // localStorage is the source of truth (via Store). Reads are synchronous and instant;
 // the network is a best-effort sync that happens quietly in the background.
@@ -202,7 +236,7 @@ function renderItem(item) {
   const who = {jarvis:' 🏠',watson:' 🤖',recipe:' 🍳'}[item.added_by]||'';
   const inPantry = pantryItems.some(p => p.name.toLowerCase() === item.name.toLowerCase());
   const safeName = esc(item.name);
-  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}">
+  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}" data-category="${item.category||'other'}">
     <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
     <div class="item-content">
       <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
@@ -522,6 +556,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   loadLocal();          // instant paint from local data
   syncData();           // quiet background sync (no error toast if offline)
+
+  // Theme toggle (Theme.init already ran early; re-apply so the button icon is set)
+  Theme.apply(Theme.resolve());
+  document.getElementById('btn-theme').addEventListener('click', () => Theme.toggle());
 
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
