@@ -78,20 +78,87 @@ function estimateNutrition(ingredients) {
 let items = [], recipes = [], pantryItems = [];
 let viewMode = 'list', recipeFilter = 'all';
 
+// ===== THEME (dark mode) =====
+// Applied as early as possible to avoid a flash of the wrong theme.
+const Theme = {
+  KEY: 'hk_theme',
+  get() {
+    try { return localStorage.getItem(this.KEY); } catch (e) { return null; }
+  },
+  // Resolve effective theme: saved choice → system preference → light.
+  resolve() {
+    const saved = this.get();
+    if (saved === 'dark' || saved === 'light') return saved;
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    } catch (e) {}
+    return 'light';
+  },
+  apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const btn = document.getElementById('btn-theme');
+    if (btn) {
+      btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+  },
+  init() { this.apply(this.resolve()); },
+  toggle() {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem(this.KEY, next); } catch (e) {}
+    this.apply(next);
+  },
+};
+// Apply immediately (before DOMContentLoaded) so first paint is correct.
+Theme.init();
+
 // ===== DATA =====
-async function loadData() {
-  try {
-    const [i, r] = await Promise.all([supabase.getItems(), supabase.getRecipes()]);
-    items = i || []; recipes = r || [];
-    try { pantryItems = await supabase.getPantry() || []; } catch(e) { pantryItems = []; }
-  } catch(e) { console.error('Load error:', e); toast('Failed to load ❌'); }
+// localStorage is the source of truth (via Store). Reads are synchronous and instant;
+// the network is a best-effort sync that happens quietly in the background.
+function loadLocal() {
+  items = Store.getItems();
+  recipes = Store.getRecipes();
+  pantryItems = Store.getPantry();
   renderAll();
+}
+
+// Background sync. Never shows an error toast — offline is a normal state, not a failure.
+// Updates the subtle status dot instead. Store.hydrate() repaints via its onChange hook.
+async function syncData() {
+  await Store.hydrate();          // pulls server state if reachable, flushes queued writes
+  updateSyncStatus();
+}
+
+function updateSyncStatus() {
+  const dot = document.getElementById('sync-dot');
+  if (!dot) return;
+  const pending = Store.pendingCount();
+  if (Store.online) {
+    dot.className = 'sync-dot online';
+    dot.title = pending ? `Synced — ${pending} change(s) pending` : 'Synced';
+    maybeSubscribeRealtime();   // only open the websocket once we know the backend is alive
+  } else {
+    dot.className = 'sync-dot offline';
+    dot.title = 'Offline — changes saved on this device';
+  }
+}
+
+// Open the realtime websocket exactly once, and only after a successful online sync.
+// This avoids a perpetual 5s reconnect loop hammering a dead backend (battery/network drain).
+let _realtimeWired = false;
+function maybeSubscribeRealtime() {
+  if (_realtimeWired) return;
+  if (typeof supabase === 'undefined') return;
+  _realtimeWired = true;
+  try { supabase.subscribeToItems(() => syncData()); } catch (e) { _realtimeWired = false; }
 }
 
 function renderAll() { renderList(); renderRecipesList(); renderPantry(); renderCookSelect(); }
 
 // ===== SHOPPING LIST =====
-async function addItem(name, category, qty, addedBy) {
+// All mutations go through Store: they apply to localStorage instantly (optimistic) and
+// sync in the background. No await on the network → add can never silently fail.
+function addItem(name, category, qty, addedBy) {
   if (!name.trim()) return;
   let parsedName = name.trim(), parsedQty = qty || '';
   if (!parsedQty) {
@@ -101,43 +168,41 @@ async function addItem(name, category, qty, addedBy) {
     else if ((m = parsedName.match(/^(.+?)\s*[xX](\d+(?:\.\d+)?)$/))) { parsedQty = m[2]; parsedName = m[1].trim(); }
     else if ((m = parsedName.match(/^(?:a\s+)?dozen\s+(.+)$/i))) { parsedQty = '12'; parsedName = m[1]; }
   }
-  try {
-    const res = await supabase.addItem({
-      name: parsedName, category: category || guessCategory(parsedName),
-      qty: parsedQty, added_by: addedBy || 'app',
-    });
-    if (res?.[0]) items.push(res[0]);
-    renderList(); toast(`Added ${parsedName} ✅`);
-  } catch(e) { toast('Failed to add ❌'); }
+  Store.addItem({
+    name: parsedName, category: category || guessCategory(parsedName),
+    qty: parsedQty, added_by: addedBy || 'app',
+  });
+  items = Store.getItems();
+  renderList(); updateSyncStatus(); toast(`Added ${parsedName} ✅`);
 }
 
-async function toggleItem(id) {
+function toggleItem(id) {
   const item = items.find(i => i.id === id);
   if (!item) return;
-  item.checked = !item.checked; renderList();
-  try { await supabase.updateItem(id, { checked: item.checked }); }
-  catch(e) { item.checked = !item.checked; renderList(); }
+  Store.updateItem(id, { checked: !item.checked });
+  items = Store.getItems();
+  renderList(); updateSyncStatus();
 }
 
-async function removeItem(id) {
-  const idx = items.findIndex(i => i.id === id);
-  if (idx < 0) return;
-  const rm = items.splice(idx, 1)[0]; renderList();
-  try { await supabase.deleteItem(id); } catch(e) { items.splice(idx, 0, rm); renderList(); }
+function removeItem(id) {
+  Store.removeItem(id);
+  items = Store.getItems();
+  renderList(); updateSyncStatus();
 }
 
-async function updateQty(id, qty) {
-  const item = items.find(i => i.id === id);
-  if (item) { item.qty = qty; try { await supabase.updateItem(id, { qty }); } catch(e) {} }
+function updateQty(id, qty) {
+  Store.updateItem(id, { qty });
+  items = Store.getItems();
+  updateSyncStatus();
 }
 
-async function clearChecked() {
-  const checked = items.filter(i => i.checked);
-  if (!checked.length) return;
-  if (!confirm(`Remove ${checked.length} checked?`)) return;
-  for (const item of checked) { try { await supabase.deleteItem(item.id); } catch(e) {} }
-  items = items.filter(i => !i.checked); renderList();
-  toast(`Cleared ${checked.length} items`);
+function clearChecked() {
+  const checkedCount = items.filter(i => i.checked).length;
+  if (!checkedCount) return;
+  if (!confirm(`Remove ${checkedCount} checked?`)) return;
+  const n = Store.clearChecked();
+  items = Store.getItems();
+  renderList(); updateSyncStatus(); toast(`Cleared ${n} items`);
 }
 
 function renderList() {
@@ -171,7 +236,7 @@ function renderItem(item) {
   const who = {jarvis:' 🏠',watson:' 🤖',recipe:' 🍳'}[item.added_by]||'';
   const inPantry = pantryItems.some(p => p.name.toLowerCase() === item.name.toLowerCase());
   const safeName = esc(item.name);
-  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}">
+  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}" data-category="${item.category||'other'}">
     <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
     <div class="item-content">
       <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
@@ -276,21 +341,92 @@ function showRecipeDetail(id) {
   card.querySelector('.cook-start-btn')?.addEventListener('click', () => startCooking(id));
 }
 
-// ===== PANTRY =====
-async function addPantryItem(name) {
-  if (!name.trim()) return;
-  try {
-    const res = await supabase.addPantryItem({ name: name.trim(), category: guessCategory(name) });
-    if (res?.[0]) pantryItems.push(res[0]);
-    renderPantry(); renderList(); toast(`${name.trim()} added to pantry 🏪`);
-  } catch(e) { toast('Failed ❌'); }
+// ===== RECIPE CREATION =====
+function showRecipeForm() {
+  document.getElementById('recipes-list-view').style.display = 'none';
+  document.getElementById('recipe-detail-view').style.display = 'none';
+  document.getElementById('recipe-form-view').style.display = 'block';
+  // reset fields
+  ['rf-name','rf-servings','rf-time'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('rf-meal').value = '';
+  document.getElementById('rf-ingredients').innerHTML = '';
+  document.getElementById('rf-steps').innerHTML = '';
+  addIngredientRow(); addIngredientRow();  // start with a couple of blank rows
+  addStepRow();
 }
 
-async function removePantryItem(id) {
-  const idx = pantryItems.findIndex(i => i.id === id);
-  if (idx < 0) return;
-  pantryItems.splice(idx, 1); renderPantry();
-  try { await supabase.deletePantryItem(id); } catch(e) {}
+function hideRecipeForm() {
+  document.getElementById('recipe-form-view').style.display = 'none';
+  document.getElementById('recipes-list-view').style.display = '';
+}
+
+function addIngredientRow(name, qty) {
+  const wrap = document.getElementById('rf-ingredients');
+  const row = document.createElement('div');
+  row.className = 'form-ing-row';
+  row.innerHTML = `
+    <input type="text" class="field-input rf-ing-name" placeholder="Ingredient" value="${esc(name||'')}" autocomplete="off">
+    <input type="text" class="field-input rf-ing-qty" placeholder="qty" value="${esc(qty||'')}" autocomplete="off">
+    <button type="button" class="form-row-del" aria-label="Remove ingredient">✕</button>`;
+  row.querySelector('.form-row-del').addEventListener('click', () => row.remove());
+  wrap.appendChild(row);
+}
+
+function addStepRow(text) {
+  const wrap = document.getElementById('rf-steps');
+  const n = wrap.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'form-step-row';
+  row.innerHTML = `
+    <span class="form-step-num">${n}</span>
+    <textarea class="field-input rf-step-text" rows="2" placeholder="Describe this step…">${esc(text||'')}</textarea>
+    <button type="button" class="form-row-del" aria-label="Remove step">✕</button>`;
+  row.querySelector('.form-row-del').addEventListener('click', () => { row.remove(); renumberSteps(); });
+  wrap.appendChild(row);
+}
+
+function renumberSteps() {
+  document.querySelectorAll('#rf-steps .form-step-num').forEach((el, i) => { el.textContent = i + 1; });
+}
+
+function saveRecipeForm() {
+  const name = document.getElementById('rf-name').value.trim();
+  if (!name) { toast('Give the recipe a name first'); return; }
+  const meal = document.getElementById('rf-meal').value;
+  const servings = document.getElementById('rf-servings').value.trim();
+  const time = document.getElementById('rf-time').value.trim();
+  const ingredients = [...document.querySelectorAll('#rf-ingredients .form-ing-row')]
+    .map(r => ({
+      name: r.querySelector('.rf-ing-name').value.trim(),
+      qty: r.querySelector('.rf-ing-qty').value.trim(),
+    }))
+    .filter(i => i.name);
+  const steps = [...document.querySelectorAll('#rf-steps .rf-step-text')]
+    .map(t => t.value.trim()).filter(Boolean);
+
+  Store.addRecipe({
+    name, tags: meal ? [meal] : [],
+    servings: servings || null, time: time || null,
+    ingredients, steps, added_by: 'app',
+  });
+  recipes = Store.getRecipes();
+  hideRecipeForm();
+  renderRecipesList(); renderCookSelect(); updateSyncStatus();
+  toast(`Saved “${name}” 🍳`);
+}
+
+// ===== PANTRY =====
+function addPantryItem(name) {
+  if (!name.trim()) return;
+  Store.addPantryItem({ name: name.trim(), category: guessCategory(name) });
+  pantryItems = Store.getPantry();
+  renderPantry(); renderList(); updateSyncStatus(); toast(`${name.trim()} added to pantry 🏪`);
+}
+
+function removePantryItem(id) {
+  Store.removePantryItem(id);
+  pantryItems = Store.getPantry();
+  renderPantry(); renderList(); updateSyncStatus();
 }
 
 function renderPantry() {
@@ -409,7 +545,21 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s||''
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  loadData();
+  // Wire the offline-first store: localStorage truth, Supabase as best-effort sync.
+  // Repaint whenever the store changes (e.g. a background hydrate brings server data).
+  Store.init(typeof supabase !== 'undefined' ? supabase : null, () => {
+    items = Store.getItems();
+    recipes = Store.getRecipes();
+    pantryItems = Store.getPantry();
+    renderAll();
+    updateSyncStatus();
+  });
+  loadLocal();          // instant paint from local data
+  syncData();           // quiet background sync (no error toast if offline)
+
+  // Theme toggle (Theme.init already ran early; re-apply so the button icon is set)
+  Theme.apply(Theme.resolve());
+  document.getElementById('btn-theme').addEventListener('click', () => Theme.toggle());
 
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
@@ -438,11 +588,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-add-pantry').addEventListener('click', doAddPantry);
   pInput.addEventListener('keypress', e => { if (e.key==='Enter') doAddPantry(); });
 
-  // Clear & sync
+  // Clear & sync. Sync buttons trigger a quiet background hydrate (no nagging toast).
   document.getElementById('btn-clear-done').addEventListener('click', clearChecked);
-  document.getElementById('btn-sync').addEventListener('click', loadData);
-  document.getElementById('btn-sync-recipes').addEventListener('click', loadData);
-  document.getElementById('btn-sync-pantry').addEventListener('click', loadData);
+  document.getElementById('btn-sync').addEventListener('click', syncData);
+  document.getElementById('btn-sync-recipes').addEventListener('click', syncData);
+  document.getElementById('btn-sync-pantry').addEventListener('click', syncData);
 
   // View toggle
   document.querySelectorAll('.toggle-btn').forEach(btn => {
@@ -477,7 +627,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('cook-back').addEventListener('click', exitCooking);
 
-  // Realtime + polling
-  try { supabase.subscribeToItems(()=>loadData()); } catch(e) {}
-  setInterval(loadData, 30000);
+  // Recipe creation form
+  document.getElementById('btn-new-recipe').addEventListener('click', showRecipeForm);
+  document.getElementById('recipe-form-back').addEventListener('click', hideRecipeForm);
+  document.getElementById('rf-add-ingredient').addEventListener('click', () => addIngredientRow());
+  document.getElementById('rf-add-step').addEventListener('click', () => addStepRow());
+  document.getElementById('rf-save').addEventListener('click', saveRecipeForm);
+
+  // Background sync. The realtime websocket is opened lazily by maybeSubscribeRealtime()
+  // only after a successful online sync — so a dead backend doesn't trigger an endless
+  // 5s reconnect loop. The interval is a gentle best-effort retry that NEVER shows an
+  // error toast when offline (that was the old 30s "Failed to load ❌" spam).
+  setInterval(syncData, 60000);
 });

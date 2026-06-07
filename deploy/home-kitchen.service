@@ -1,0 +1,29 @@
+[Unit]
+Description=Home Kitchen (shopping list app, static server, 127.0.0.1:9210)
+After=network.target
+
+[Service]
+Type=simple
+User=jacopo
+Group=jacopo
+Environment=HOME=/home/jacopo
+WorkingDirectory=/data/projects/shopping-list
+ExecStart=/usr/bin/env python3 -m http.server 9210 --bind 127.0.0.1
+Restart=on-failure
+RestartSec=3
+
+# Hardening — read-only static server, no escalation needed.
+# NOTE: project lives on the /data drive, so ReadOnlyPaths targets /data
+# (not /home like the other apps). ProtectHome stays full-on since we don't read $HOME.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/data/projects/shopping-list
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+
+[Install]
+WantedBy=multi-user.target

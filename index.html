@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#f7f7fb">
+  <meta name="theme-color" content="#e8eaed" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1e23" media="(prefers-color-scheme: dark)">
   <title>Home Kitchen — Shopping, Pantry &amp; Recipes</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,8 +18,9 @@
     <!-- ===== LIST TAB ===== -->
     <main class="tab-content active" id="tab-list" role="tabpanel" aria-labelledby="nav-list">
       <header class="header">
-        <h1>Shopping List</h1>
+        <h1>Shopping List <span class="sync-dot offline" id="sync-dot" title="Offline — changes saved on this device" aria-hidden="true"></span></h1>
         <div class="header-actions">
+          <button class="btn-icon" id="btn-theme" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
           <button class="btn-icon" id="btn-sync" title="Refresh from server" aria-label="Refresh shopping list">🔄</button>
           <button class="btn-icon" id="btn-clear-done" title="Clear checked items" aria-label="Clear checked items">🧹</button>
         </div>
@@ -63,6 +68,7 @@
       <header class="header">
         <h1>Recipes</h1>
         <div class="header-actions">
+          <button class="btn-icon" id="btn-new-recipe" title="Create a recipe" aria-label="Create a new recipe">➕</button>
           <button class="btn-icon" id="btn-sync-recipes" title="Refresh recipes" aria-label="Refresh recipes">🔄</button>
         </div>
       </header>
@@ -88,6 +94,48 @@
       <div id="recipe-detail-view" style="display:none">
         <button class="back-btn" id="recipe-back" aria-label="Back to recipes list">← Back to recipes</button>
         <div class="recipe-card" id="recipe-card"></div>
+      </div>
+
+      <div id="recipe-form-view" style="display:none">
+        <button class="back-btn" id="recipe-form-back" aria-label="Cancel and go back">← Cancel</button>
+        <div class="recipe-form" id="recipe-form">
+          <h2 class="form-title">New Recipe</h2>
+
+          <label class="field-label" for="rf-name">Name</label>
+          <input class="field-input" id="rf-name" type="text" placeholder="e.g. Lemon Herb Chicken" autocomplete="off">
+
+          <div class="field-row">
+            <div class="field-col">
+              <label class="field-label" for="rf-meal">Meal</label>
+              <select class="field-input" id="rf-meal">
+                <option value="">— none —</option>
+                <option value="breakfast">🌅 Breakfast</option>
+                <option value="lunch">☀️ Lunch</option>
+                <option value="dinner">🌙 Dinner</option>
+                <option value="snack">🍿 Snack</option>
+                <option value="dessert">🍰 Dessert</option>
+              </select>
+            </div>
+            <div class="field-col">
+              <label class="field-label" for="rf-servings">Servings</label>
+              <input class="field-input" id="rf-servings" type="text" inputmode="numeric" placeholder="4">
+            </div>
+            <div class="field-col">
+              <label class="field-label" for="rf-time">Time</label>
+              <input class="field-input" id="rf-time" type="text" placeholder="25 min">
+            </div>
+          </div>
+
+          <label class="field-label">Ingredients</label>
+          <div id="rf-ingredients"></div>
+          <button type="button" class="form-add-row" id="rf-add-ingredient">+ Add ingredient</button>
+
+          <label class="field-label">Steps</label>
+          <div id="rf-steps"></div>
+          <button type="button" class="form-add-row" id="rf-add-step">+ Add step</button>
+
+          <button type="button" class="form-save-btn" id="rf-save">Save Recipe</button>
+        </div>
       </div>
     </main>
 
@@ -161,8 +209,9 @@
     </nav>
   </div>
 
-  <script src="config.js?v=5"></script>
-  <script src="supabase-client.js?v=5"></script>
-  <script src="app.js?v=5"></script>
+  <script src="config.js?v=7"></script>
+  <script src="supabase-client.js?v=7"></script>
+  <script src="js/store.js?v=7"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

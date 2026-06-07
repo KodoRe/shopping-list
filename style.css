@@ -1,50 +1,99 @@
 /* ============================================================
-   Home Kitchen — Light, clean, accessible UI
+   Home Kitchen — "Market" theme: bold, fresh, modern
+   Terracotta-orange brand · neutral-grey canvas · Space Grotesk
+   Token-driven: remapping :root re-skins every component.
    ============================================================ */
 
 :root {
-  /* Surfaces */
-  --bg:            #f7f7fb;          /* page background  */
-  --bg-card:       #ffffff;          /* cards / panels   */
-  --bg-surface:    #f1f2f6;          /* inputs, chips    */
-  --bg-hover:      #eceef4;
+  /* Surfaces — neutral grey canvas; white cards lift off it */
+  --bg:            #e8eaed;          /* page background (soft neutral grey) */
+  --bg-card:       #ffffff;          /* cards / panels                     */
+  --bg-surface:    #eef0f3;          /* inputs, chips                      */
+  --bg-hover:      #e2e5ea;
 
-  /* Text */
-  --text:          #1a1d29;          /* primary text     */
-  --text-soft:     #4a4f5e;          /* secondary text   */
-  --text-dim:      #6b7280;          /* tertiary text    */
-  --text-muted:    #9aa0ad;          /* muted/disabled   */
+  /* Text — neutral, no colour cast */
+  --text:          #191c21;          /* primary text     */
+  --text-soft:     #3f444c;          /* secondary text   */
+  --text-dim:      #5f656d;          /* tertiary text    */
+  --text-muted:    #99a0a8;          /* muted/disabled   */
 
-  /* Brand */
-  --accent:        #2f7d5b;          /* primary green (AA on white) */
-  --accent-hover:  #266648;
-  --accent-soft:   #e6f3ec;          /* tinted background */
-  --accent-recipe: #b9601a;          /* warm secondary (AA on white) */
+  /* Brand — terracotta orange is THE highlight */
+  --accent:        #c4622d;          /* primary orange (AA on white) */
+  --accent-hover:  #a8511f;
+  --accent-soft:   #f6e7da;          /* tinted orange background */
+  --accent-recipe: #b9601a;          /* recipes zone — warm, harmonises */
   --accent-recipe-soft: #fbeede;
-  --accent-cook:   #1f6feb;          /* cooking blue */
+  --accent-cook:   #1f6feb;          /* cook zone — complementary blue */
   --accent-cook-soft: #e6efff;
+
+  /* Category colour-coding (Market signature row-bars) */
+  --cat-produce:   #0e9f6e;
+  --cat-dairy:     #d98a12;
+  --cat-meat:      #e0457b;
+  --cat-bakery:    #c4622d;
+  --cat-default:   #99a0a8;
 
   /* Status */
   --danger:        #c0392b;
   --danger-soft:   #fdecea;
-  --success:       #2f7d5b;
+  --success:       #0e9f6e;
 
   /* Lines & shadow */
-  --border:        #e3e5ec;
-  --border-strong: #cfd2db;
-  --shadow-sm:     0 1px 2px rgba(16, 24, 40, 0.05);
-  --shadow-md:     0 4px 12px rgba(16, 24, 40, 0.06);
-  --shadow-lg:     0 10px 24px rgba(16, 24, 40, 0.08);
+  --border:        #dcdfe4;
+  --border-strong: #c4c9d1;
+  --shadow-sm:     0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md:     0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-lg:     0 10px 24px rgba(16, 24, 40, 0.10);
 
   /* Radii */
   --r-sm:  6px;
-  --r-md:  10px;
-  --r-lg:  14px;
-  --r-xl:  18px;
+  --r-md:  12px;
+  --r-lg:  16px;
+  --r-xl:  20px;
 
   /* Sizing */
   --tap:        44px;     /* min accessible tap target */
   --bottom-nav: 72px;     /* height of bottom tab bar  */
+}
+
+/* ============================================================
+   Dark theme — neutral charcoal, coral-orange glows
+   Toggled via <html data-theme="dark">; persisted in localStorage.
+   ============================================================ */
+html[data-theme="dark"] {
+  --bg:            #1c1e23;
+  --bg-card:       #262931;
+  --bg-surface:    #2e323b;
+  --bg-hover:      #353a44;
+
+  --text:          #ecedf2;
+  --text-soft:     #c2c6cf;
+  --text-dim:      #a6abb4;
+  --text-muted:    #767c86;
+
+  --accent:        #e07b41;          /* coral-orange — glows on charcoal */
+  --accent-hover:  #ec8a52;
+  --accent-soft:   #3a2a1c;
+  --accent-recipe: #e08a4a;
+  --accent-recipe-soft: #362819;
+  --accent-cook:   #4a90e2;
+  --accent-cook-soft: #1b2735;
+
+  --cat-produce:   #16c98a;
+  --cat-dairy:     #ffba4a;
+  --cat-meat:      #ff6aa0;
+  --cat-bakery:    #e07b41;
+  --cat-default:   #767c86;
+
+  --danger:        #f0685a;
+  --danger-soft:   #3a1f1c;
+  --success:       #16c98a;
+
+  --border:        #333740;
+  --border-strong: #434956;
+  --shadow-sm:     0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-md:     0 4px 12px rgba(0, 0, 0, 0.40);
+  --shadow-lg:     0 10px 24px rgba(0, 0, 0, 0.50);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -52,8 +101,8 @@
 html { -webkit-text-size-adjust: 100%; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-               'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -154,6 +203,20 @@ button { font-family: inherit; }
   letter-spacing: -.2px;
   color: var(--text);
 }
+
+/* Sync status dot — communicates online/offline without a nagging toast */
+.sync-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-left: 4px;
+  vertical-align: middle;
+  background: var(--text-muted);
+  transition: background .3s ease;
+}
+.sync-dot.online  { background: var(--success); }
+.sync-dot.offline { background: var(--text-muted); }
 
 .header-actions { display: flex; gap: 6px; }
 
@@ -309,7 +372,26 @@ button { font-family: inherit; }
   user-select: none;
   animation: fadeIn .18s ease;
   transition: opacity .25s ease, background .15s ease;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Market signature: a colour-coded category bar down the left edge of each item */
+.item::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 5px;
+  background: var(--cat-default);
+  border-radius: var(--r-md) 0 0 var(--r-md);
+}
+.item[data-category="produce"]::before  { background: var(--cat-produce); }
+.item[data-category="dairy"]::before     { background: var(--cat-dairy); }
+.item[data-category="meat"]::before      { background: var(--cat-meat); }
+.item[data-category="bakery"]::before    { background: var(--cat-bakery); }
+.item[data-category="drinks"]::before    { background: var(--accent-cook); }
+.item[data-category="frozen"]::before    { background: var(--accent-cook); }
+.item.checked::before { opacity: .4; }
 
 .item.checked { opacity: .55; background: var(--bg-surface); }
 
@@ -464,6 +546,21 @@ button { font-family: inherit; }
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+  position: relative;
+  overflow: hidden;
+  padding-top: 20px;
+}
+
+/* Asset-free "food imagery": a warm gradient band across the top of each recipe card.
+   Pure CSS — keeps the app fully offline (no image files / no network fetch). */
+.recipe-preview::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg,
+    var(--cat-produce) 0%, var(--cat-dairy) 35%,
+    var(--accent) 65%, var(--cat-meat) 100%);
 }
 .recipe-preview:hover {
   border-color: var(--accent-recipe);
@@ -648,6 +745,70 @@ button { font-family: inherit; }
 /* ============================================================
    Recipe tag filter
    ============================================================ */
+
+/* ============================================================
+   Recipe creation form
+   ============================================================ */
+.recipe-form { padding: 4px 16px 24px; }
+.form-title {
+  font-size: 22px; font-weight: 700; letter-spacing: -.3px;
+  color: var(--text); margin: 6px 0 16px;
+}
+.field-label {
+  display: block; font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--text-dim); margin: 16px 0 6px;
+}
+.field-input {
+  width: 100%; background: var(--bg-surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-md); color: var(--text); font-size: 16px;
+  padding: 11px 14px; outline: none; font-family: inherit;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.field-input:focus {
+  border-color: var(--accent); background: var(--bg-card);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+textarea.field-input { resize: vertical; line-height: 1.45; }
+.field-row { display: flex; gap: 10px; }
+.field-col { flex: 1; min-width: 0; }
+.field-col .field-label { margin-top: 0; }
+
+.form-ing-row, .form-step-row {
+  display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+}
+.form-ing-row .rf-ing-name { flex: 1; }
+.form-ing-row .rf-ing-qty { width: 72px; flex-shrink: 0; }
+.form-step-row .form-step-num {
+  flex-shrink: 0; width: 26px; height: 26px; margin-top: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent);
+  border-radius: 50%; font-size: 13px; font-weight: 700;
+}
+.form-step-row .rf-step-text { flex: 1; }
+.form-row-del {
+  flex-shrink: 0; width: 40px; height: 44px; margin: 0;
+  background: transparent; border: 1px solid transparent; color: var(--text-muted);
+  font-size: 15px; cursor: pointer; border-radius: var(--r-md);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .15s ease, color .15s ease;
+}
+.form-row-del:hover { color: var(--danger); background: var(--danger-soft); }
+.form-add-row {
+  background: var(--bg-surface); border: 1.5px dashed var(--border-strong);
+  color: var(--text-soft); border-radius: var(--r-md); padding: 10px 14px;
+  font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px;
+  min-height: var(--tap); transition: background .15s ease, border-color .15s ease;
+}
+.form-add-row:hover { background: var(--bg-hover); border-color: var(--accent); }
+.form-save-btn {
+  background: var(--accent); color: #fff; border: none; border-radius: var(--r-md);
+  padding: 14px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;
+  margin-top: 24px; min-height: var(--tap); box-shadow: var(--shadow-sm);
+  transition: background .15s ease, transform .08s ease;
+}
+.form-save-btn:hover { background: var(--accent-hover); }
+.form-save-btn:active { transform: scale(0.98); }
+
 .tag-filter {
   display: flex;
   gap: 8px;
