@@ -77,6 +77,10 @@ function estimateNutrition(ingredients) {
 // State
 let items = [], recipes = [], pantryItems = [];
 let viewMode = 'list', recipeFilter = 'all';
+// The sync backend, resolved at init. LocalAPI (server.py) is preferred; the old
+// supabase global is a legacy fallback if local-api.js isn't present. store.js is
+// backend-agnostic — it only needs the documented method surface.
+let Backend = null;
 
 // ===== THEME (dark mode) =====
 // Applied as early as possible to avoid a flash of the wrong theme.
@@ -143,14 +147,16 @@ function updateSyncStatus() {
   }
 }
 
-// Open the realtime websocket exactly once, and only after a successful online sync.
-// This avoids a perpetual 5s reconnect loop hammering a dead backend (battery/network drain).
+// Open the realtime subscription exactly once, and only after a successful online
+// sync. LocalAPI's subscribeToItems is a deliberate no-op (the app polls instead),
+// so this won't open a socket against the local server. With the old supabase
+// backend it avoided a perpetual 5s reconnect loop against a dead host.
 let _realtimeWired = false;
 function maybeSubscribeRealtime() {
   if (_realtimeWired) return;
-  if (typeof supabase === 'undefined') return;
+  if (!Backend || typeof Backend.subscribeToItems !== 'function') return;
   _realtimeWired = true;
-  try { supabase.subscribeToItems(() => syncData()); } catch (e) { _realtimeWired = false; }
+  try { Backend.subscribeToItems(() => syncData()); } catch (e) { _realtimeWired = false; }
 }
 
 function renderAll() { renderList(); renderRecipesList(); renderPantry(); renderCookSelect(); }
@@ -545,9 +551,13 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s||''
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Wire the offline-first store: localStorage truth, Supabase as best-effort sync.
+  // Wire the offline-first store: localStorage truth, the VM API as best-effort sync.
+  // Prefer LocalAPI (server.py); fall back to the legacy supabase global if present.
   // Repaint whenever the store changes (e.g. a background hydrate brings server data).
-  Store.init(typeof supabase !== 'undefined' ? supabase : null, () => {
+  Backend = (typeof LocalAPI !== 'undefined') ? LocalAPI
+          : (typeof supabase !== 'undefined') ? supabase
+          : null;
+  Store.init(Backend, () => {
     items = Store.getItems();
     recipes = Store.getRecipes();
     pantryItems = Store.getPantry();
@@ -634,9 +644,18 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('rf-add-step').addEventListener('click', () => addStepRow());
   document.getElementById('rf-save').addEventListener('click', saveRecipeForm);
 
-  // Background sync. The realtime websocket is opened lazily by maybeSubscribeRealtime()
-  // only after a successful online sync — so a dead backend doesn't trigger an endless
-  // 5s reconnect loop. The interval is a gentle best-effort retry that NEVER shows an
-  // error toast when offline (that was the old 30s "Failed to load ❌" spam).
-  setInterval(syncData, 60000);
+  // Background sync. The realtime subscription (if any) is opened lazily by
+  // maybeSubscribeRealtime() only after a successful online sync. The interval is a
+  // gentle best-effort retry that NEVER shows an error toast when offline (that was
+  // the old 30s "Failed to load ❌" spam). 20s cadence so an agent-injected recipe
+  // shows up within a few seconds of being written on the VM.
+  setInterval(syncData, 20000);
+
+  // Re-sync the moment the app regains focus / becomes visible. This is what makes
+  // "Neo adds a recipe from YouTube → it's there when I open my phone" feel instant,
+  // without a chatty short poll. Guarded so a hidden tab doesn't sync needlessly.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') syncData();
+  });
+  window.addEventListener('focus', syncData);
 });

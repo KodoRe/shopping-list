@@ -1,0 +1,32 @@
+[Unit]
+Description=Home Kitchen — nightly render data/*.json → markdown, commit + push
+# Oneshot: render_markdown.py --commit renders the readable .md mirror and pushes
+# to the repo ONLY if content changed (timestamp-only diffs are ignored). Paired
+# with home-kitchen-render.timer.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=jacopo
+Group=jacopo
+WorkingDirectory=/data/projects/shopping-list
+# gh credential helper + real HOME so the push authenticates as KodoRe. ($HOME on
+# this box is otherwise rewritten per-profile, which hides the gh config.)
+Environment=HOME=/home/jacopo
+Environment=GH_CONFIG_DIR=/home/jacopo/.config/gh
+ExecStart=/usr/bin/env python3 /data/projects/shopping-list/render_markdown.py --commit
+
+# Hardening — needs to WRITE the repo (md files + git objects) and reach the network
+# to push, so this is deliberately less locked-down than the static server unit.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/data/projects/shopping-list
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+
+[Install]
+WantedBy=multi-user.target

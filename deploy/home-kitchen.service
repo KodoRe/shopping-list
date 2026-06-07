@@ -1,5 +1,5 @@
 [Unit]
-Description=Home Kitchen (shopping list app, static server, 127.0.0.1:9210)
+Description=Home Kitchen (shopping list app + local API, 127.0.0.1:9210)
 After=network.target
 
 [Service]
@@ -8,18 +8,22 @@ User=jacopo
 Group=jacopo
 Environment=HOME=/home/jacopo
 WorkingDirectory=/data/projects/shopping-list
-ExecStart=/usr/bin/env python3 -m http.server 9210 --bind 127.0.0.1
+# server.py serves the static app AND the JSON API (items/recipes/pantry), persisting
+# to data/*.json. Replaces the old read-only `python3 -m http.server` static server.
+ExecStart=/usr/bin/env python3 /data/projects/shopping-list/server.py
+Environment=HK_HOST=127.0.0.1
+Environment=HK_PORT=9210
 Restart=on-failure
 RestartSec=3
 
-# Hardening — read-only static server, no escalation needed.
-# NOTE: project lives on the /data drive, so ReadOnlyPaths targets /data
-# (not /home like the other apps). ProtectHome stays full-on since we don't read $HOME.
+# Hardening. The server now WRITES data/*.json, so the project dir must be writable
+# (the old unit had it ReadOnlyPaths). Everything else stays locked down: no new privs,
+# private tmp, strict system protection, home protected (we don't read $HOME for data).
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadOnlyPaths=/data/projects/shopping-list
+ReadWritePaths=/data/projects/shopping-list
 ProtectKernelTunables=true
 ProtectControlGroups=true
 RestrictAddressFamilies=AF_INET AF_INET6
