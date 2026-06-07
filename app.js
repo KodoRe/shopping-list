@@ -307,6 +307,80 @@ function showRecipeDetail(id) {
   card.querySelector('.cook-start-btn')?.addEventListener('click', () => startCooking(id));
 }
 
+// ===== RECIPE CREATION =====
+function showRecipeForm() {
+  document.getElementById('recipes-list-view').style.display = 'none';
+  document.getElementById('recipe-detail-view').style.display = 'none';
+  document.getElementById('recipe-form-view').style.display = 'block';
+  // reset fields
+  ['rf-name','rf-servings','rf-time'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('rf-meal').value = '';
+  document.getElementById('rf-ingredients').innerHTML = '';
+  document.getElementById('rf-steps').innerHTML = '';
+  addIngredientRow(); addIngredientRow();  // start with a couple of blank rows
+  addStepRow();
+}
+
+function hideRecipeForm() {
+  document.getElementById('recipe-form-view').style.display = 'none';
+  document.getElementById('recipes-list-view').style.display = '';
+}
+
+function addIngredientRow(name, qty) {
+  const wrap = document.getElementById('rf-ingredients');
+  const row = document.createElement('div');
+  row.className = 'form-ing-row';
+  row.innerHTML = `
+    <input type="text" class="field-input rf-ing-name" placeholder="Ingredient" value="${esc(name||'')}" autocomplete="off">
+    <input type="text" class="field-input rf-ing-qty" placeholder="qty" value="${esc(qty||'')}" autocomplete="off">
+    <button type="button" class="form-row-del" aria-label="Remove ingredient">✕</button>`;
+  row.querySelector('.form-row-del').addEventListener('click', () => row.remove());
+  wrap.appendChild(row);
+}
+
+function addStepRow(text) {
+  const wrap = document.getElementById('rf-steps');
+  const n = wrap.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'form-step-row';
+  row.innerHTML = `
+    <span class="form-step-num">${n}</span>
+    <textarea class="field-input rf-step-text" rows="2" placeholder="Describe this step…">${esc(text||'')}</textarea>
+    <button type="button" class="form-row-del" aria-label="Remove step">✕</button>`;
+  row.querySelector('.form-row-del').addEventListener('click', () => { row.remove(); renumberSteps(); });
+  wrap.appendChild(row);
+}
+
+function renumberSteps() {
+  document.querySelectorAll('#rf-steps .form-step-num').forEach((el, i) => { el.textContent = i + 1; });
+}
+
+function saveRecipeForm() {
+  const name = document.getElementById('rf-name').value.trim();
+  if (!name) { toast('Give the recipe a name first'); return; }
+  const meal = document.getElementById('rf-meal').value;
+  const servings = document.getElementById('rf-servings').value.trim();
+  const time = document.getElementById('rf-time').value.trim();
+  const ingredients = [...document.querySelectorAll('#rf-ingredients .form-ing-row')]
+    .map(r => ({
+      name: r.querySelector('.rf-ing-name').value.trim(),
+      qty: r.querySelector('.rf-ing-qty').value.trim(),
+    }))
+    .filter(i => i.name);
+  const steps = [...document.querySelectorAll('#rf-steps .rf-step-text')]
+    .map(t => t.value.trim()).filter(Boolean);
+
+  Store.addRecipe({
+    name, tags: meal ? [meal] : [],
+    servings: servings || null, time: time || null,
+    ingredients, steps, added_by: 'app',
+  });
+  recipes = Store.getRecipes();
+  hideRecipeForm();
+  renderRecipesList(); renderCookSelect(); updateSyncStatus();
+  toast(`Saved “${name}” 🍳`);
+}
+
 // ===== PANTRY =====
 function addPantryItem(name) {
   if (!name.trim()) return;
@@ -514,6 +588,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('recipe-detail-view').style.display = 'none';
   });
   document.getElementById('cook-back').addEventListener('click', exitCooking);
+
+  // Recipe creation form
+  document.getElementById('btn-new-recipe').addEventListener('click', showRecipeForm);
+  document.getElementById('recipe-form-back').addEventListener('click', hideRecipeForm);
+  document.getElementById('rf-add-ingredient').addEventListener('click', () => addIngredientRow());
+  document.getElementById('rf-add-step').addEventListener('click', () => addStepRow());
+  document.getElementById('rf-save').addEventListener('click', saveRecipeForm);
 
   // Background sync. The realtime websocket is opened lazily by maybeSubscribeRealtime()
   // only after a successful online sync — so a dead backend doesn't trigger an endless

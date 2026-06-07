@@ -662,6 +662,70 @@ button { font-family: inherit; }
 /* ============================================================
    Recipe tag filter
    ============================================================ */
+
+/* ============================================================
+   Recipe creation form
+   ============================================================ */
+.recipe-form { padding: 4px 16px 24px; }
+.form-title {
+  font-size: 22px; font-weight: 700; letter-spacing: -.3px;
+  color: var(--text); margin: 6px 0 16px;
+}
+.field-label {
+  display: block; font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--text-dim); margin: 16px 0 6px;
+}
+.field-input {
+  width: 100%; background: var(--bg-surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-md); color: var(--text); font-size: 16px;
+  padding: 11px 14px; outline: none; font-family: inherit;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.field-input:focus {
+  border-color: var(--accent); background: var(--bg-card);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+textarea.field-input { resize: vertical; line-height: 1.45; }
+.field-row { display: flex; gap: 10px; }
+.field-col { flex: 1; min-width: 0; }
+.field-col .field-label { margin-top: 0; }
+
+.form-ing-row, .form-step-row {
+  display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+}
+.form-ing-row .rf-ing-name { flex: 1; }
+.form-ing-row .rf-ing-qty { width: 72px; flex-shrink: 0; }
+.form-step-row .form-step-num {
+  flex-shrink: 0; width: 26px; height: 26px; margin-top: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent);
+  border-radius: 50%; font-size: 13px; font-weight: 700;
+}
+.form-step-row .rf-step-text { flex: 1; }
+.form-row-del {
+  flex-shrink: 0; width: 40px; height: 44px; margin: 0;
+  background: transparent; border: 1px solid transparent; color: var(--text-muted);
+  font-size: 15px; cursor: pointer; border-radius: var(--r-md);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .15s ease, color .15s ease;
+}
+.form-row-del:hover { color: var(--danger); background: var(--danger-soft); }
+.form-add-row {
+  background: var(--bg-surface); border: 1.5px dashed var(--border-strong);
+  color: var(--text-soft); border-radius: var(--r-md); padding: 10px 14px;
+  font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px;
+  min-height: var(--tap); transition: background .15s ease, border-color .15s ease;
+}
+.form-add-row:hover { background: var(--bg-hover); border-color: var(--accent); }
+.form-save-btn {
+  background: var(--accent); color: #fff; border: none; border-radius: var(--r-md);
+  padding: 14px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;
+  margin-top: 24px; min-height: var(--tap); box-shadow: var(--shadow-sm);
+  transition: background .15s ease, transform .08s ease;
+}
+.form-save-btn:hover { background: var(--accent-hover); }
+.form-save-btn:active { transform: scale(0.98); }
+
 .tag-filter {
   display: flex;
   gap: 8px;

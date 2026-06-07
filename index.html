@@ -63,6 +63,7 @@
       <header class="header">
         <h1>Recipes</h1>
         <div class="header-actions">
+          <button class="btn-icon" id="btn-new-recipe" title="Create a recipe" aria-label="Create a new recipe">➕</button>
           <button class="btn-icon" id="btn-sync-recipes" title="Refresh recipes" aria-label="Refresh recipes">🔄</button>
         </div>
       </header>
@@ -88,6 +89,48 @@
       <div id="recipe-detail-view" style="display:none">
         <button class="back-btn" id="recipe-back" aria-label="Back to recipes list">← Back to recipes</button>
         <div class="recipe-card" id="recipe-card"></div>
+      </div>
+
+      <div id="recipe-form-view" style="display:none">
+        <button class="back-btn" id="recipe-form-back" aria-label="Cancel and go back">← Cancel</button>
+        <div class="recipe-form" id="recipe-form">
+          <h2 class="form-title">New Recipe</h2>
+
+          <label class="field-label" for="rf-name">Name</label>
+          <input class="field-input" id="rf-name" type="text" placeholder="e.g. Lemon Herb Chicken" autocomplete="off">
+
+          <div class="field-row">
+            <div class="field-col">
+              <label class="field-label" for="rf-meal">Meal</label>
+              <select class="field-input" id="rf-meal">
+                <option value="">— none —</option>
+                <option value="breakfast">🌅 Breakfast</option>
+                <option value="lunch">☀️ Lunch</option>
+                <option value="dinner">🌙 Dinner</option>
+                <option value="snack">🍿 Snack</option>
+                <option value="dessert">🍰 Dessert</option>
+              </select>
+            </div>
+            <div class="field-col">
+              <label class="field-label" for="rf-servings">Servings</label>
+              <input class="field-input" id="rf-servings" type="text" inputmode="numeric" placeholder="4">
+            </div>
+            <div class="field-col">
+              <label class="field-label" for="rf-time">Time</label>
+              <input class="field-input" id="rf-time" type="text" placeholder="25 min">
+            </div>
+          </div>
+
+          <label class="field-label">Ingredients</label>
+          <div id="rf-ingredients"></div>
+          <button type="button" class="form-add-row" id="rf-add-ingredient">+ Add ingredient</button>
+
+          <label class="field-label">Steps</label>
+          <div id="rf-steps"></div>
+          <button type="button" class="form-add-row" id="rf-add-step">+ Add step</button>
+
+          <button type="button" class="form-save-btn" id="rf-save">Save Recipe</button>
+        </div>
       </div>
     </main>
 
