@@ -155,9 +155,28 @@ def main():
         s, b = req("GET", "/api/recipes")
         check("recipe newest-first", b[0]["id"] == "r2" and b[1]["id"] == "r1")
 
-        # 15. pantry collection
+        # 15. pantry collection + expiry schema
         s, b = req("POST", "/api/pantry", {"id": "p1", "name": "Olive Oil", "category": "pantry"})
         check("pantry POST 201", s == 201 and b[0]["name"] == "Olive Oil")
+        check("pantry: qty field present", "qty" in b[0])
+        check("pantry: shelf_life_days estimated (olive oil=540)", b[0]["shelf_life_days"] == 540)
+        check("pantry: stocked_at + expires_at present", bool(b[0]["stocked_at"]) and bool(b[0]["expires_at"]))
+
+        # 15b. shelf-life estimation: longest-keyword-wins
+        s, b = req("POST", "/api/pantry", {"id": "p2", "name": "White Cheese block"})
+        check("pantry: 'white cheese' (10) beats 'cheese' (21)", b[0]["shelf_life_days"] == 10)
+        s, b = req("POST", "/api/pantry", {"id": "p3", "name": "Cheddar Cheese"})
+        check("pantry: plain 'cheese' → 21", b[0]["shelf_life_days"] == 21)
+        s, b = req("POST", "/api/pantry", {"id": "p4", "name": "Mystery Widget"})
+        check("pantry: unknown → default 14", b[0]["shelf_life_days"] == 14)
+
+        # 15c. client-supplied shelf_life_days overrides the estimate
+        s, b = req("POST", "/api/pantry", {"id": "p5", "name": "Milk", "shelf_life_days": 99})
+        check("pantry: client shelf_life_days override honored", b[0]["shelf_life_days"] == 99)
+
+        # 15d. qty carried (from a check→pantry move)
+        s, b = req("POST", "/api/pantry", {"id": "p6", "name": "Eggs", "qty": "12"})
+        check("pantry: qty carried", b[0]["qty"] == "12" and b[0]["shelf_life_days"] == 28)
 
         # 16. size cap (>256KB) → 400
         big = {"id": "big", "name": "x" * (300 * 1024)}

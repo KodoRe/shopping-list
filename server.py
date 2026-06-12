@@ -33,7 +33,7 @@ import json
 import os
 import re
 import threading
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
@@ -53,6 +53,43 @@ CATEGORIES = {
 }
 
 _LOCK = threading.Lock()  # serialize read-modify-write across worker threads
+
+
+# --------------------------------------------------------------------------- #
+# shelf-life estimation
+# --------------------------------------------------------------------------- #
+# data/shelf-life.json maps product keywords → estimated shelf life in days. We
+# load it once at import; if it's missing/corrupt we degrade to a flat default so
+# the pantry still works (expiry estimation is a nice-to-have, never a hard dep).
+_SHELF_LIFE = {"_default": 14, "map": {}}
+
+
+def _load_shelf_life():
+    global _SHELF_LIFE
+    try:
+        with open(os.path.join(ROOT, "data", "shelf-life.json"), encoding="utf-8") as fh:
+            data = json.load(fh)
+        if isinstance(data, dict) and isinstance(data.get("map"), dict):
+            # Pre-sort keywords by length descending so the longest (most specific)
+            # match wins — 'sour cream' before 'cream', 'canned tomato' before 'tomato'.
+            data["_sorted_keys"] = sorted(data["map"].keys(), key=len, reverse=True)
+            _SHELF_LIFE = data
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        pass  # keep the flat default
+
+
+def estimate_shelf_life_days(name):
+    """Return estimated shelf life in days for a product name (longest-keyword-wins)."""
+    if not name:
+        return _SHELF_LIFE.get("_default", 14)
+    low = name.lower()
+    for kw in _SHELF_LIFE.get("_sorted_keys", []):
+        if kw in low:
+            return int(_SHELF_LIFE["map"][kw])
+    return int(_SHELF_LIFE.get("_default", 14))
+
+
+_load_shelf_life()
 
 
 # --------------------------------------------------------------------------- #
@@ -86,6 +123,17 @@ def _write_atomic(collection, rows):
 
 def _now():
     return datetime.now(timezone.utc).isoformat()
+
+
+def _add_days(iso_or_none, days):
+    """Return an ISO timestamp `days` after the given ISO time (or after now)."""
+    try:
+        base = datetime.fromisoformat(iso_or_none) if iso_or_none else datetime.now(timezone.utc)
+    except (TypeError, ValueError):
+        base = datetime.now(timezone.utc)
+    if base.tzinfo is None:
+        base = base.replace(tzinfo=timezone.utc)
+    return (base + timedelta(days=int(days))).isoformat()
 
 
 # --------------------------------------------------------------------------- #
@@ -124,11 +172,30 @@ def _sanitize_item(raw):
 
 def _sanitize_pantry(raw):
     cat = _clean_str(raw.get("category"), 32).lower()
+    name = _clean_str(raw.get("name"), 200)
+    stocked_at = _clean_str(raw.get("stocked_at"), 40) or _clean_str(raw.get("created_at"), 40) or _now()
+
+    # Shelf life: honor a client-supplied positive integer (lets the UI override),
+    # else estimate from the product name. expires_at is derived from stocked_at.
+    shelf_days = None
+    rsl = raw.get("shelf_life_days")
+    if isinstance(rsl, (int, float)) and rsl > 0:
+        shelf_days = int(rsl)
+    if shelf_days is None:
+        shelf_days = estimate_shelf_life_days(name)
+
+    # expires_at: honor a client-supplied value (idempotent re-sync), else derive.
+    expires_at = _clean_str(raw.get("expires_at"), 40) or _add_days(stocked_at, shelf_days)
+
     return {
         "id": _clean_id(raw.get("id")),
-        "name": _clean_str(raw.get("name"), 200),
+        "name": name,
         "category": cat if cat in CATEGORIES else "other",
-        "created_at": _clean_str(raw.get("created_at"), 40) or _now(),
+        "qty": _clean_str(raw.get("qty"), 64),
+        "shelf_life_days": shelf_days,
+        "stocked_at": stocked_at,
+        "expires_at": expires_at,
+        "created_at": _clean_str(raw.get("created_at"), 40) or stocked_at,
     }
 
 
