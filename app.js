@@ -182,12 +182,29 @@ function addItem(name, category, qty, addedBy) {
   renderList(); updateSyncStatus(); toast(`Added ${parsedName} ✅`);
 }
 
-// Checking an item completes it → it moves to the Pantry (Nitai's "Option A"),
-// carrying its quantity. If the pantry already has that item, we bump the qty
-// instead of duplicating. An Undo toast reverses the whole move.
+// Checkbox = pure check/uncheck toggle. It marks an item done (strike-through)
+// and keeps it on the list. Stocking to the pantry is a separate, deliberate
+// gesture (swipe-right) — see stockToPantry(). Conflating the two was a bug:
+// a checkbox implies a reversible toggle, not a one-way move.
 function toggleItem(id) {
   const item = items.find(i => i.id === id);
   if (!item) return;
+  Store.updateItem(id, { checked: !item.checked });
+  items = Store.getItems();
+  renderList(); updateSyncStatus();
+}
+
+// Swipe-right (or the explicit action) completes an item → moves it to the
+// Pantry (Nitai's "Option A"), carrying its quantity (defaulting to 1 if blank
+// so the pantry always shows a count). Dedupe bumps an existing row's qty
+// instead of duplicating. An Undo toast reverses the whole move.
+function stockToPantry(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+
+  // Default a blank quantity to "1" — a stocked item is at least one of a thing,
+  // and a missing count reads as a bug in the pantry. User can still edit it.
+  const stockQty = (item.qty && String(item.qty).trim()) ? item.qty : '1';
 
   // Snapshot for undo BEFORE we mutate anything.
   const snapshot = { id: item.id, name: item.name, category: item.category, qty: item.qty,
@@ -199,12 +216,12 @@ function toggleItem(id) {
   let pantryUndo;
   if (existing) {
     const priorQty = existing.qty || '';
-    Store.updatePantryItem(existing.id, { qty: mergeQty(existing.qty, item.qty) });
+    Store.updatePantryItem(existing.id, { qty: mergeQty(existing.qty, stockQty) });
     pantryUndo = () => { Store.updatePantryItem(existing.id, { qty: priorQty }); };
   } else {
     const stamp = (typeof ShelfLife !== 'undefined') ? ShelfLife.stampExpiry(item.name) : {};
     const added = Store.addPantryItem(Object.assign(
-      { name: item.name, category: item.category || guessCategory(item.name), qty: item.qty || '' },
+      { name: item.name, category: item.category || guessCategory(item.name), qty: stockQty },
       stamp
     ));
     pantryUndo = () => { Store.removePantryItem(added.id); };
@@ -291,20 +308,27 @@ function renderItem(item) {
   const who = {jarvis:' 🏠',watson:' 🤖',recipe:' 🍳'}[item.added_by]||'';
   const inPantry = pantryItems.some(p => p.name.toLowerCase() === item.name.toLowerCase());
   const safeName = esc(item.name);
-  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}" data-name="${safeName}" data-category="${item.category||'other'}">
-    <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
-    <div class="item-content item-content-tappable" role="button" tabindex="0" aria-label="${safeName} — tap to see recipes">
-      <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
-      <div class="item-meta">${info.emoji}${who}</div>
+  // Swipe wrapper: a fixed "stock" action sits behind the row; the row slides
+  // right to reveal it. The row keeps all its existing controls/refs.
+  return `<div class="swipe-wrap" data-id="${item.id}">
+    <div class="swipe-action swipe-action-stock" aria-hidden="true">🏪 Stock</div>
+    <div class="item swipe-item ${item.checked?'checked':''}" data-id="${item.id}" data-name="${safeName}" data-category="${item.category||'other'}">
+      <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
+      <div class="item-content item-content-tappable" role="button" tabindex="0" aria-label="${safeName} — tap to see recipes">
+        <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
+        <div class="item-meta">${info.emoji}${who}</div>
+      </div>
+      <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}" aria-label="Quantity for ${safeName}">
+      <button class="item-stock" data-id="${item.id}" aria-label="Stock ${safeName} to pantry" title="Move to pantry">🏪</button>
+      <button class="item-delete" data-id="${item.id}" aria-label="Remove ${safeName}">✕</button>
     </div>
-    <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}" aria-label="Quantity for ${safeName}">
-    <button class="item-delete" data-id="${item.id}" aria-label="Remove ${safeName}">✕</button>
   </div>`;
 }
 
 function bindItemEvents(c) {
   c.querySelectorAll('.item-checkbox').forEach(cb => cb.addEventListener('click',()=>toggleItem(cb.closest('.item').dataset.id)));
   c.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',()=>removeItem(b.dataset.id)));
+  c.querySelectorAll('.item-stock').forEach(b => b.addEventListener('click',(e)=>{ e.stopPropagation(); stockToPantry(b.dataset.id); }));
   c.querySelectorAll('.item-qty').forEach(inp => inp.addEventListener('change',()=>updateQty(inp.dataset.id,inp.value)));
   // Tap the name block → "what can I make with this?"
   c.querySelectorAll('.item-content-tappable').forEach(el => {
@@ -312,6 +336,58 @@ function bindItemEvents(c) {
     el.addEventListener('click', open);
     el.addEventListener('keydown', (e) => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); open(); } });
   });
+  // Swipe-right to stock. Pointer Events cover touch + mouse + pen uniformly.
+  c.querySelectorAll('.swipe-item').forEach(bindSwipe);
+}
+
+// Swipe-right-to-stock. Drag the row rightward past a threshold → stockToPantry().
+// Below threshold it snaps back. Horizontal-intent guard so vertical scrolling
+// and qty-input focus aren't hijacked.
+const SWIPE_THRESHOLD = 88;   // px of travel to trigger
+const SWIPE_MAX = 120;        // visual cap on drag distance
+function bindSwipe(row) {
+  let startX = 0, startY = 0, dx = 0, dragging = false, decided = false, horizontal = false;
+
+  const onDown = (e) => {
+    // Ignore drags that begin on interactive controls (checkbox, qty, buttons).
+    if (e.target.closest('.item-checkbox, .item-qty, .item-stock, .item-delete')) return;
+    startX = e.clientX; startY = e.clientY; dx = 0;
+    dragging = true; decided = false; horizontal = false;
+    row.style.transition = 'none';
+  };
+  const onMove = (e) => {
+    if (!dragging) return;
+    dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!decided) {
+      // First meaningful movement decides intent: horizontal → swipe, vertical → let scroll happen.
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        decided = true;
+        horizontal = Math.abs(dx) > Math.abs(dy);
+        if (horizontal) { try { row.setPointerCapture(e.pointerId); } catch (_) {} }
+      }
+    }
+    if (!horizontal) return;
+    if (e.cancelable) e.preventDefault();
+    const travel = Math.max(0, Math.min(dx, SWIPE_MAX)); // only rightward
+    row.style.transform = `translateX(${travel}px)`;
+    row.classList.toggle('swipe-armed', travel >= SWIPE_THRESHOLD);
+  };
+  const onUp = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    row.style.transition = '';
+    row.classList.remove('swipe-armed');
+    const fired = horizontal && dx >= SWIPE_THRESHOLD;
+    row.style.transform = '';
+    try { row.releasePointerCapture(e.pointerId); } catch (_) {}
+    if (fired) stockToPantry(row.dataset.id);
+  };
+
+  row.addEventListener('pointerdown', onDown);
+  row.addEventListener('pointermove', onMove);
+  row.addEventListener('pointerup', onUp);
+  row.addEventListener('pointercancel', onUp);
 }
 
 // ===== RECIPES =====
@@ -726,7 +802,13 @@ function toastAction(msg, actionLabel, onAction, ms = 5000) {
 function esc(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
 
 // ===== INIT =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load the shelf-life map FIRST and await it, so the very first optimistic
+  // pantry stamp has the correct expiry (no "wrong estimate flashes then
+  // corrects on sync" race). It's a tiny static JSON; if it fails we fall back
+  // to the in-module default and carry on.
+  if (typeof ShelfLife !== 'undefined') { try { await ShelfLife.load(); } catch (e) {} }
+
   // Wire the offline-first store: localStorage truth, the VM API as best-effort sync.
   // Prefer LocalAPI (server.py); fall back to the legacy supabase global if present.
   // Repaint whenever the store changes (e.g. a background hydrate brings server data).
@@ -742,7 +824,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   loadLocal();          // instant paint from local data
   syncData();           // quiet background sync (no error toast if offline)
-  if (typeof ShelfLife !== 'undefined') ShelfLife.load();  // fetch shelf-life map for optimistic expiry stamping
 
   // Theme toggle (Theme.init already ran early; re-apply so the button icon is set)
   Theme.apply(Theme.resolve());

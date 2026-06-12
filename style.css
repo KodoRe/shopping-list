@@ -399,6 +399,50 @@ button { font-family: inherit; }
 
 .item.checked { opacity: .55; background: var(--bg-surface); }
 
+/* ===== Swipe-right-to-stock ===== */
+.swipe-wrap {
+  position: relative;
+  margin-bottom: 8px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+/* The action revealed behind the row as it slides right */
+.swipe-action {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 18px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  border-radius: var(--r-md);
+}
+.swipe-action-stock { background: var(--success); }
+/* The row sits on top; it's what actually translates on drag */
+.swipe-wrap .item {
+  margin-bottom: 0;
+  position: relative;
+  touch-action: pan-y;            /* allow vertical scroll; we handle horizontal */
+  transition: transform .2s cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
+.swipe-wrap .item.swipe-armed { box-shadow: 0 0 0 2px var(--success) inset; }
+
+/* Explicit stock button (discoverable + keyboard-accessible alternative to swipe) */
+.item-stock {
+  background: transparent;
+  border: 1px solid transparent;
+  font-size: 16px;
+  cursor: pointer;
+  width: 36px; height: 36px;
+  border-radius: var(--r-md);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .15s ease;
+  flex-shrink: 0;
+}
+.item-stock:hover { background: var(--success); }
+
 .item-checkbox {
   width: 26px;
   height: 26px;
