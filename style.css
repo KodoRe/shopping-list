@@ -516,6 +516,70 @@ button { font-family: inherit; }
 .pantry-item.expiry-warn { border-left: 3px solid var(--warn); }
 .pantry-item.expiry-bad  { border-left: 3px solid var(--danger); }
 
+/* ===== Modal overlay (recipe cross-reference) ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity .18s ease;
+  padding: 0;
+}
+.modal-overlay.show { opacity: 1; }
+.modal-overlay[hidden] { display: none; }
+.modal-card {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 520px;
+  max-height: 80vh;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(16px);
+  transition: transform .18s ease;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.modal-overlay.show .modal-card { transform: translateY(0); }
+@media (min-width: 560px) {
+  .modal-overlay { align-items: center; padding: 20px; }
+  .modal-card { border-radius: var(--r-lg); }
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-title { font-size: 17px; font-weight: 700; margin: 0; color: var(--text); }
+.modal-close {
+  background: transparent; border: none; color: var(--text-muted);
+  font-size: 18px; cursor: pointer; width: 36px; height: 36px;
+  border-radius: var(--r-md); display: inline-flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--danger-soft); color: var(--danger); }
+.modal-body { padding: 14px 18px 20px; overflow-y: auto; }
+.modal-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 12px; }
+.modal-empty { font-size: 15px; color: var(--text); margin: 8px 0; }
+.modal-hint { font-size: 13px; color: var(--text-muted); margin: 4px 0 0; }
+.modal-recipe-list { display: flex; flex-direction: column; gap: 8px; }
+.modal-recipe-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; text-align: left; cursor: pointer;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 12px 14px;
+  transition: border-color .15s ease, background .15s ease;
+}
+.modal-recipe-row:hover { border-color: var(--accent); }
+.modal-recipe-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.modal-recipe-name { font-weight: 600; color: var(--text); font-size: 15px; }
+.modal-recipe-meta { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
 /* In-pantry / status badges */
 .in-pantry {
   display: inline-block;

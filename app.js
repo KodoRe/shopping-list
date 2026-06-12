@@ -532,6 +532,75 @@ function renderPantry() {
     </div>`;
   }).join('');
   container.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',(e)=>{ e.stopPropagation(); removePantryItem(b.dataset.id); }));
+  // Tap a pantry row → "what can I make with this?"
+  container.querySelectorAll('.pantry-item').forEach(row => {
+    const open = () => showRecipesUsing(row.dataset.name);
+    row.addEventListener('click', open);
+    row.addEventListener('keydown', (e) => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); open(); } });
+  });
+}
+
+// ===== MODAL + RECIPE CROSS-REFERENCE =====
+let _modalKeyHandler = null;
+
+function openModal(title, bodyHtml) {
+  const overlay = document.getElementById('modal-overlay');
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHtml;
+  overlay.hidden = false;
+  requestAnimationFrame(() => overlay.classList.add('show'));
+  _modalKeyHandler = (e) => { if (e.key === 'Escape') closeModal(); };
+  document.addEventListener('keydown', _modalKeyHandler);
+  return document.getElementById('modal-body');
+}
+
+function closeModal() {
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.remove('show');
+  if (_modalKeyHandler) { document.removeEventListener('keydown', _modalKeyHandler); _modalKeyHandler = null; }
+  setTimeout(() => { overlay.hidden = true; }, 180);
+}
+
+// Recipes that use a given ingredient name (case-insensitive substring, both directions).
+function recipesUsing(name) {
+  const q = (name||'').trim().toLowerCase();
+  if (!q) return [];
+  return recipes.filter(r => (r.ingredients||[]).some(ing => {
+    const n = (ing.name||'').toLowerCase();
+    return n === q || n.includes(q) || q.includes(n);
+  }));
+}
+
+function showRecipesUsing(name) {
+  const matches = recipesUsing(name);
+  let body;
+  if (!matches.length) {
+    body = `<p class="modal-empty">No recipes use <strong>${esc(name)}</strong> yet.</p>
+            <p class="modal-hint">Add recipes in the Recipes tab — they'll show up here automatically.</p>`;
+  } else {
+    body = `<p class="modal-sub">${matches.length} recipe${matches.length!==1?'s':''} use ${esc(name)}:</p>
+      <div class="modal-recipe-list">` +
+      matches.map(r => `
+        <button class="modal-recipe-row" data-id="${r.id}">
+          <span class="modal-recipe-name">${esc(r.name)}</span>
+          <span class="modal-recipe-meta">${(r.ingredients||[]).length} ingr · ${(r.steps||[]).length} steps ›</span>
+        </button>`).join('') +
+      `</div>`;
+  }
+  const el = openModal(`🍳 Recipes with ${name}`, body);
+  el.querySelectorAll('.modal-recipe-row').forEach(btn => {
+    btn.addEventListener('click', () => { closeModal(); jumpToRecipe(btn.dataset.id); });
+  });
+}
+
+// Switch to Recipes tab and open a recipe's detail view.
+function jumpToRecipe(id) {
+  document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const navRecipes = document.querySelector('.tab[data-tab="recipes"]');
+  navRecipes.classList.add('active'); navRecipes.setAttribute('aria-selected','true');
+  document.getElementById('tab-recipes').classList.add('active');
+  showRecipeDetail(id);
 }
 
 // ===== GUIDED COOKING =====
@@ -685,6 +754,12 @@ document.addEventListener('DOMContentLoaded', () => {
       tab.setAttribute('aria-selected','true');
       document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
     });
+  });
+
+  // Modal close wiring (close button + click on backdrop)
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'modal-overlay') closeModal();
   });
 
   // Add item
