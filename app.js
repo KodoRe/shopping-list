@@ -182,12 +182,61 @@ function addItem(name, category, qty, addedBy) {
   renderList(); updateSyncStatus(); toast(`Added ${parsedName} ✅`);
 }
 
+// Checking an item completes it → it moves to the Pantry (Nitai's "Option A"),
+// carrying its quantity. If the pantry already has that item, we bump the qty
+// instead of duplicating. An Undo toast reverses the whole move.
 function toggleItem(id) {
   const item = items.find(i => i.id === id);
   if (!item) return;
-  Store.updateItem(id, { checked: !item.checked });
+
+  // Snapshot for undo BEFORE we mutate anything.
+  const snapshot = { id: item.id, name: item.name, category: item.category, qty: item.qty,
+                     added_by: item.added_by, checked: item.checked, created_at: item.created_at };
+
+  // Dedupe by name (case-insensitive). If present, remember the prior qty so undo
+  // can restore it exactly; else we'll remove the freshly-added pantry row on undo.
+  const existing = pantryItems.find(p => p.name.toLowerCase() === item.name.toLowerCase());
+  let pantryUndo;
+  if (existing) {
+    const priorQty = existing.qty || '';
+    Store.updatePantryItem(existing.id, { qty: mergeQty(existing.qty, item.qty) });
+    pantryUndo = () => { Store.updatePantryItem(existing.id, { qty: priorQty }); };
+  } else {
+    const stamp = (typeof ShelfLife !== 'undefined') ? ShelfLife.stampExpiry(item.name) : {};
+    const added = Store.addPantryItem(Object.assign(
+      { name: item.name, category: item.category || guessCategory(item.name), qty: item.qty || '' },
+      stamp
+    ));
+    pantryUndo = () => { Store.removePantryItem(added.id); };
+  }
+
+  // Remove from the shopping list.
+  Store.removeItem(id);
   items = Store.getItems();
-  renderList(); updateSyncStatus();
+  pantryItems = Store.getPantry();
+  renderList(); renderPantry(); updateSyncStatus();
+
+  toastAction(`✅ ${item.name} → pantry`, 'Undo', () => {
+    // Reverse: undo the pantry change, then restore the list item as it was.
+    try { pantryUndo(); } catch (e) {}
+    Store.addItem(snapshot);
+    items = Store.getItems();
+    pantryItems = Store.getPantry();
+    renderList(); renderPantry(); updateSyncStatus();
+    toast(`Restored ${item.name} to the list`);
+  });
+}
+
+// Merge two free-text quantities. Pure numbers add (2 + 3 → "5"); otherwise we
+// keep it human and concatenate ("1 bag" + "2" → "1 bag + 2"). Best-effort: qty
+// is a free-text field, so we don't try to be clever about units.
+function mergeQty(a, b) {
+  a = (a || '').trim(); b = (b || '').trim();
+  if (!a) return b;
+  if (!b) return a;
+  const na = parseFloat(a), nb = parseFloat(b);
+  if (!isNaN(na) && !isNaN(nb) && String(na) === a && String(nb) === b) return String(na + nb);
+  return `${a} + ${b}`;
 }
 
 function removeItem(id) {
@@ -424,9 +473,11 @@ function saveRecipeForm() {
 // ===== PANTRY =====
 function addPantryItem(name) {
   if (!name.trim()) return;
-  Store.addPantryItem({ name: name.trim(), category: guessCategory(name) });
+  const clean = name.trim();
+  const stamp = (typeof ShelfLife !== 'undefined') ? ShelfLife.stampExpiry(clean) : {};
+  Store.addPantryItem(Object.assign({ name: clean, category: guessCategory(clean) }, stamp));
   pantryItems = Store.getPantry();
-  renderPantry(); renderList(); updateSyncStatus(); toast(`${name.trim()} added to pantry 🏪`);
+  renderPantry(); renderList(); updateSyncStatus(); toast(`${clean} added to pantry 🏪`);
 }
 
 function removePantryItem(id) {
@@ -547,6 +598,25 @@ function toast(msg) {
   const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg;
   document.body.appendChild(el); setTimeout(()=>el.remove(), 2500);
 }
+
+// Toast with an action button (e.g. Undo). The action fires once; the toast
+// dismisses on action or after `ms`. Returns nothing — fire and forget.
+function toastAction(msg, actionLabel, onAction, ms = 5000) {
+  const el = document.createElement('div');
+  el.className = 'toast toast-action';
+  const span = document.createElement('span'); span.textContent = msg;
+  const btn = document.createElement('button');
+  btn.className = 'toast-btn'; btn.type = 'button'; btn.textContent = actionLabel;
+  let done = false;
+  const close = () => { if (!el.parentNode) return; el.remove(); };
+  btn.addEventListener('click', () => {
+    if (done) return; done = true;
+    try { onAction(); } finally { close(); }
+  });
+  el.appendChild(span); el.appendChild(btn);
+  document.body.appendChild(el);
+  setTimeout(close, ms);
+}
 function esc(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
 
 // ===== INIT =====
@@ -566,6 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   loadLocal();          // instant paint from local data
   syncData();           // quiet background sync (no error toast if offline)
+  if (typeof ShelfLife !== 'undefined') ShelfLife.load();  // fetch shelf-life map for optimistic expiry stamping
 
   // Theme toggle (Theme.init already ran early; re-apply so the button icon is set)
   Theme.apply(Theme.resolve());

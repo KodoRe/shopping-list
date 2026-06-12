@@ -1059,6 +1059,29 @@ textarea.field-input { resize: vertical; line-height: 1.45; }
   text-align: center;
 }
 
+/* Toast with an action button (e.g. Undo after moving an item to the pantry). */
+.toast-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+}
+.toast-btn {
+  flex: none;
+  background: transparent;
+  color: var(--brand, #e07b41);
+  border: 1px solid currentColor;
+  border-radius: var(--r-sm, 8px);
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  min-height: 32px;
+}
+.toast-btn:active { opacity: .7; }
+
 /* ============================================================
    Animations
    ============================================================ */
