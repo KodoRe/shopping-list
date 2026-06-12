@@ -319,7 +319,6 @@ function renderItem(item) {
         <div class="item-meta">${info.emoji}${who}</div>
       </div>
       <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}" aria-label="Quantity for ${safeName}">
-      <button class="item-stock" data-id="${item.id}" aria-label="Stock ${safeName} to pantry" title="Move to pantry">🏪</button>
       <button class="item-delete" data-id="${item.id}" aria-label="Remove ${safeName}">✕</button>
     </div>
   </div>`;
@@ -328,7 +327,6 @@ function renderItem(item) {
 function bindItemEvents(c) {
   c.querySelectorAll('.item-checkbox').forEach(cb => cb.addEventListener('click',()=>toggleItem(cb.closest('.item').dataset.id)));
   c.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',()=>removeItem(b.dataset.id)));
-  c.querySelectorAll('.item-stock').forEach(b => b.addEventListener('click',(e)=>{ e.stopPropagation(); stockToPantry(b.dataset.id); }));
   c.querySelectorAll('.item-qty').forEach(inp => inp.addEventListener('change',()=>updateQty(inp.dataset.id,inp.value)));
   // Tap the name block → "what can I make with this?"
   c.querySelectorAll('.item-content-tappable').forEach(el => {
@@ -347,10 +345,11 @@ const SWIPE_THRESHOLD = 88;   // px of travel to trigger
 const SWIPE_MAX = 120;        // visual cap on drag distance
 function bindSwipe(row) {
   let startX = 0, startY = 0, dx = 0, dragging = false, decided = false, horizontal = false;
+  const wrap = row.closest('.swipe-wrap');
 
   const onDown = (e) => {
-    // Ignore drags that begin on interactive controls (checkbox, qty, buttons).
-    if (e.target.closest('.item-checkbox, .item-qty, .item-stock, .item-delete')) return;
+    // Ignore drags that begin on interactive controls (checkbox, qty, delete).
+    if (e.target.closest('.item-checkbox, .item-qty, .item-delete')) return;
     startX = e.clientX; startY = e.clientY; dx = 0;
     dragging = true; decided = false; horizontal = false;
     row.style.transition = 'none';
@@ -364,7 +363,11 @@ function bindSwipe(row) {
       if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
         decided = true;
         horizontal = Math.abs(dx) > Math.abs(dy);
-        if (horizontal) { try { row.setPointerCapture(e.pointerId); } catch (_) {} }
+        // Reveal the action layer only once we've committed to a horizontal swipe.
+        if (horizontal) {
+          if (wrap) wrap.classList.add('swiping');
+          try { row.setPointerCapture(e.pointerId); } catch (_) {}
+        }
       }
     }
     if (!horizontal) return;
@@ -378,6 +381,7 @@ function bindSwipe(row) {
     dragging = false;
     row.style.transition = '';
     row.classList.remove('swipe-armed');
+    if (wrap) wrap.classList.remove('swiping');
     const fired = horizontal && dx >= SWIPE_THRESHOLD;
     row.style.transform = '';
     try { row.releasePointerCapture(e.pointerId); } catch (_) {}

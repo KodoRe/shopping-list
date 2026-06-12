@@ -406,7 +406,9 @@ button { font-family: inherit; }
   border-radius: var(--r-md);
   overflow: hidden;
 }
-/* The action revealed behind the row as it slides right */
+/* The action revealed behind the row as it slides right. Hidden at rest so it
+   never bleeds through a row (e.g. a checked row faded to .55 opacity); it
+   fades in only while a horizontal swipe is actually in progress. */
 .swipe-action {
   position: absolute;
   inset: 0;
@@ -417,7 +419,10 @@ button { font-family: inherit; }
   font-size: 14px;
   color: #fff;
   border-radius: var(--r-md);
+  opacity: 0;
+  transition: opacity .15s ease;
 }
+.swipe-wrap.swiping .swipe-action { opacity: 1; }
 .swipe-action-stock { background: var(--success); }
 /* The row sits on top; it's what actually translates on drag */
 .swipe-wrap .item {
@@ -428,20 +433,6 @@ button { font-family: inherit; }
   will-change: transform;
 }
 .swipe-wrap .item.swipe-armed { box-shadow: 0 0 0 2px var(--success) inset; }
-
-/* Explicit stock button (discoverable + keyboard-accessible alternative to swipe) */
-.item-stock {
-  background: transparent;
-  border: 1px solid transparent;
-  font-size: 16px;
-  cursor: pointer;
-  width: 36px; height: 36px;
-  border-radius: var(--r-md);
-  display: inline-flex; align-items: center; justify-content: center;
-  transition: background .15s ease;
-  flex-shrink: 0;
-}
-.item-stock:hover { background: var(--success); }
 
 .item-checkbox {
   width: 26px;
