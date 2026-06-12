@@ -36,6 +36,8 @@
   /* Status */
   --danger:        #c0392b;
   --danger-soft:   #fdecea;
+  --warn:          #b06f00;
+  --warn-soft:     #fdf3e0;
   --success:       #0e9f6e;
 
   /* Lines & shadow */
@@ -87,6 +89,8 @@ html[data-theme="dark"] {
 
   --danger:        #f0685a;
   --danger-soft:   #3a1f1c;
+  --warn:          #ffb454;
+  --warn-soft:     #3a2f1a;
   --success:       #16c98a;
 
   --border:        #333740;
@@ -478,6 +482,39 @@ button { font-family: inherit; }
   color: var(--danger);
   background: var(--danger-soft);
 }
+/* Make the delete control always visible & obvious on pantry items (mobile: no hover) */
+.pantry-item .item-delete {
+  color: var(--danger);
+  border-color: var(--border);
+}
+.pantry-item .item-delete:hover { background: var(--danger-soft); }
+
+/* Pantry rows are tappable (→ recipes-using popup) */
+.pantry-item { cursor: pointer; }
+.pantry-item:hover { border-color: var(--accent); }
+.pantry-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.pantry-qty {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+.pantry-expiry {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+.pantry-expiry.expiry-ok   { color: var(--text-muted); background: transparent; padding-left: 0; }
+.pantry-expiry.expiry-warn { color: var(--warn);   background: var(--warn-soft); }
+.pantry-expiry.expiry-bad  { color: var(--danger); background: var(--danger-soft); }
+/* Left accent bar to make urgency scannable at a glance */
+.pantry-item.expiry-warn { border-left: 3px solid var(--warn); }
+.pantry-item.expiry-bad  { border-left: 3px solid var(--danger); }
 
 /* In-pantry / status badges */
 .in-pantry {

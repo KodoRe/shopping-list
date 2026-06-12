@@ -24,7 +24,7 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.environ.get("HK_DATA_DIR") or os.path.join(ROOT, "data")
@@ -98,6 +98,27 @@ def render_shopping(items):
     return "\n".join(lines)
 
 
+def _pantry_expiry_note(p):
+    """Human note for a pantry item's expiry, or '' if unknown."""
+    iso = p.get("expires_at")
+    if not iso:
+        return ""
+    try:
+        exp = datetime.strptime(iso[:10], "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return ""
+    d = (exp - date.today()).days
+    if d < 0:
+        return " — ⚠️ **expired**" if d == -1 else f" — ⚠️ **expired {-d} days ago**"
+    if d == 0:
+        return " — ⚠️ **expires today**"
+    if d == 1:
+        return " — ⏳ expires tomorrow"
+    if d <= 3:
+        return f" — ⏳ expires in {d} days"
+    return f" — expires in {d} days"
+
+
 def render_pantry(pantry):
     lines = ["# 🏪 Pantry", "",
              f"_Auto-generated from the Home Kitchen app — {_stamp()}. Do not edit by hand._", ""]
@@ -113,9 +134,13 @@ def render_pantry(pantry):
         rows = by_cat.get(cat)
         if not rows:
             continue
+        # Within a category, soonest-to-expire first (unknown expiry last).
+        rows = sorted(rows, key=lambda p: (p.get("expires_at") or "9999-12-31"))
         lines.append(f"### {CAT_LABELS.get(cat, cat)}")
         for p in rows:
-            lines.append(f"- {_esc(p['name'])}")
+            qty = str(p.get("qty", "") or "").strip()
+            qty_str = f" ×{qty}" if qty else ""
+            lines.append(f"- {_esc(p['name'])}{qty_str}{_pantry_expiry_note(p)}")
         lines.append("")
     return "\n".join(lines)
 

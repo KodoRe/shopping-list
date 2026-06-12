@@ -486,6 +486,29 @@ function removePantryItem(id) {
   renderPantry(); renderList(); updateSyncStatus();
 }
 
+// Days between today (local midnight) and an ISO date (YYYY-MM-DD). Negative = past.
+function daysUntil(iso) {
+  if (!iso) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(iso + (iso.length <= 10 ? 'T00:00:00' : ''));
+  if (isNaN(target)) return null;
+  target.setHours(0,0,0,0);
+  return Math.round((target - today) / 86400000);
+}
+
+// Expiry status for a pantry item → {cls, label, sort}. cls drives amber/red styling.
+function expiryStatus(p) {
+  const d = daysUntil(p.expires_at);
+  if (d === null) return { cls:'', label:'', sort: 9e9 };
+  let label;
+  if (d < 0)        label = d === -1 ? 'expired yesterday' : `expired ${-d} days ago`;
+  else if (d === 0) label = 'expires today';
+  else if (d === 1) label = 'expires tomorrow';
+  else              label = `expires in ${d} days`;
+  const cls = d <= 0 ? 'expiry-bad' : (d <= 3 ? 'expiry-warn' : 'expiry-ok');
+  return { cls, label, sort: d };
+}
+
 function renderPantry() {
   const container = document.getElementById('pantry-container');
   const empty = document.getElementById('pantry-empty');
@@ -493,14 +516,22 @@ function renderPantry() {
   count.textContent = `${pantryItems.length} item${pantryItems.length!==1?'s':''}`;
   if (!pantryItems.length) { container.innerHTML = ''; empty.classList.add('show'); return; }
   empty.classList.remove('show');
-  container.innerHTML = pantryItems.map(p => {
+  // Most urgent (soonest/already expired) float to the top.
+  const sorted = pantryItems.map(p => ({ p, st: expiryStatus(p) }))
+                            .sort((a,b) => a.st.sort - b.st.sort);
+  container.innerHTML = sorted.map(({p, st}) => {
     const info = CAT_INFO[p.category]||{emoji:'📦'};
-    return `<div class="item" data-id="${p.id}">
-      <div class="item-content"><div class="item-name">${info.emoji} ${esc(p.name)}</div></div>
-      <button class="item-delete" data-id="${p.id}">✕</button>
+    const qty = (p.qty && String(p.qty).trim()) ? `<span class="pantry-qty">×${esc(String(p.qty))}</span>` : '';
+    const expiry = st.label ? `<span class="pantry-expiry ${st.cls}">${st.label}</span>` : '';
+    return `<div class="item pantry-item ${st.cls}" data-id="${p.id}" data-name="${esc(p.name)}" role="button" tabindex="0" aria-label="${esc(p.name)} — ${st.label||'in pantry'}. Tap to see recipes.">
+      <div class="item-content">
+        <div class="item-name">${info.emoji} ${esc(p.name)} ${qty}</div>
+        ${expiry}
+      </div>
+      <button class="item-delete" data-id="${p.id}" aria-label="Remove ${esc(p.name)} from pantry" title="Remove from pantry">✕</button>
     </div>`;
   }).join('');
-  container.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',()=>removePantryItem(b.dataset.id)));
+  container.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',(e)=>{ e.stopPropagation(); removePantryItem(b.dataset.id); }));
 }
 
 // ===== GUIDED COOKING =====

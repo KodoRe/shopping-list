@@ -56,6 +56,25 @@ check("pantry: dairy header", "### 🧀 Dairy" in pmd)
 check("pantry: item listed", "- Tahini" in pmd)
 check("pantry: empty state", "_Pantry is empty._" in rm.render_pantry([]))
 
+# pantry: qty + expiry notes (relative dates → deterministic)
+from datetime import date as _d, timedelta as _td
+soon = (_d.today() + _td(days=2)).isoformat()
+past = (_d.today() - _td(days=3)).isoformat()
+far  = (_d.today() + _td(days=30)).isoformat()
+pantry2 = [
+    {"id": "a", "name": "Milk", "category": "dairy", "qty": "2", "expires_at": soon},
+    {"id": "b", "name": "Yogurt", "category": "dairy", "qty": "", "expires_at": past},
+    {"id": "c", "name": "Rice", "category": "pantry", "qty": "1", "expires_at": far},
+]
+pmd2 = rm.render_pantry(pantry2)
+check("pantry: qty rendered", "- Milk ×2" in pmd2)
+check("pantry: warn (<=3 days)", "expires in 2 days" in pmd2)
+check("pantry: expired bold", "expired 3 days ago" in pmd2)
+check("pantry: far expiry plain", "expires in 30 days" in pmd2)
+check("pantry: soonest-first sort within dairy", pmd2.index("Yogurt") < pmd2.index("Milk"))
+# unknown expiry → no note, no crash
+check("pantry: no expiry note when unknown", "- Tahini" in rm.render_pantry([{"id":"x","name":"Tahini","category":"pantry"}]))
+
 # --- recipes ---
 recipes = [
     {"id": "r1", "name": "Shakshuka", "tags": ["breakfast"], "servings": "2", "time": "25 min",
