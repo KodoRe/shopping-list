@@ -572,6 +572,61 @@ function removePantryItem(id) {
   renderPantry(); renderList(); updateSyncStatus();
 }
 
+// ----- Expiry editing (manual override) -----
+// The date <input type="date"> speaks local YYYY-MM-DD; stored expiry is full ISO.
+// We bridge the two by anchoring at LOCAL NOON, so the round-trip survives any
+// timezone offset without an off-by-one-day shift (daysUntil floors to local
+// midnight, and noon ± up-to-12h stays on the same calendar day).
+
+// ISO timestamp → local "YYYY-MM-DD" suitable for a date input's value.
+function isoToLocalDateInput(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+// Local "YYYY-MM-DD" from a date input → ISO timestamp anchored at local noon.
+function localDateInputToIso(dateStr) {
+  if (!dateStr) return null;
+  const [y, m, d] = dateStr.split('-').map(Number);
+  if (!y || !m || !d) return null;
+  const dt = new Date(y, m - 1, d, 12, 0, 0, 0); // local noon
+  if (isNaN(dt.getTime())) return null;
+  return dt.toISOString();
+}
+
+// Manually override a pantry item's expiry to a user-picked date.
+function setPantryExpiry(id, dateStr) {
+  const iso = localDateInputToIso(dateStr);
+  if (!iso) { toast('That date looks off — try again'); return; }
+  const p = pantryItems.find(i => i.id === id);
+  Store.updatePantryItem(id, { expires_at: iso });
+  pantryItems = Store.getPantry();
+  renderPantry(); updateSyncStatus();
+  const st = expiryStatus({ expires_at: iso });
+  toast(`${p ? p.name : 'Item'} now ${st.label || 'updated'} ⏳`);
+}
+
+// Reset a pantry item's expiry back to the auto estimate (shelf-life from stock date).
+function resetPantryExpiry(id, name) {
+  const p = pantryItems.find(i => i.id === id);
+  if (!p) return;
+  // Re-estimate from the original stock date so "reset" means "as if just stocked then".
+  const stamp = (typeof ShelfLife !== 'undefined')
+    ? ShelfLife.stampExpiry(name || p.name, p.stocked_at)
+    : {};
+  if (!stamp.expires_at) { toast('Could not estimate — pick a date instead'); return; }
+  Store.updatePantryItem(id, { expires_at: stamp.expires_at, shelf_life_days: stamp.shelf_life_days });
+  pantryItems = Store.getPantry();
+  renderPantry(); updateSyncStatus();
+  const st = expiryStatus({ expires_at: stamp.expires_at });
+  toast(`${p.name} reset to estimate — ${st.label || 'updated'} ↺`);
+}
+
 // Days between today (local midnight) and an ISO date (YYYY-MM-DD). Negative = past.
 function daysUntil(iso) {
   if (!iso) return null;
@@ -618,9 +673,9 @@ function renderPantry() {
     </div>`;
   }).join('');
   container.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',(e)=>{ e.stopPropagation(); removePantryItem(b.dataset.id); }));
-  // Tap a pantry row → "what can I make with this?"
+  // Tap a pantry row → "what can I make with this?" + edit its expiry.
   container.querySelectorAll('.pantry-item').forEach(row => {
-    const open = () => showRecipesUsing(row.dataset.name);
+    const open = () => showRecipesUsing(row.dataset.name, row.dataset.id);
     row.addEventListener('click', open);
     row.addEventListener('keydown', (e) => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); open(); } });
   });
@@ -657,14 +712,18 @@ function recipesUsing(name) {
   }));
 }
 
-function showRecipesUsing(name) {
+// Show the recipe cross-reference modal for an ingredient/product `name`.
+// When `pantryId` is supplied (i.e. opened from a pantry row, not a list row),
+// an expiry editor is prepended so the user can override the auto-estimated
+// expiry date or reset it back to the estimate.
+function showRecipesUsing(name, pantryId) {
   const matches = recipesUsing(name);
-  let body;
+  let recipeHtml;
   if (!matches.length) {
-    body = `<p class="modal-empty">No recipes use <strong>${esc(name)}</strong> yet.</p>
+    recipeHtml = `<p class="modal-empty">No recipes use <strong>${esc(name)}</strong> yet.</p>
             <p class="modal-hint">Add recipes in the Recipes tab — they'll show up here automatically.</p>`;
   } else {
-    body = `<p class="modal-sub">${matches.length} recipe${matches.length!==1?'s':''} use ${esc(name)}:</p>
+    recipeHtml = `<p class="modal-sub">${matches.length} recipe${matches.length!==1?'s':''} use ${esc(name)}:</p>
       <div class="modal-recipe-list">` +
       matches.map(r => `
         <button class="modal-recipe-row" data-id="${r.id}">
@@ -673,10 +732,52 @@ function showRecipesUsing(name) {
         </button>`).join('') +
       `</div>`;
   }
+  const body = expiryEditorHtml(pantryId) + recipeHtml;
   const el = openModal(`🍳 Recipes with ${name}`, body);
   el.querySelectorAll('.modal-recipe-row').forEach(btn => {
     btn.addEventListener('click', () => { closeModal(); jumpToRecipe(btn.dataset.id); });
   });
+  bindExpiryEditor(el, pantryId, name);
+}
+
+// HTML for the expiry-editor block shown at the top of the pantry modal.
+// Returns '' when there's no pantry context (e.g. opened from a shopping-list row).
+function expiryEditorHtml(pantryId) {
+  if (!pantryId) return '';
+  const p = pantryItems.find(i => i.id === pantryId);
+  if (!p) return '';
+  const st = expiryStatus(p);
+  const statusLabel = st.label || 'no expiry set';
+  // Pre-fill the date input with the current expiry as a local YYYY-MM-DD.
+  const inputVal = isoToLocalDateInput(p.expires_at);
+  return `<div class="expiry-editor">
+      <div class="expiry-editor-head">
+        <span class="expiry-editor-title">⏳ Expiry</span>
+        <span class="pantry-expiry ${st.cls} expiry-editor-status">${esc(statusLabel)}</span>
+      </div>
+      <div class="expiry-editor-controls">
+        <input type="date" class="expiry-date-input" value="${inputVal}" aria-label="Pick a new expiry date for ${esc(p.name)}">
+        <button class="expiry-save-btn" type="button">Save</button>
+      </div>
+      <button class="expiry-reset-btn" type="button">↺ Reset to estimate</button>
+    </div>`;
+}
+
+function bindExpiryEditor(root, pantryId, name) {
+  if (!pantryId) return;
+  const input = root.querySelector('.expiry-date-input');
+  const saveBtn = root.querySelector('.expiry-save-btn');
+  const resetBtn = root.querySelector('.expiry-reset-btn');
+  if (saveBtn && input) {
+    saveBtn.addEventListener('click', () => {
+      if (!input.value) { toast('Pick a date first'); return; }
+      setPantryExpiry(pantryId, input.value);
+      closeModal();
+    });
+  }
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => { resetPantryExpiry(pantryId, name); closeModal(); });
+  }
 }
 
 // Switch to Recipes tab and open a recipe's detail view.
