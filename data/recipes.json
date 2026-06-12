@@ -46,9 +46,15 @@
     "steps": [
       "Stir everything together in a bowl.",
       "Taste, adjust horseradish/salt/lemon.",
-      "Rest in fridge 15-20 min -- flavors marry, horseradish blooms."
+      "Rest in fridge 15-20 min -- flavors marry, horseradish blooms.",
+      "TIP — choosing chrein: BEET chrein (red) = milder, slightly sweet, tints the sauce pink. WHITE chrein = fiery, sinus-clearing, no sweetness. Beet works great here (milder is nicer); use white if you want the punch. Base yogurt: 0% Greek for max protein (~10g P/100g), full-fat for richer texture."
     ],
-    "nutrition": {},
+    "nutrition": {
+      "cal": 0.0,
+      "protein": 0.0,
+      "carbs": 0.0,
+      "fat": 0.0
+    },
     "added_by": "agent",
     "created_at": "2026-06-07T20:07:50.621548+00:00"
   },

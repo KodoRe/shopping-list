@@ -1,6 +1,6 @@
 # 🍳 Recipes
 
-_Auto-generated from the Home Kitchen app — 2026-06-07 20:12 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-06-12 23:00 UTC. Do not edit by hand._
 
 **3 recipes**
 
@@ -30,6 +30,7 @@ _Auto-generated from the Home Kitchen app — 2026-06-07 20:12 UTC. Do not edit 
 1. Stir everything together in a bowl.
 2. Taste, adjust horseradish/salt/lemon.
 3. Rest in fridge 15-20 min -- flavors marry, horseradish blooms.
+4. TIP — choosing chrein: BEET chrein (red) = milder, slightly sweet, tints the sauce pink. WHITE chrein = fiery, sinus-clearing, no sweetness. Beet works great here (milder is nicer); use white if you want the punch. Base yogurt: 0% Greek for max protein (~10g P/100g), full-fat for richer texture.
 
 ---
 
