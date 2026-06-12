@@ -291,9 +291,9 @@ function renderItem(item) {
   const who = {jarvis:' 🏠',watson:' 🤖',recipe:' 🍳'}[item.added_by]||'';
   const inPantry = pantryItems.some(p => p.name.toLowerCase() === item.name.toLowerCase());
   const safeName = esc(item.name);
-  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}" data-category="${item.category||'other'}">
+  return `<div class="item ${item.checked?'checked':''}" data-id="${item.id}" data-name="${safeName}" data-category="${item.category||'other'}">
     <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
-    <div class="item-content">
+    <div class="item-content item-content-tappable" role="button" tabindex="0" aria-label="${safeName} — tap to see recipes">
       <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
       <div class="item-meta">${info.emoji}${who}</div>
     </div>
@@ -306,6 +306,12 @@ function bindItemEvents(c) {
   c.querySelectorAll('.item-checkbox').forEach(cb => cb.addEventListener('click',()=>toggleItem(cb.closest('.item').dataset.id)));
   c.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',()=>removeItem(b.dataset.id)));
   c.querySelectorAll('.item-qty').forEach(inp => inp.addEventListener('change',()=>updateQty(inp.dataset.id,inp.value)));
+  // Tap the name block → "what can I make with this?"
+  c.querySelectorAll('.item-content-tappable').forEach(el => {
+    const open = () => showRecipesUsing(el.closest('.item').dataset.name);
+    el.addEventListener('click', open);
+    el.addEventListener('keydown', (e) => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); open(); } });
+  });
 }
 
 // ===== RECIPES =====
