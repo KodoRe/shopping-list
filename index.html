@@ -232,5 +232,17 @@
   <script src="js/local-api.js?v=16"></script>
   <script src="js/store.js?v=16"></script>
   <script src="app.js?v=16"></script>
+  <script>
+    // Register the service worker at root scope so it controls navigations and
+    // can serve the shell offline. Guarded: if SW is unsupported or registration
+    // fails, the app still works (SW is pure progressive enhancement).
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch((err) => {
+          console.warn('SW registration failed (app still works):', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
