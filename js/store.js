@@ -204,16 +204,54 @@
         this.online = true;
 
         const queuedIds = new Set(this._queue().map(op => op.id));
-        if (Array.isArray(si)) lsSet(LS_KEYS.items, this._merge(this.getItems(), si, queuedIds));
-        if (Array.isArray(sr)) lsSet(LS_KEYS.recipes, this._merge(this.getRecipes(), sr, queuedIds));
-        if (Array.isArray(sp)) lsSet(LS_KEYS.pantry, this._merge(this.getPantry(), sp, queuedIds));
 
+        // Compute merged results, then only write + repaint the collections that
+        // ACTUALLY changed. A poll that returns identical server data (the common
+        // case every 20s) must not trigger a render — re-rendering rebuilds the
+        // list innerHTML and replays the .item fadeIn animation, which the user
+        // sees as a periodic flash. Gating the emit on real change kills that.
+        let dirty = false;
+        if (Array.isArray(si)) {
+          const merged = this._merge(this.getItems(), si, queuedIds);
+          if (this._differs(this.getItems(), merged)) { lsSet(LS_KEYS.items, merged); dirty = true; }
+        }
+        if (Array.isArray(sr)) {
+          const merged = this._merge(this.getRecipes(), sr, queuedIds);
+          if (this._differs(this.getRecipes(), merged)) { lsSet(LS_KEYS.recipes, merged); dirty = true; }
+        }
+        if (Array.isArray(sp)) {
+          const merged = this._merge(this.getPantry(), sp, queuedIds);
+          if (this._differs(this.getPantry(), merged)) { lsSet(LS_KEYS.pantry, merged); dirty = true; }
+        }
+
+        // flush() may change local state too (queued writes acknowledged); capture
+        // whether the queue actually drained so we still repaint when it mattered.
+        const hadQueued = this._queue().length > 0;
         await this.flush();
-        this._emit();
+        const queueDrained = hadQueued && this._queue().length === 0;
+
+        if (dirty || queueDrained) this._emit();
       } catch (e) {
         this.online = false;
         this._emit();
       }
+    },
+
+    // Order-insensitive deep compare of two record arrays. Returns true if they
+    // differ in any way that should trigger a repaint. We sort by id and compare
+    // a canonical JSON projection so row reordering alone doesn't count as a change.
+    _differs(a, b) {
+      if (!Array.isArray(a) || !Array.isArray(b)) return true;
+      if (a.length !== b.length) return true;
+      const canon = arr => JSON.stringify(
+        arr.map(r => {
+          const keys = Object.keys(r).sort();
+          const o = {};
+          for (const k of keys) o[k] = r[k];
+          return o;
+        }).sort((x, y) => String(x.id).localeCompare(String(y.id)))
+      );
+      return canon(a) !== canon(b);
     },
 
     // Merge server rows with local, preserving local records that are still queued

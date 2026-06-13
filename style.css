@@ -374,11 +374,15 @@ button { font-family: inherit; }
   margin-bottom: 8px;
   box-shadow: var(--shadow-sm);
   user-select: none;
-  animation: fadeIn .18s ease;
   transition: opacity .25s ease, background .15s ease;
   position: relative;
   overflow: hidden;
 }
+/* Intro fade plays ONCE per row (first time it appears), via the .fresh class
+   added in renderItem/renderPantry. Re-renders (background sync poll, a checkbox
+   toggle, a qty edit) rebuild innerHTML but DON'T re-add .fresh, so existing rows
+   don't replay the animation — that replay was the periodic / on-edit flash. */
+.item.fresh { animation: fadeIn .18s ease; }
 
 /* Market signature: a colour-coded category bar down the left edge of each item */
 .item::before {

@@ -303,6 +303,17 @@ function sortByCategory(list) {
     }).join('');
 }
 
+// Tracks row ids that have already played their one-time intro fade, so a
+// re-render (sync poll, checkbox toggle, qty edit) doesn't replay it. A row
+// animates the first time its id is rendered and never again. freshClass()
+// returns ' fresh' exactly once per id, then marks it seen.
+const _animatedIds = new Set();
+function freshClass(id) {
+  if (_animatedIds.has(id)) return '';
+  _animatedIds.add(id);
+  return ' fresh';
+}
+
 function renderItem(item) {
   const info = CAT_INFO[item.category]||{emoji:'📦'};
   const who = {jarvis:' 🏠',watson:' 🤖',recipe:' 🍳'}[item.added_by]||'';
@@ -312,7 +323,7 @@ function renderItem(item) {
   // right to reveal it. The row keeps all its existing controls/refs.
   return `<div class="swipe-wrap" data-id="${item.id}">
     <div class="swipe-action swipe-action-stock" aria-hidden="true">🏪 Stock</div>
-    <div class="item swipe-item ${item.checked?'checked':''}" data-id="${item.id}" data-name="${safeName}" data-category="${item.category||'other'}">
+    <div class="item swipe-item${freshClass(item.id)} ${item.checked?'checked':''}" data-id="${item.id}" data-name="${safeName}" data-category="${item.category||'other'}">
       <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
       <div class="item-content item-content-tappable" role="button" tabindex="0" aria-label="${safeName} — tap to see recipes">
         <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
@@ -664,7 +675,7 @@ function renderPantry() {
     const info = CAT_INFO[p.category]||{emoji:'📦'};
     const qty = (p.qty && String(p.qty).trim()) ? `<span class="pantry-qty">×${esc(String(p.qty))}</span>` : '';
     const expiry = st.label ? `<span class="pantry-expiry ${st.cls}">${st.label}</span>` : '';
-    return `<div class="item pantry-item ${st.cls}" data-id="${p.id}" data-name="${esc(p.name)}" role="button" tabindex="0" aria-label="${esc(p.name)} — ${st.label||'in pantry'}. Tap to see recipes.">
+    return `<div class="item pantry-item${freshClass(p.id)} ${st.cls}" data-id="${p.id}" data-name="${esc(p.name)}" role="button" tabindex="0" aria-label="${esc(p.name)} — ${st.label||'in pantry'}. Tap to see recipes.">
       <div class="item-content">
         <div class="item-name">${info.emoji} ${esc(p.name)} ${qty}</div>
         ${expiry}
