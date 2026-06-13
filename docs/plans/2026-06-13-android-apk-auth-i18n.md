@@ -186,9 +186,16 @@ public listener is exclusively the vetted-crypto proxy, never the stdlib server.
 
 ---
 
-## Phase 3 — Auth Gate — THE PUBLIC STEP (gated; ~0.5 day + Google Console)
+## Phase 3 — Auth Gate — THE PUBLIC STEP (⏸️ PARKED 2026-06-13)
 
-> Do not start until Phases 1–2 are merged and Nitai explicitly green-lights going public.
+> **PARKED by Nitai's decision (2026-06-13):** "No funnel for now." Going the **tailnet
+> route** instead — Nat installs Tailscale once, the kitchen stays private, zero public
+> exposure. This phase (oauth2-proxy + Google OAuth + Funnel) is **deferred, not cancelled** —
+> revisit only if Nat later wants access **without** installing Tailscale. All sub-tasks below
+> stay valid for that future; nothing here was started beyond the port spike (which found
+> Funnel is not enabled tailnet-wide — see RISK #1).
+>
+> Original gate: do not start until Phases 1–2 are merged and Nitai explicitly green-lights going public.
 
 ### Task 3.1 — Resolve the Funnel port (RISK #1, below) — **build-time spike first**
 - Decide/verify which of 443/8443/10000 carries this, or restructure. **Empirical**, not assumed.
