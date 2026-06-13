@@ -284,6 +284,22 @@ ever edits through the *public* gate instead of loopback — not the case for an
    (c) accept a dedicated Funnel port and relocate one existing service.
    **I will spike this first and not promise a specific resolution until proven.**
 
+   **🔬 SPIKE RESULT (2026-06-13):** Before resolving *which* port, a harder gate surfaced:
+   **Funnel is NOT enabled on this tailnet at all.** `tailscale funnel` hangs then reports
+   *"Funnel is not enabled on your tailnet."* Per Tailscale docs, Funnel needs TWO things the
+   CLI can't fully self-serve from the VM:
+   1. **Tailnet feature-preview toggle** — admin console → Settings → Feature previews →
+      enable **Funnel**. (Account-owner action in the web console; not doable via `sudo` on the VM.)
+   2. **`funnel` nodeAttr** in the tailnet policy file targeting this node
+      (`vm-agent-ops`). The CLI auto-adds this *once* the feature is enabled.
+   Empirical granularity test (funnel a path on :10000, then revert) confirmed clean
+   revert — `AllowFunnel` returned to `null`, no exposure left behind. But the per-port-vs-
+   per-path question is **moot until Funnel is enabled tailnet-wide.**
+   **➡️ NITAI ACTION REQUIRED (one-time):** enable Funnel in the admin console feature
+   previews for tailnet `tail5ed1e6.ts.net`, then I can resume Task 3.1 and prove the port
+   resolution empirically. **Alternatively, the tailnet route (RISK #4 standing alternative)
+   needs none of this** — no Funnel, no public exposure, same APK.
+
 2. **🟠 RISK #2 — Google accepting the `.ts.net` host/port** as an authorized redirect
    URI. Cert is real Let's Encrypt (good sign), but non-standard ports occasionally bite.
    Validated empirically in Task 3.2 before declaring Phase 3 done.
