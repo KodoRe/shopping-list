@@ -1,8 +1,11 @@
 # 🛒 Shopping List
 
-_Auto-generated from the Home Kitchen app — 2026-06-12 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-06-13 23:00 UTC. Do not edit by hand._
 
-**1 to buy**
+**2 to buy**
+
+### 🥬 Produce
+- [ ] Apples
 
 ### 🧀 Dairy
 - [ ] Cottage cheese  _(via jacopo)_

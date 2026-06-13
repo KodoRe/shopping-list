@@ -7,5 +7,14 @@
     "checked": false,
     "added_by": "jacopo",
     "created_at": "2026-06-12T08:34:35.917899+00:00"
+  },
+  {
+    "id": "cc76cfd6-2f93-4228-8a4d-877f46aacf8a",
+    "name": "Apples",
+    "category": "produce",
+    "qty": "",
+    "checked": false,
+    "added_by": "app",
+    "created_at": "2026-06-13T10:13:07.431Z"
   }
 ]
