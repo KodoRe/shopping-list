@@ -198,6 +198,21 @@ function maybeSubscribeRealtime() {
 
 function renderAll() { renderList(); renderRecipesList(); renderPantry(); renderCookSelect(); }
 
+// Re-render the *transient* views that renderAll() doesn't cover, so a language
+// switch mid-flow updates them too:
+//   - an open recipe-detail (currentRecipeId set + its view visible)
+//   - an active guided-cook session (cookingRecipe set)
+//   - any open modal: close it (its content is rebuilt fresh on next open; safer
+//     than trying to re-localize arbitrary modal bodies in place)
+function rerenderOpenViews() {
+  const detailOpen = currentRecipeId &&
+    document.getElementById('recipe-detail-view')?.style.display === 'block';
+  if (detailOpen) showRecipeDetail(currentRecipeId);
+  if (cookingRecipe) renderCookMode();
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay && !overlay.hidden) closeModal();
+}
+
 // ===== SHOPPING LIST =====
 // All mutations go through Store: they apply to localStorage instantly (optimistic) and
 // sync in the background. No await on the network → add can never silently fail.
@@ -462,7 +477,7 @@ function renderRecipesList() {
       <div class="recipe-preview-meta">
         <span>🍽️ ${r.servings||'?'}</span><span>⏱️ ${r.time||'?'}</span>
         <span>📝 ${(r.ingredients||[]).length}</span>
-        ${nutr.cal?`<span>🔥 ${nutr.cal} cal</span>`:''}
+        ${nutr.cal?`<span>🔥 ${nutr.cal} ${I18n.t('nutr.calUnit')}</span>`:''}
       </div>
       ${tags?`<div class="recipe-tags">${tags}</div>`:''}
       <div class="recipe-preview-ingredients">${(r.ingredients||[]).slice(0,4).map(i=>i.name).join(', ')}${(r.ingredients||[]).length>4?'...':''}</div>
@@ -473,6 +488,7 @@ function renderRecipesList() {
 
 function showRecipeDetail(id) {
   const r = recipes.find(x => x.id === id); if (!r) return;
+  currentRecipeId = id;
   document.getElementById('recipes-list-view').style.display = 'none';
   document.getElementById('recipe-detail-view').style.display = 'block';
   const nutr = r.nutrition && r.nutrition.cal ? r.nutrition : estimateNutrition(r.ingredients);
@@ -497,7 +513,7 @@ function showRecipeDetail(id) {
       ${r.cuisine?`<span>🌍 ${esc(r.cuisine)}</span>`:''}
     </div>
     ${tags?`<div class="recipe-tags" style="margin-bottom:12px">${tags}</div>`:''}
-    ${r.source?`<a class="recipe-source-link" href="${esc(r.source)}" target="_blank">📎 ${esc(r.source_type||'Source')}</a>`:''}
+    ${r.source?`<a class="recipe-source-link" href="${esc(r.source)}" target="_blank">📎 ${esc(r.source_type||I18n.t('recipe.sourceDefault'))}</a>`:''}
     ${nutr.cal?`<div class="nutrition-card">
       <div class="nutrition-title">${I18n.t('nutr.title')}</div>
       <div class="nutrition-grid">
@@ -537,6 +553,7 @@ function showRecipeDetail(id) {
 
 // ===== RECIPE CREATION =====
 function showRecipeForm() {
+  currentRecipeId = null;
   document.getElementById('recipes-list-view').style.display = 'none';
   document.getElementById('recipe-detail-view').style.display = 'none';
   document.getElementById('recipe-form-view').style.display = 'block';
@@ -769,20 +786,19 @@ function showRecipesUsing(name, pantryId) {
   const matches = recipesUsing(name);
   let recipeHtml;
   if (!matches.length) {
-    recipeHtml = `<p class="modal-empty">No recipes use <strong>${esc(name)}</strong> yet.</p>
-            <p class="modal-hint">Add recipes in the Recipes tab — they'll show up here automatically.</p>`;
+    recipeHtml = `<p class="modal-empty">${I18n.t('modal.noRecipesUse',{name:`<strong>${esc(name)}</strong>`})}</p>
+            <p class="modal-hint">${I18n.t('modal.noRecipesHint')}</p>`;
   } else {
-    recipeHtml = `<p class="modal-sub">${matches.length} recipe${matches.length!==1?'s':''} use ${esc(name)}:</p>
-      <div class="modal-recipe-list">` +
+    recipeHtml = `<div class="modal-recipe-list">` +
       matches.map(r => `
         <button class="modal-recipe-row" data-id="${r.id}">
           <span class="modal-recipe-name">${esc(r.name)}</span>
-          <span class="modal-recipe-meta">${(r.ingredients||[]).length} ingr · ${(r.steps||[]).length} steps ›</span>
+          <span class="modal-recipe-meta">${I18n.t('modal.recipeMeta',{ingr:(r.ingredients||[]).length,steps:(r.steps||[]).length})}</span>
         </button>`).join('') +
       `</div>`;
   }
   const body = expiryEditorHtml(pantryId) + recipeHtml;
-  const el = openModal(`🍳 Recipes with ${name}`, body);
+  const el = openModal(I18n.t('modal.recipesWith',{name}), body);
   el.querySelectorAll('.modal-recipe-row').forEach(btn => {
     btn.addEventListener('click', () => { closeModal(); jumpToRecipe(btn.dataset.id); });
   });
@@ -796,19 +812,19 @@ function expiryEditorHtml(pantryId) {
   const p = pantryItems.find(i => i.id === pantryId);
   if (!p) return '';
   const st = expiryStatus(p);
-  const statusLabel = st.label || 'no expiry set';
+  const statusLabel = st.label || I18n.t('expiry.none');
   // Pre-fill the date input with the current expiry as a local YYYY-MM-DD.
   const inputVal = isoToLocalDateInput(p.expires_at);
   return `<div class="expiry-editor">
       <div class="expiry-editor-head">
-        <span class="expiry-editor-title">⏳ Expiry</span>
+        <span class="expiry-editor-title">${I18n.t('expiry.title')}</span>
         <span class="pantry-expiry ${st.cls} expiry-editor-status">${esc(statusLabel)}</span>
       </div>
       <div class="expiry-editor-controls">
         <input type="date" class="expiry-date-input" value="${inputVal}" aria-label="${I18n.t('aria.pickExpiry',{name:esc(p.name)})}">
-        <button class="expiry-save-btn" type="button">Save</button>
+        <button class="expiry-save-btn" type="button">${I18n.t('expiry.save')}</button>
       </div>
-      <button class="expiry-reset-btn" type="button">↺ Reset to estimate</button>
+      <button class="expiry-reset-btn" type="button">${I18n.t('expiry.reset')}</button>
     </div>`;
 }
 
@@ -841,6 +857,9 @@ function jumpToRecipe(id) {
 
 // ===== GUIDED COOKING =====
 let cookingRecipe = null, cookStep = 0, cookIngChecked = [];
+// Tracks the recipe whose detail view is currently open (null when on the list),
+// so a mid-view language switch can re-render it in the new language.
+let currentRecipeId = null;
 
 function renderCookSelect() {
   const grid = document.getElementById('cook-recipes-grid');
@@ -850,7 +869,7 @@ function renderCookSelect() {
   grid.innerHTML = recipes.map(r => `
     <div class="recipe-preview cook-recipe-card" data-id="${r.id}">
       <div class="recipe-preview-title">${esc(r.name)}</div>
-      <div class="recipe-preview-meta"><span>⏱️ ${r.time||'?'}</span><span>📝 ${(r.steps||[]).length} steps</span></div>
+      <div class="recipe-preview-meta"><span>⏱️ ${r.time||'?'}</span><span>📝 ${I18n.t('cook.stepsCount',{n:(r.steps||[]).length})}</span></div>
     </div>
   `).join('');
   grid.querySelectorAll('.cook-recipe-card').forEach(el => el.addEventListener('click',()=>startCooking(el.dataset.id)));
@@ -903,7 +922,7 @@ function renderCookMode() {
       <h2>${esc(r.name)}</h2>
       <div class="cook-progress"><div class="cook-progress-bar" style="width:${progress}%"></div></div>
     </div>
-    <div class="recipe-section-title">Ingredients — tick off as you prep</div>
+    <div class="recipe-section-title">${I18n.t('cook.ingredientsHint')}</div>
     <div class="cook-ings">${ingHtml}</div>
     ${stepHtml}
   `;
@@ -969,6 +988,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       Theme.apply(Theme.resolve());
       updateLangButton();
       renderAll();
+      rerenderOpenViews();
       updateSyncStatus();
     });
   }
@@ -1071,6 +1091,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Recipe & cook back buttons
   document.getElementById('recipe-back').addEventListener('click', () => {
+    currentRecipeId = null;
     document.getElementById('recipes-list-view').style.display = '';
     document.getElementById('recipe-detail-view').style.display = 'none';
   });

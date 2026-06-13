@@ -128,6 +128,20 @@ const I18n = (() => {
       'nutr.protein': 'Protein',
       'nutr.carbs': 'Carbs',
       'nutr.fat': 'Fat',
+      'nutr.calUnit': 'cal',
+      // --- expiry editor (pantry modal) ---
+      'expiry.title': '⏳ Expiry',
+      'expiry.none': 'no expiry set',
+      'expiry.save': 'Save',
+      'expiry.reset': '↺ Reset to estimate',
+      // --- cross-reference modal (recipes using an item) ---
+      'modal.recipesWith': '🍳 Recipes with {name}',
+      'modal.noRecipesUse': 'No recipes use {name} yet.',
+      'modal.noRecipesHint': "Add recipes in the Recipes tab — they'll show up here automatically.",
+      'modal.recipeMeta': '{ingr} ingr · {steps} steps ›',
+      // --- cook mode ---
+      'cook.ingredientsHint': 'Ingredients — tick off as you prep',
+      'cook.stepsCount': '{n} steps',
       'swipe.stock': 'Stock',
       'badge.inPantry': 'in pantry',
       'filter.byMeal': 'Filter recipes by meal',
@@ -274,6 +288,20 @@ const I18n = (() => {
       'nutr.protein': 'חלבון',
       'nutr.carbs': 'פחמימות',
       'nutr.fat': 'שומן',
+      'nutr.calUnit': 'קל׳',
+      // --- expiry editor (pantry modal) ---
+      'expiry.title': '⏳ תפוגה',
+      'expiry.none': 'לא הוגדרה תפוגה',
+      'expiry.save': 'שמירה',
+      'expiry.reset': '↺ איפוס להערכה',
+      // --- cross-reference modal (recipes using an item) ---
+      'modal.recipesWith': '🍳 מתכונים עם {name}',
+      'modal.noRecipesUse': 'אין עדיין מתכונים עם {name}.',
+      'modal.noRecipesHint': 'הוסיפו מתכונים בלשונית המתכונים — הם יופיעו כאן אוטומטית.',
+      'modal.recipeMeta': '{ingr} מצרכים · {steps} שלבים ›',
+      // --- cook mode ---
+      'cook.ingredientsHint': 'מצרכים — סמנו תוך כדי הכנה',
+      'cook.stepsCount': '{n} שלבים',
       'swipe.stock': 'למזווה',
       'badge.inPantry': 'במזווה',
       'filter.byMeal': 'סינון מתכונים לפי ארוחה',
