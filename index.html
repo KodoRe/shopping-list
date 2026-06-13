@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
   <div class="app">
@@ -24,18 +24,19 @@
     <!-- ===== LIST TAB ===== -->
     <main class="tab-content active" id="tab-list" role="tabpanel" aria-labelledby="nav-list">
       <header class="header">
-        <h1>Shopping List <span class="sync-dot offline" id="sync-dot" title="Offline — changes saved on this device" aria-hidden="true"></span></h1>
+        <h1><span data-i18n="header.list">Shopping List</span> <span class="sync-dot offline" id="sync-dot" title="Offline — changes saved on this device" aria-hidden="true"></span></h1>
         <div class="header-actions">
-          <button class="btn-icon" id="btn-theme" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
-          <button class="btn-icon" id="btn-sync" title="Refresh from server" aria-label="Refresh shopping list">🔄</button>
-          <button class="btn-icon" id="btn-clear-done" title="Clear checked items" aria-label="Clear checked items">🧹</button>
+          <button class="btn-icon" id="btn-lang" data-i18n-title="action.lang" data-i18n-aria="action.lang" title="Switch to Hebrew" aria-label="Switch to Hebrew">עב</button>
+          <button class="btn-icon" id="btn-theme" data-i18n-title="action.themeDark" data-i18n-aria="action.themeDark" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+          <button class="btn-icon" id="btn-sync" data-i18n-title="action.refreshList" data-i18n-aria="action.refreshList" title="Refresh from server" aria-label="Refresh shopping list">🔄</button>
+          <button class="btn-icon" id="btn-clear-done" data-i18n-title="action.clearChecked" data-i18n-aria="action.clearChecked" title="Clear checked items" aria-label="Clear checked items">🧹</button>
         </div>
       </header>
 
-      <div class="add-bar" role="group" aria-label="Add new shopping item">
-        <input type="text" id="input-item" placeholder="Add item (e.g. 3 apples)…" autocomplete="off" aria-label="New item name">
-        <select id="input-category" aria-label="Item category">
-          <option value="auto">Auto</option>
+      <div class="add-bar" role="group" data-i18n-aria="list.addAria" aria-label="Add new shopping item">
+        <input type="text" id="input-item" data-i18n-ph="list.addPlaceholder" placeholder="Add item (e.g. 3 apples)…" autocomplete="off" data-i18n-aria="aria.newItemName" aria-label="New item name">
+        <select id="input-category" data-i18n-aria="aria.itemCategory" aria-label="Item category">
+          <option value="auto" data-i18n="cat.auto">Auto</option>
           <option value="produce" aria-label="Produce">🥬</option>
           <option value="dairy" aria-label="Dairy">🧀</option>
           <option value="meat" aria-label="Meat and Fish">🥩</option>
@@ -47,14 +48,14 @@
           <option value="household" aria-label="Household">🧹</option>
           <option value="personal" aria-label="Personal care">🧴</option>
         </select>
-        <button id="btn-add" class="btn-add" aria-label="Add item to shopping list">+</button>
+        <button id="btn-add" class="btn-add" data-i18n-aria="list.addAria" aria-label="Add item to shopping list">+</button>
       </div>
 
       <div class="list-meta">
         <span id="item-count">0 items</span>
-        <div class="view-toggle" role="group" aria-label="List view mode">
-          <button class="toggle-btn active" data-view="list" aria-pressed="true">List</button>
-          <button class="toggle-btn" data-view="category" aria-pressed="false">By Aisle</button>
+        <div class="view-toggle" role="group" data-i18n-aria="aria.listViewMode" aria-label="List view mode">
+          <button class="toggle-btn active" data-view="list" data-i18n="view.list" aria-pressed="true">List</button>
+          <button class="toggle-btn" data-view="category" data-i18n="view.byAisle" aria-pressed="false">By Aisle</button>
         </div>
       </div>
 
@@ -62,8 +63,8 @@
 
       <div class="empty-state" id="empty-state">
         <div class="empty-icon" aria-hidden="true">🛒</div>
-        <p>Your list is empty</p>
-        <p class="empty-sub">Add items above, or pull ingredients from a saved recipe.</p>
+        <p data-i18n="empty.list">Your list is empty</p>
+        <p class="empty-sub" data-i18n="empty.listSub">Add items above, or pull ingredients from a saved recipe.</p>
       </div>
 
       <div class="sync-info" id="sync-info"></div>
@@ -72,49 +73,49 @@
     <!-- ===== RECIPES TAB ===== -->
     <main class="tab-content" id="tab-recipes" role="tabpanel" aria-labelledby="nav-recipes">
       <header class="header">
-        <h1>Recipes</h1>
+        <h1 data-i18n="header.recipes">Recipes</h1>
         <div class="header-actions">
-          <button class="btn-icon" id="btn-new-recipe" title="Create a recipe" aria-label="Create a new recipe">➕</button>
-          <button class="btn-icon" id="btn-sync-recipes" title="Refresh recipes" aria-label="Refresh recipes">🔄</button>
+          <button class="btn-icon" id="btn-new-recipe" data-i18n-title="action.newRecipe" data-i18n-aria="action.newRecipe" title="Create a recipe" aria-label="Create a new recipe">➕</button>
+          <button class="btn-icon" id="btn-sync-recipes" data-i18n-title="action.refreshRecipes" data-i18n-aria="action.refreshRecipes" title="Refresh recipes" aria-label="Refresh recipes">🔄</button>
         </div>
       </header>
 
-      <div class="tag-filter" id="tag-filter" role="group" aria-label="Filter recipes by meal">
-        <button class="tag-btn active" data-tag="all" aria-pressed="true">All</button>
-        <button class="tag-btn" data-tag="breakfast" aria-pressed="false">🌅 Breakfast</button>
-        <button class="tag-btn" data-tag="lunch" aria-pressed="false">☀️ Lunch</button>
-        <button class="tag-btn" data-tag="dinner" aria-pressed="false">🌙 Dinner</button>
-        <button class="tag-btn" data-tag="snack" aria-pressed="false">🍿 Snack</button>
-        <button class="tag-btn" data-tag="dessert" aria-pressed="false">🍰 Dessert</button>
+      <div class="tag-filter" id="tag-filter" role="group" data-i18n-aria="filter.byMeal" aria-label="Filter recipes by meal">
+        <button class="tag-btn active" data-tag="all" data-i18n="meal.all" aria-pressed="true">All</button>
+        <button class="tag-btn" data-tag="breakfast" aria-pressed="false">🌅 <span data-i18n="meal.breakfast">Breakfast</span></button>
+        <button class="tag-btn" data-tag="lunch" aria-pressed="false">☀️ <span data-i18n="meal.lunch">Lunch</span></button>
+        <button class="tag-btn" data-tag="dinner" aria-pressed="false">🌙 <span data-i18n="meal.dinner">Dinner</span></button>
+        <button class="tag-btn" data-tag="snack" aria-pressed="false">🍿 <span data-i18n="meal.snack">Snack</span></button>
+        <button class="tag-btn" data-tag="dessert" aria-pressed="false">🍰 <span data-i18n="meal.dessert">Dessert</span></button>
       </div>
 
       <div id="recipes-list-view">
         <div class="empty-state show" id="recipes-empty">
           <div class="empty-icon" aria-hidden="true">🍳</div>
-          <p>No recipes yet</p>
-          <p class="empty-sub">Save a recipe and it will appear here.</p>
+          <p data-i18n="empty.recipes">No recipes yet</p>
+          <p class="empty-sub" data-i18n="empty.recipesSub">Save a recipe and it will appear here.</p>
         </div>
         <div class="recipes-grid" id="recipes-grid"></div>
       </div>
 
       <div id="recipe-detail-view" style="display:none">
-        <button class="back-btn" id="recipe-back" aria-label="Back to recipes list">← Back to recipes</button>
+        <button class="back-btn" id="recipe-back" data-i18n="recipe.back" data-i18n-aria="recipe.back" aria-label="Back to recipes list">← Back to recipes</button>
         <div class="recipe-card" id="recipe-card"></div>
       </div>
 
       <div id="recipe-form-view" style="display:none">
-        <button class="back-btn" id="recipe-form-back" aria-label="Cancel and go back">← Cancel</button>
+        <button class="back-btn" id="recipe-form-back" data-i18n="recipe.cancel" data-i18n-aria="recipe.cancel" aria-label="Cancel and go back">← Cancel</button>
         <div class="recipe-form" id="recipe-form">
-          <h2 class="form-title">New Recipe</h2>
+          <h2 class="form-title" data-i18n="form.newRecipe">New Recipe</h2>
 
-          <label class="field-label" for="rf-name">Name</label>
-          <input class="field-input" id="rf-name" type="text" placeholder="e.g. Lemon Herb Chicken" autocomplete="off">
+          <label class="field-label" for="rf-name" data-i18n="form.name">Name</label>
+          <input class="field-input" id="rf-name" type="text" data-i18n-ph="form.namePlaceholder" placeholder="e.g. Lemon Herb Chicken" autocomplete="off">
 
           <div class="field-row">
             <div class="field-col">
-              <label class="field-label" for="rf-meal">Meal</label>
+              <label class="field-label" for="rf-meal" data-i18n="form.meal">Meal</label>
               <select class="field-input" id="rf-meal">
-                <option value="">— none —</option>
+                <option value="" data-i18n="meal.none">— none —</option>
                 <option value="breakfast">🌅 Breakfast</option>
                 <option value="lunch">☀️ Lunch</option>
                 <option value="dinner">🌙 Dinner</option>
@@ -123,24 +124,24 @@
               </select>
             </div>
             <div class="field-col">
-              <label class="field-label" for="rf-servings">Servings</label>
+              <label class="field-label" for="rf-servings" data-i18n="form.servings">Servings</label>
               <input class="field-input" id="rf-servings" type="text" inputmode="numeric" placeholder="4">
             </div>
             <div class="field-col">
-              <label class="field-label" for="rf-time">Time</label>
-              <input class="field-input" id="rf-time" type="text" placeholder="25 min">
+              <label class="field-label" for="rf-time" data-i18n="form.time">Time</label>
+              <input class="field-input" id="rf-time" type="text" data-i18n-ph="form.timePlaceholder" placeholder="25 min">
             </div>
           </div>
 
-          <label class="field-label">Ingredients</label>
+          <label class="field-label" data-i18n="form.ingredients">Ingredients</label>
           <div id="rf-ingredients"></div>
-          <button type="button" class="form-add-row" id="rf-add-ingredient">+ Add ingredient</button>
+          <button type="button" class="form-add-row" id="rf-add-ingredient" data-i18n="form.addIngredient">+ Add ingredient</button>
 
-          <label class="field-label">Steps</label>
+          <label class="field-label" data-i18n="form.steps">Steps</label>
           <div id="rf-steps"></div>
-          <button type="button" class="form-add-row" id="rf-add-step">+ Add step</button>
+          <button type="button" class="form-add-row" id="rf-add-step" data-i18n="form.addStep">+ Add step</button>
 
-          <button type="button" class="form-save-btn" id="rf-save">Save Recipe</button>
+          <button type="button" class="form-save-btn" id="rf-save" data-i18n="form.save">Save Recipe</button>
         </div>
       </div>
     </main>
@@ -148,15 +149,15 @@
     <!-- ===== PANTRY TAB ===== -->
     <main class="tab-content" id="tab-pantry" role="tabpanel" aria-labelledby="nav-pantry">
       <header class="header">
-        <h1>Pantry</h1>
+        <h1 data-i18n="header.pantry">Pantry</h1>
         <div class="header-actions">
-          <button class="btn-icon" id="btn-sync-pantry" title="Refresh pantry" aria-label="Refresh pantry">🔄</button>
+          <button class="btn-icon" id="btn-sync-pantry" data-i18n-title="action.refreshPantry" data-i18n-aria="action.refreshPantry" title="Refresh pantry" aria-label="Refresh pantry">🔄</button>
         </div>
       </header>
 
-      <div class="add-bar" role="group" aria-label="Add new pantry item">
-        <input type="text" id="input-pantry" placeholder="Add pantry item…" autocomplete="off" aria-label="New pantry item">
-        <button id="btn-add-pantry" class="btn-add" aria-label="Add to pantry">+</button>
+      <div class="add-bar" role="group" data-i18n-aria="pantry.addAria" aria-label="Add new pantry item">
+        <input type="text" id="input-pantry" data-i18n-ph="pantry.addPlaceholder" placeholder="Add pantry item…" autocomplete="off" data-i18n-aria="aria.newPantryItem" aria-label="New pantry item">
+        <button id="btn-add-pantry" class="btn-add" data-i18n-aria="pantry.addAria" aria-label="Add to pantry">+</button>
       </div>
 
       <div class="list-meta">
@@ -167,50 +168,50 @@
 
       <div class="empty-state" id="pantry-empty">
         <div class="empty-icon" aria-hidden="true">🏪</div>
-        <p>Pantry is empty</p>
-        <p class="empty-sub">Track what you already have at home so it won't be re-added.</p>
+        <p data-i18n="empty.pantry">Pantry is empty</p>
+        <p class="empty-sub" data-i18n="empty.pantrySub">Track what you already have at home so it won't be re-added.</p>
       </div>
     </main>
 
     <!-- ===== GUIDED COOKING TAB ===== -->
     <main class="tab-content" id="tab-cook" role="tabpanel" aria-labelledby="nav-cook">
       <header class="header">
-        <h1>Guided Cooking</h1>
+        <h1 data-i18n="header.cook">Guided Cooking</h1>
       </header>
 
       <div id="cook-select" class="cook-select">
-        <p class="cook-prompt">Choose a recipe to start cooking:</p>
+        <p class="cook-prompt" data-i18n="cook.prompt">Choose a recipe to start cooking:</p>
         <div class="recipes-grid" id="cook-recipes-grid"></div>
         <div class="empty-state show" id="cook-empty">
           <div class="empty-icon" aria-hidden="true">👨‍🍳</div>
-          <p>No recipes to cook</p>
-          <p class="empty-sub">Save a recipe first, then come back here.</p>
+          <p data-i18n="empty.cook">No recipes to cook</p>
+          <p class="empty-sub" data-i18n="empty.cookSub">Save a recipe first, then come back here.</p>
         </div>
       </div>
 
       <div id="cook-mode" style="display:none">
-        <button class="back-btn" id="cook-back" aria-label="Exit guided cooking">← Exit cooking</button>
+        <button class="back-btn" id="cook-back" data-i18n="cook.exit" data-i18n-aria="cook.exit" aria-label="Exit guided cooking">← Exit cooking</button>
         <div id="cook-content"></div>
       </div>
     </main>
 
     <!-- ===== Bottom tab bar ===== -->
-    <nav class="tab-bar" role="tablist" aria-label="Main sections">
+    <nav class="tab-bar" role="tablist" data-i18n-aria="aria.mainSections" aria-label="Main sections">
       <button class="tab active" data-tab="list" id="nav-list" role="tab" aria-selected="true" aria-controls="tab-list">
         <span class="tab-icon" aria-hidden="true">🛒</span>
-        <span class="tab-label">List</span>
+        <span class="tab-label" data-i18n="tab.list">List</span>
       </button>
       <button class="tab" data-tab="recipes" id="nav-recipes" role="tab" aria-selected="false" aria-controls="tab-recipes">
         <span class="tab-icon" aria-hidden="true">🍳</span>
-        <span class="tab-label">Recipes</span>
+        <span class="tab-label" data-i18n="tab.recipes">Recipes</span>
       </button>
       <button class="tab" data-tab="pantry" id="nav-pantry" role="tab" aria-selected="false" aria-controls="tab-pantry">
         <span class="tab-icon" aria-hidden="true">🏪</span>
-        <span class="tab-label">Pantry</span>
+        <span class="tab-label" data-i18n="tab.pantry">Pantry</span>
       </button>
       <button class="tab" data-tab="cook" id="nav-cook" role="tab" aria-selected="false" aria-controls="tab-cook">
         <span class="tab-icon" aria-hidden="true">👨‍🍳</span>
-        <span class="tab-label">Cook</span>
+        <span class="tab-label" data-i18n="tab.cook">Cook</span>
       </button>
     </nav>
   </div>
@@ -220,18 +221,19 @@
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-head">
         <h2 class="modal-title" id="modal-title"></h2>
-        <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+        <button class="modal-close" id="modal-close" data-i18n-aria="modal.close" aria-label="Close">✕</button>
       </div>
       <div class="modal-body" id="modal-body"></div>
     </div>
   </div>
 
-  <script src="config.js?v=16"></script>
-  <script src="supabase-client.js?v=16"></script>
-  <script src="js/shelf-life.js?v=16"></script>
-  <script src="js/local-api.js?v=16"></script>
-  <script src="js/store.js?v=16"></script>
-  <script src="app.js?v=16"></script>
+  <script src="js/i18n.js?v=18"></script>
+  <script src="config.js?v=18"></script>
+  <script src="supabase-client.js?v=18"></script>
+  <script src="js/shelf-life.js?v=18"></script>
+  <script src="js/local-api.js?v=18"></script>
+  <script src="js/store.js?v=18"></script>
+  <script src="app.js?v=18"></script>
   <script>
     // Register the service worker at root scope so it controls navigations and
     // can serve the shell offline. Guarded: if SW is unsupported or registration

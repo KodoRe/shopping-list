@@ -21,7 +21,7 @@
  */
 'use strict';
 
-const CACHE_VERSION = 'v16';
+const CACHE_VERSION = 'v18';
 const SHELL_CACHE = `hk-shell-${CACHE_VERSION}`;
 
 // The static shell. Query-stripped paths; the fetch handler matches by pathname
@@ -30,6 +30,7 @@ const SHELL_ASSETS = [
   '/',
   '/index.html',
   '/style.css',
+  '/js/i18n.js',
   '/config.js',
   '/supabase-client.js',
   '/js/shelf-life.js',
