@@ -1,1 +1,104 @@
-[]
+[
+  {
+    "id": "1322ce6a-5385-4b6e-8b0a-e99f76a65229",
+    "name": "Avocados",
+    "category": "produce",
+    "created_at": "2026-06-12T17:44:16.844Z"
+  },
+  {
+    "id": "f6f0bc60-5ad6-462b-8c17-f0b88414af24",
+    "name": "Chicken breast",
+    "category": "meat",
+    "created_at": "2026-06-12T17:44:40.575Z"
+  },
+  {
+    "id": "3a88fe91-f5af-4171-b1bd-b7a9f8d32f2a",
+    "name": "Cucumbers",
+    "category": "produce",
+    "created_at": "2026-06-12T17:45:12.035Z"
+  },
+  {
+    "id": "ac87d5ce-39c6-427e-a19b-a0d34574701b",
+    "name": "Bananas",
+    "category": "produce",
+    "created_at": "2026-06-12T17:45:16.824Z"
+  },
+  {
+    "id": "c1ee885b-7828-4687-98b5-efb98635ddca",
+    "name": "Lettuce",
+    "category": "produce",
+    "created_at": "2026-06-12T17:45:19.231Z"
+  },
+  {
+    "id": "2fffb8b5-0df9-488c-89ac-0c271a42dfd8",
+    "name": "Coke Zero",
+    "category": "drinks",
+    "created_at": "2026-06-12T17:45:20.967Z"
+  },
+  {
+    "id": "68fddb41-8f6f-43e7-8c7a-e3e5a4f19f61",
+    "name": "Soda",
+    "category": "drinks",
+    "created_at": "2026-06-12T17:45:22.317Z"
+  },
+  {
+    "id": "ab37194d-0ee8-4451-9365-b541ebcfbbf1",
+    "name": "Juice",
+    "category": "drinks",
+    "created_at": "2026-06-12T17:45:24.215Z"
+  },
+  {
+    "id": "d3867a02-255a-45ce-a6ab-143931e7e2a7",
+    "name": "White cheese",
+    "category": "dairy",
+    "created_at": "2026-06-12T17:45:31.556Z"
+  },
+  {
+    "id": "52e79344-d016-429b-ba61-d40430cd91bc",
+    "name": "Crisps",
+    "category": "snacks",
+    "created_at": "2026-06-12T17:45:32.746Z"
+  },
+  {
+    "id": "dbcf7722-d0f7-4ae8-a2fa-0ef9a4dde052",
+    "name": "Challah",
+    "category": "bakery",
+    "created_at": "2026-06-12T17:45:33.762Z"
+  },
+  {
+    "id": "eb59ddca-e030-417d-b84b-96b0c2c4ca7d",
+    "name": "Dishwasher tablets",
+    "category": "household",
+    "created_at": "2026-06-12T17:45:35.504Z"
+  },
+  {
+    "id": "637cfbd9-6906-4a5f-acb1-d2ce4557b3f5",
+    "name": "Tuna",
+    "category": "pantry",
+    "created_at": "2026-06-12T17:45:36.737Z"
+  },
+  {
+    "id": "d49139bb-9a13-490e-94ff-1cb9e197ae21",
+    "name": "Greek yogurt",
+    "category": "dairy",
+    "created_at": "2026-06-12T17:45:38.329Z"
+  },
+  {
+    "id": "7a6e31dc-157c-4a43-b768-1b9eea549503",
+    "name": "Heavy cream",
+    "category": "dairy",
+    "created_at": "2026-06-12T17:45:40.364Z"
+  },
+  {
+    "id": "0bfd4f66-c1df-4173-aca4-637b68010ee0",
+    "name": "Apples",
+    "category": "produce",
+    "created_at": "2026-06-12T17:45:42.659Z"
+  },
+  {
+    "id": "052dc91d-8c06-4398-b967-07009e6a23c1",
+    "name": "Cheese slices",
+    "category": "dairy",
+    "created_at": "2026-06-12T17:45:44.400Z"
+  }
+]

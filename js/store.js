@@ -158,6 +158,18 @@
       return true;
     },
 
+    updatePantryItem(id, updates) {
+      const pantry = this.getPantry();
+      const p = pantry.find(i => i.id === id);
+      if (!p) return null;
+      Object.assign(p, updates);
+      lsSet(LS_KEYS.pantry, pantry);
+      this._enqueue({ kind: 'updatePantryItem', table: 'pantry', id, payload: updates });
+      this._emit();
+      this._flushSoon();
+      return p;
+    },
+
     // ---- RECIPES ----
     addRecipe(fields) {
       const r = Object.assign(
@@ -236,6 +248,7 @@
         case 'updateItem': return backend.updateItem(op.id, op.payload);
         case 'removeItem': return backend.deleteItem(op.id);
         case 'addPantryItem': return backend.addPantryItem(op.payload);
+        case 'updatePantryItem': return backend.updatePantryItem(op.id, op.payload);
         case 'removePantryItem': return backend.deletePantryItem(op.id);
         case 'addRecipe': return backend.addRecipe(op.payload);
         default: return null;

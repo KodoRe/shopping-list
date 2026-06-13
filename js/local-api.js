@@ -62,6 +62,7 @@
     // ---- pantry ----
     async getPantry() { return (await http('GET', '/pantry')) || []; },
     async addPantryItem(item) { return one(await http('POST', '/pantry', item)); },
+    async updatePantryItem(id, updates) { return await http('PATCH', `/pantry/${id}`, updates); },
     async deletePantryItem(id) { return await http('DELETE', `/pantry/${id}`); },
 
     // ---- realtime ----
