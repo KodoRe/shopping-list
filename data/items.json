@@ -13,8 +13,17 @@
     "name": "Apples",
     "category": "produce",
     "qty": "",
-    "checked": false,
+    "checked": true,
     "added_by": "app",
     "created_at": "2026-06-13T10:13:07.431Z"
+  },
+  {
+    "id": "c8806bdb-1623-4480-93d1-74690ec98be8",
+    "name": "Carrots, cut on the oblique",
+    "category": "produce",
+    "qty": "3 chunky",
+    "checked": false,
+    "added_by": "recipe",
+    "created_at": "2026-06-19T19:55:31.541Z"
   }
 ]
