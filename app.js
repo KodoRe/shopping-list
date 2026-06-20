@@ -262,10 +262,58 @@ function removeItem(id) {
   renderList(); updateSyncStatus();
 }
 
+// Single seam for "an item's qty changed" (from the tap-to-pick qty modal).
+// Re-renders the list so the qty button label reflects the new value.
 function updateQty(id, qty) {
   Store.updateItem(id, { qty });
   items = Store.getItems();
-  updateSyncStatus();
+  renderList(); updateSyncStatus();
+}
+
+// Recipe ingredient quantities are free text ("3 chunks", "2 cloves", "a pinch").
+// The shopping-list qty is numeric-only, so when a recipe ingredient is added to
+// the list we extract a leading number ("3 chunks" → "3"); non-numeric qty
+// ("a pinch", "½ cup") becomes blank rather than carrying junk text into the list.
+function numericQty(raw) {
+  const m = String(raw || '').match(/^\s*(\d+(?:\.\d+)?)/);
+  return m ? m[1] : '';
+}
+
+// Tap-to-pick quantity modal. The shopping-list qty is numeric-only by design
+// (1–12 grid), with a deliberate "Custom…" escape for the rare unit case (2kg,
+// 500g) and "Clear" to blank it. Replaces the old free-text qty input.
+function openQtyPicker(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  const cur = String(item.qty || '');
+  const grid = [1,2,3,4,5,6,7,8,9,10,11,12]
+    .map(n => `<button type="button" class="qty-opt${cur===String(n)?' selected':''}" data-qty="${n}">${n}</button>`)
+    .join('');
+  const body = `<div class="qty-picker">
+    <div class="qty-grid">${grid}</div>
+    <div class="qty-picker-actions">
+      <button type="button" class="qty-clear${cur===''?' selected':''}">Clear</button>
+      <button type="button" class="qty-custom-btn">Custom…</button>
+    </div>
+    <div class="qty-custom" hidden>
+      <input type="text" class="qty-custom-input" placeholder="e.g. 2kg, 500g" value="${esc(cur)}" autocomplete="off">
+      <button type="button" class="qty-custom-save">Set</button>
+    </div>
+  </div>`;
+  const el = openModal(`Quantity · ${item.name}`, body);
+  const commit = (q) => { updateQty(id, q); closeModal(); };
+  el.querySelectorAll('.qty-opt').forEach(b => b.addEventListener('click', () => commit(b.dataset.qty)));
+  el.querySelector('.qty-clear').addEventListener('click', () => commit(''));
+  const customWrap = el.querySelector('.qty-custom');
+  el.querySelector('.qty-custom-btn').addEventListener('click', () => {
+    customWrap.hidden = false;
+    const inp = el.querySelector('.qty-custom-input'); inp.focus(); inp.select();
+  });
+  const saveCustom = () => commit(el.querySelector('.qty-custom-input').value.trim());
+  el.querySelector('.qty-custom-save').addEventListener('click', saveCustom);
+  el.querySelector('.qty-custom-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); saveCustom(); }
+  });
 }
 
 function clearChecked() {
@@ -329,7 +377,7 @@ function renderItem(item) {
         <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
         <div class="item-meta">${info.emoji}${who}</div>
       </div>
-      <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}" aria-label="Quantity for ${safeName}">
+      <button type="button" class="item-qty${item.qty?'':' item-qty-empty'}" data-id="${item.id}" aria-label="Quantity for ${safeName}${item.qty?`, currently ${esc(String(item.qty))}`:', not set'}">${item.qty?esc(String(item.qty)):'qty'}</button>
       <button class="item-delete" data-id="${item.id}" aria-label="Remove ${safeName}">✕</button>
     </div>
   </div>`;
@@ -338,7 +386,7 @@ function renderItem(item) {
 function bindItemEvents(c) {
   c.querySelectorAll('.item-checkbox').forEach(cb => cb.addEventListener('click',()=>toggleItem(cb.closest('.item').dataset.id)));
   c.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',()=>removeItem(b.dataset.id)));
-  c.querySelectorAll('.item-qty').forEach(inp => inp.addEventListener('change',()=>updateQty(inp.dataset.id,inp.value)));
+  c.querySelectorAll('.item-qty').forEach(b => b.addEventListener('click',()=>openQtyPicker(b.dataset.id)));
   // Tap the name block → "what can I make with this?"
   c.querySelectorAll('.item-content-tappable').forEach(el => {
     const open = () => showRecipesUsing(el.closest('.item').dataset.name);
@@ -476,7 +524,7 @@ function showRecipeDetail(id) {
     btn.addEventListener('click', async () => {
       if (btn.classList.contains('added')) return;
       const ing = ings[parseInt(btn.dataset.idx)];
-      await addItem(ing.name, null, ing.qty, 'recipe');
+      await addItem(ing.name, null, numericQty(ing.qty), 'recipe');
       btn.textContent = '✓ Added'; btn.classList.add('added');
     });
   });
@@ -485,7 +533,7 @@ function showRecipeDetail(id) {
     for (const ing of ings) {
       const inList = items.some(i => i.name.toLowerCase()===ing.name.toLowerCase()&&!i.checked);
       const inPantry = pantryItems.some(p => p.name.toLowerCase()===ing.name.toLowerCase());
-      if (!inList && !inPantry) { await addItem(ing.name, null, ing.qty, 'recipe'); added++; }
+      if (!inList && !inPantry) { await addItem(ing.name, null, numericQty(ing.qty), 'recipe'); added++; }
     }
     card.querySelectorAll('.ing-add-btn').forEach(b=>{b.textContent='✓ Added';b.classList.add('added');});
     toast(`Added ${added} items (skipped pantry items)`);

@@ -492,14 +492,85 @@ button { font-family: inherit; }
   color: var(--text);
   font-size: 13px;
   font-weight: 600;
-  width: 50px;
+  min-width: 50px;
+  height: 34px;
   text-align: center;
   outline: none;
+  cursor: pointer;
+  font-family: inherit;
   transition: border-color .15s ease, background .15s ease;
 }
-.item-qty:focus {
+.item-qty:hover, .item-qty:focus-visible {
   border-color: var(--accent);
   background: var(--bg-card);
+}
+.item-qty:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.item-qty-empty { color: var(--text-muted); font-weight: 500; }
+
+/* ===== Quantity picker modal (tap-to-pick number) ===== */
+.qty-picker { display: flex; flex-direction: column; gap: 14px; }
+.qty-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.qty-opt {
+  height: 52px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color .15s ease, background .15s ease, transform .05s ease;
+}
+.qty-opt:hover { border-color: var(--accent); }
+.qty-opt:active { transform: scale(.95); }
+.qty-opt.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+.qty-picker-actions { display: flex; gap: 8px; }
+.qty-clear, .qty-custom-btn {
+  flex: 1;
+  height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color .15s ease, background .15s ease;
+}
+.qty-clear:hover, .qty-custom-btn:hover { border-color: var(--accent); }
+.qty-clear.selected { background: var(--bg-surface); border-color: var(--accent); }
+.qty-custom { display: flex; gap: 8px; }
+.qty-custom[hidden] { display: none; }
+.qty-custom-input {
+  flex: 1;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  outline: none;
+  font-family: inherit;
+}
+.qty-custom-input:focus { border-color: var(--accent); background: var(--bg-card); }
+.qty-custom-save {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .item-delete {
