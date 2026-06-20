@@ -8,6 +8,43 @@ const CAT_INFO = {
   other:{emoji:'📦',label:'Other',order:11},
 };
 
+// --- i18n glue --------------------------------------------------------------
+// Category display label, language-aware. Emoji stays language-neutral and is
+// read from CAT_INFO directly; only the human label is translated.
+function catLabel(c) {
+  return (typeof I18n !== 'undefined') ? I18n.t('cat.' + c) : (CAT_INFO[c]?.label || c);
+}
+
+// Walk the static DOM and fill every data-i18n* hook from the string table.
+// data-i18n      -> textContent
+// data-i18n-ph   -> placeholder attribute
+// data-i18n-aria -> aria-label attribute
+// data-i18n-title-> title attribute
+// Called once on init and again on every language change (idempotent).
+function applyStaticI18n() {
+  if (typeof I18n === 'undefined') return;
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    el.textContent = I18n.t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach((el) => {
+    el.setAttribute('placeholder', I18n.t(el.getAttribute('data-i18n-ph')));
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+    el.setAttribute('aria-label', I18n.t(el.getAttribute('data-i18n-aria')));
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+    el.setAttribute('title', I18n.t(el.getAttribute('data-i18n-title')));
+  });
+}
+
+// Language button shows the LANGUAGE YOU'D SWITCH TO (so EN users see "עב",
+// Hebrew users see "EN"). Label is intentionally the script name, not translated.
+function updateLangButton() {
+  const btn = document.getElementById('btn-lang');
+  if (!btn || typeof I18n === 'undefined') return;
+  btn.textContent = I18n.getLang() === 'he' ? 'EN' : 'עב';
+}
+
 const AUTO_CAT = {
   apple:'produce',banana:'produce',tomato:'produce',potato:'produce',onion:'produce',
   garlic:'produce',lemon:'produce',lime:'produce',avocado:'produce',cucumber:'produce',
@@ -103,7 +140,7 @@ const Theme = {
     const btn = document.getElementById('btn-theme');
     if (btn) {
       btn.textContent = theme === 'dark' ? '☀️' : '🌙';
-      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+      btn.setAttribute('aria-label', I18n.t(theme === 'dark' ? 'action.themeLight' : 'action.themeDark'));
     }
   },
   init() { this.apply(this.resolve()); },
@@ -139,11 +176,11 @@ function updateSyncStatus() {
   const pending = Store.pendingCount();
   if (Store.online) {
     dot.className = 'sync-dot online';
-    dot.title = pending ? `Synced — ${pending} change(s) pending` : 'Synced';
+    dot.title = pending ? I18n.t('sync.pending', { count: pending }) : I18n.t('sync.synced');
     maybeSubscribeRealtime();   // only open the websocket once we know the backend is alive
   } else {
     dot.className = 'sync-dot offline';
-    dot.title = 'Offline — changes saved on this device';
+    dot.title = I18n.t('sync.offline');
   }
 }
 
@@ -160,6 +197,21 @@ function maybeSubscribeRealtime() {
 }
 
 function renderAll() { renderList(); renderRecipesList(); renderPantry(); renderCookSelect(); }
+
+// Re-render the *transient* views that renderAll() doesn't cover, so a language
+// switch mid-flow updates them too:
+//   - an open recipe-detail (currentRecipeId set + its view visible)
+//   - an active guided-cook session (cookingRecipe set)
+//   - any open modal: close it (its content is rebuilt fresh on next open; safer
+//     than trying to re-localize arbitrary modal bodies in place)
+function rerenderOpenViews() {
+  const detailOpen = currentRecipeId &&
+    document.getElementById('recipe-detail-view')?.style.display === 'block';
+  if (detailOpen) showRecipeDetail(currentRecipeId);
+  if (cookingRecipe) renderCookMode();
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay && !overlay.hidden) closeModal();
+}
 
 // ===== SHOPPING LIST =====
 // All mutations go through Store: they apply to localStorage instantly (optimistic) and
@@ -179,7 +231,7 @@ function addItem(name, category, qty, addedBy) {
     qty: parsedQty, added_by: addedBy || 'app',
   });
   items = Store.getItems();
-  renderList(); updateSyncStatus(); toast(`Added ${parsedName} ✅`);
+  renderList(); updateSyncStatus(); toast(I18n.t('toast.added', { name: parsedName }));
 }
 
 // Checkbox = pure check/uncheck toggle. It marks an item done (strike-through)
@@ -233,14 +285,14 @@ function stockToPantry(id) {
   pantryItems = Store.getPantry();
   renderList(); renderPantry(); updateSyncStatus();
 
-  toastAction(`✅ ${item.name} → pantry`, 'Undo', () => {
+  toastAction(I18n.t('toast.movedPantry', { name: item.name }), I18n.t('action.undo'), () => {
     // Reverse: undo the pantry change, then restore the list item as it was.
     try { pantryUndo(); } catch (e) {}
     Store.addItem(snapshot);
     items = Store.getItems();
     pantryItems = Store.getPantry();
     renderList(); renderPantry(); updateSyncStatus();
-    toast(`Restored ${item.name} to the list`);
+    toast(I18n.t('toast.restored', { name: item.name }));
   });
 }
 
@@ -271,10 +323,10 @@ function updateQty(id, qty) {
 function clearChecked() {
   const checkedCount = items.filter(i => i.checked).length;
   if (!checkedCount) return;
-  if (!confirm(`Remove ${checkedCount} checked?`)) return;
+  if (!confirm(I18n.t('confirm.removeChecked', { count: checkedCount }))) return;
   const n = Store.clearChecked();
   items = Store.getItems();
-  renderList(); updateSyncStatus(); toast(`Cleared ${n} items`);
+  renderList(); updateSyncStatus(); toast(I18n.t('toast.cleared', { count: n }));
 }
 
 function renderList() {
@@ -282,7 +334,7 @@ function renderList() {
   const empty = document.getElementById('empty-state');
   const count = document.getElementById('item-count');
   const unc = items.filter(i => !i.checked).length;
-  count.textContent = `${unc} item${unc!==1?'s':''}${items.length>unc?` (${items.length-unc} done)`:''}`;
+  count.textContent = I18n.itemCountWithDone(unc, items.length - unc);
   if (!items.length) { container.innerHTML = ''; empty.classList.add('show'); return; }
   empty.classList.remove('show');
   const sorted = viewMode === 'category' ? sortByCategory(items) : sortFlat(items);
@@ -298,7 +350,7 @@ function sortByCategory(list) {
   return Object.keys(g).sort((a,b)=>(CAT_INFO[a]?.order||99)-(CAT_INFO[b]?.order||99))
     .map(c => {
       const info = CAT_INFO[c]||{emoji:'📦',label:c};
-      return `<div class="category-header">${info.emoji} ${info.label}</div>`
+      return `<div class="category-header">${info.emoji} ${catLabel(c)}</div>`
         + g[c].sort((a,b)=>a.checked?1:b.checked?-1:0).map(renderItem).join('');
     }).join('');
 }
@@ -322,15 +374,15 @@ function renderItem(item) {
   // Swipe wrapper: a fixed "stock" action sits behind the row; the row slides
   // right to reveal it. The row keeps all its existing controls/refs.
   return `<div class="swipe-wrap" data-id="${item.id}">
-    <div class="swipe-action swipe-action-stock" aria-hidden="true">🏪 Stock</div>
+    <div class="swipe-action swipe-action-stock" aria-hidden="true">🏪 ${I18n.t('swipe.stock')}</div>
     <div class="item swipe-item${freshClass(item.id)} ${item.checked?'checked':''}" data-id="${item.id}" data-name="${safeName}" data-category="${item.category||'other'}">
-      <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${item.checked?'Uncheck':'Check'} ${safeName}">${item.checked?'✓':''}</button>
-      <div class="item-content item-content-tappable" role="button" tabindex="0" aria-label="${safeName} — tap to see recipes">
-        <div class="item-name">${safeName}${inPantry?' <span class="in-pantry">in pantry</span>':''}</div>
+      <button type="button" class="item-checkbox" aria-pressed="${item.checked?'true':'false'}" aria-label="${I18n.t(item.checked?'aria.uncheck':'aria.check',{name:safeName})}">${item.checked?'✓':''}</button>
+      <div class="item-content item-content-tappable" role="button" tabindex="0" aria-label="${I18n.t('aria.tapRecipes',{name:safeName})}">
+        <div class="item-name">${safeName}${inPantry?` <span class="in-pantry">${I18n.t('badge.inPantry')}</span>`:''}</div>
         <div class="item-meta">${info.emoji}${who}</div>
       </div>
-      <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="qty" data-id="${item.id}" aria-label="Quantity for ${safeName}">
-      <button class="item-delete" data-id="${item.id}" aria-label="Remove ${safeName}">✕</button>
+      <input type="text" class="item-qty" value="${esc(item.qty||'')}" placeholder="${I18n.t('form.qtyPlaceholder')}" data-id="${item.id}" aria-label="${I18n.t('aria.qtyFor',{name:safeName})}">
+      <button class="item-delete" data-id="${item.id}" aria-label="${I18n.t('aria.remove',{name:safeName})}">✕</button>
     </div>
   </div>`;
 }
@@ -383,8 +435,12 @@ function bindSwipe(row) {
     }
     if (!horizontal) return;
     if (e.cancelable) e.preventDefault();
-    const travel = Math.max(0, Math.min(dx, SWIPE_MAX)); // only rightward
-    row.style.transform = `translateX(${travel}px)`;
+    // Direction-aware: LTR reveals the stock action by dragging the row toward the
+    // INLINE-END (rightward, dir=+1); RTL mirrors it (leftward, dir=-1) so the
+    // gesture matches where the "🏪 Stock" layer actually sits after RTL flip.
+    const dir = (typeof I18n !== 'undefined' && I18n.isRtl()) ? -1 : 1;
+    const travel = Math.max(0, Math.min(dx * dir, SWIPE_MAX)); // reveal distance, always ≥0
+    row.style.transform = `translateX(${travel * dir}px)`;     // actual visual translate
     row.classList.toggle('swipe-armed', travel >= SWIPE_THRESHOLD);
   };
   const onUp = (e) => {
@@ -393,7 +449,8 @@ function bindSwipe(row) {
     row.style.transition = '';
     row.classList.remove('swipe-armed');
     if (wrap) wrap.classList.remove('swiping');
-    const fired = horizontal && dx >= SWIPE_THRESHOLD;
+    const dir = (typeof I18n !== 'undefined' && I18n.isRtl()) ? -1 : 1;
+    const fired = horizontal && dx * dir >= SWIPE_THRESHOLD;
     row.style.transform = '';
     try { row.releasePointerCapture(e.pointerId); } catch (_) {}
     if (fired) stockToPantry(row.dataset.id);
@@ -420,7 +477,7 @@ function renderRecipesList() {
       <div class="recipe-preview-meta">
         <span>🍽️ ${r.servings||'?'}</span><span>⏱️ ${r.time||'?'}</span>
         <span>📝 ${(r.ingredients||[]).length}</span>
-        ${nutr.cal?`<span>🔥 ${nutr.cal} cal</span>`:''}
+        ${nutr.cal?`<span>🔥 ${nutr.cal} ${I18n.t('nutr.calUnit')}</span>`:''}
       </div>
       ${tags?`<div class="recipe-tags">${tags}</div>`:''}
       <div class="recipe-preview-ingredients">${(r.ingredients||[]).slice(0,4).map(i=>i.name).join(', ')}${(r.ingredients||[]).length>4?'...':''}</div>
@@ -431,6 +488,7 @@ function renderRecipesList() {
 
 function showRecipeDetail(id) {
   const r = recipes.find(x => x.id === id); if (!r) return;
+  currentRecipeId = id;
   document.getElementById('recipes-list-view').style.display = 'none';
   document.getElementById('recipe-detail-view').style.display = 'block';
   const nutr = r.nutrition && r.nutrition.cal ? r.nutrition : estimateNutrition(r.ingredients);
@@ -440,9 +498,9 @@ function showRecipeDetail(id) {
     const inList = items.some(i => i.name.toLowerCase()===ing.name.toLowerCase()&&!i.checked);
     const inPantry = pantryItems.some(p => p.name.toLowerCase()===ing.name.toLowerCase());
     return `<div class="ingredient-row">
-      <span class="ing-text">${esc(ing.name)}${inPantry?' <span class="in-pantry">✓ pantry</span>':''}</span>
+      <span class="ing-text">${esc(ing.name)}${inPantry?` <span class="in-pantry">${I18n.t('recipe.inPantryTag')}</span>`:''}</span>
       <span class="ing-qty">${esc(ing.qty||'')}</span>
-      <button class="ing-add-btn ${inList?'added':''}" data-idx="${idx}">${inList?'✓ Added':inPantry?'Have it':'+ Add'}</button>
+      <button class="ing-add-btn ${inList?'added':''}" data-idx="${idx}">${inList?I18n.t('recipe.added'):inPantry?I18n.t('recipe.haveIt'):I18n.t('recipe.addOne')}</button>
     </div>`;
   }).join('');
   const steps = (r.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('');
@@ -455,21 +513,21 @@ function showRecipeDetail(id) {
       ${r.cuisine?`<span>🌍 ${esc(r.cuisine)}</span>`:''}
     </div>
     ${tags?`<div class="recipe-tags" style="margin-bottom:12px">${tags}</div>`:''}
-    ${r.source?`<a class="recipe-source-link" href="${esc(r.source)}" target="_blank">📎 ${esc(r.source_type||'Source')}</a>`:''}
+    ${r.source?`<a class="recipe-source-link" href="${esc(r.source)}" target="_blank">📎 ${esc(r.source_type||I18n.t('recipe.sourceDefault'))}</a>`:''}
     ${nutr.cal?`<div class="nutrition-card">
-      <div class="nutrition-title">Nutritional Estimate (total)</div>
+      <div class="nutrition-title">${I18n.t('nutr.title')}</div>
       <div class="nutrition-grid">
-        <div class="nutr-item"><span class="nutr-val">${nutr.cal}</span><span class="nutr-label">Calories</span></div>
-        <div class="nutr-item"><span class="nutr-val">${nutr.protein}g</span><span class="nutr-label">Protein</span></div>
-        <div class="nutr-item"><span class="nutr-val">${nutr.carbs}g</span><span class="nutr-label">Carbs</span></div>
-        <div class="nutr-item"><span class="nutr-val">${nutr.fat}g</span><span class="nutr-label">Fat</span></div>
+        <div class="nutr-item"><span class="nutr-val">${nutr.cal}</span><span class="nutr-label">${I18n.t('nutr.calories')}</span></div>
+        <div class="nutr-item"><span class="nutr-val">${nutr.protein}g</span><span class="nutr-label">${I18n.t('nutr.protein')}</span></div>
+        <div class="nutr-item"><span class="nutr-val">${nutr.carbs}g</span><span class="nutr-label">${I18n.t('nutr.carbs')}</span></div>
+        <div class="nutr-item"><span class="nutr-val">${nutr.fat}g</span><span class="nutr-label">${I18n.t('nutr.fat')}</span></div>
       </div>
     </div>`:''}
-    <div class="recipe-section-title">Ingredients</div>
-    <button class="recipe-btn-add-all" id="add-all-btn">🛒 Add Missing to List</button>
+    <div class="recipe-section-title">${I18n.t('recipe.sectionIngredients')}</div>
+    <button class="recipe-btn-add-all" id="add-all-btn">${I18n.t('recipe.addAll')}</button>
     ${ingHtml}
-    ${steps?`<div class="recipe-section-title">Instructions</div><div class="recipe-instructions"><ol>${steps}</ol></div>`:''}
-    <button class="cook-start-btn" data-id="${r.id}">👨‍🍳 Start Cooking</button>
+    ${steps?`<div class="recipe-section-title">${I18n.t('recipe.sectionInstructions')}</div><div class="recipe-instructions"><ol>${steps}</ol></div>`:''}
+    <button class="cook-start-btn" data-id="${r.id}">${I18n.t('recipe.startCooking')}</button>
   `;
 
   card.querySelectorAll('.ing-add-btn').forEach(btn => {
@@ -477,7 +535,7 @@ function showRecipeDetail(id) {
       if (btn.classList.contains('added')) return;
       const ing = ings[parseInt(btn.dataset.idx)];
       await addItem(ing.name, null, ing.qty, 'recipe');
-      btn.textContent = '✓ Added'; btn.classList.add('added');
+      btn.textContent = I18n.t('recipe.added'); btn.classList.add('added');
     });
   });
   document.getElementById('add-all-btn').addEventListener('click', async () => {
@@ -487,14 +545,15 @@ function showRecipeDetail(id) {
       const inPantry = pantryItems.some(p => p.name.toLowerCase()===ing.name.toLowerCase());
       if (!inList && !inPantry) { await addItem(ing.name, null, ing.qty, 'recipe'); added++; }
     }
-    card.querySelectorAll('.ing-add-btn').forEach(b=>{b.textContent='✓ Added';b.classList.add('added');});
-    toast(`Added ${added} items (skipped pantry items)`);
+    card.querySelectorAll('.ing-add-btn').forEach(b=>{b.textContent=I18n.t('recipe.added');b.classList.add('added');});
+    toast(I18n.t('toast.addedMissing', { count: added }));
   });
   card.querySelector('.cook-start-btn')?.addEventListener('click', () => startCooking(id));
 }
 
 // ===== RECIPE CREATION =====
 function showRecipeForm() {
+  currentRecipeId = null;
   document.getElementById('recipes-list-view').style.display = 'none';
   document.getElementById('recipe-detail-view').style.display = 'none';
   document.getElementById('recipe-form-view').style.display = 'block';
@@ -517,9 +576,9 @@ function addIngredientRow(name, qty) {
   const row = document.createElement('div');
   row.className = 'form-ing-row';
   row.innerHTML = `
-    <input type="text" class="field-input rf-ing-name" placeholder="Ingredient" value="${esc(name||'')}" autocomplete="off">
-    <input type="text" class="field-input rf-ing-qty" placeholder="qty" value="${esc(qty||'')}" autocomplete="off">
-    <button type="button" class="form-row-del" aria-label="Remove ingredient">✕</button>`;
+    <input type="text" class="field-input rf-ing-name" placeholder="${I18n.t('form.ingredientPlaceholder')}" value="${esc(name||'')}" autocomplete="off">
+    <input type="text" class="field-input rf-ing-qty" placeholder="${I18n.t('form.qtyPlaceholder')}" value="${esc(qty||'')}" autocomplete="off">
+    <button type="button" class="form-row-del" aria-label="${I18n.t('aria.removeIngredient')}">✕</button>`;
   row.querySelector('.form-row-del').addEventListener('click', () => row.remove());
   wrap.appendChild(row);
 }
@@ -531,8 +590,8 @@ function addStepRow(text) {
   row.className = 'form-step-row';
   row.innerHTML = `
     <span class="form-step-num">${n}</span>
-    <textarea class="field-input rf-step-text" rows="2" placeholder="Describe this step…">${esc(text||'')}</textarea>
-    <button type="button" class="form-row-del" aria-label="Remove step">✕</button>`;
+    <textarea class="field-input rf-step-text" rows="2" placeholder="${I18n.t('form.stepPlaceholder')}">${esc(text||'')}</textarea>
+    <button type="button" class="form-row-del" aria-label="${I18n.t('aria.removeStep')}">✕</button>`;
   row.querySelector('.form-row-del').addEventListener('click', () => { row.remove(); renumberSteps(); });
   wrap.appendChild(row);
 }
@@ -543,7 +602,7 @@ function renumberSteps() {
 
 function saveRecipeForm() {
   const name = document.getElementById('rf-name').value.trim();
-  if (!name) { toast('Give the recipe a name first'); return; }
+  if (!name) { toast(I18n.t('toast.needName')); return; }
   const meal = document.getElementById('rf-meal').value;
   const servings = document.getElementById('rf-servings').value.trim();
   const time = document.getElementById('rf-time').value.trim();
@@ -564,7 +623,7 @@ function saveRecipeForm() {
   recipes = Store.getRecipes();
   hideRecipeForm();
   renderRecipesList(); renderCookSelect(); updateSyncStatus();
-  toast(`Saved “${name}” 🍳`);
+  toast(I18n.t('toast.recipeSaved', { name }));
 }
 
 // ===== PANTRY =====
@@ -574,7 +633,7 @@ function addPantryItem(name) {
   const stamp = (typeof ShelfLife !== 'undefined') ? ShelfLife.stampExpiry(clean) : {};
   Store.addPantryItem(Object.assign({ name: clean, category: guessCategory(clean) }, stamp));
   pantryItems = Store.getPantry();
-  renderPantry(); renderList(); updateSyncStatus(); toast(`${clean} added to pantry 🏪`);
+  renderPantry(); renderList(); updateSyncStatus(); toast(I18n.t('toast.addedToPantry', { name: clean }));
 }
 
 function removePantryItem(id) {
@@ -613,13 +672,13 @@ function localDateInputToIso(dateStr) {
 // Manually override a pantry item's expiry to a user-picked date.
 function setPantryExpiry(id, dateStr) {
   const iso = localDateInputToIso(dateStr);
-  if (!iso) { toast('That date looks off — try again'); return; }
+  if (!iso) { toast(I18n.t('toast.dateOff')); return; }
   const p = pantryItems.find(i => i.id === id);
   Store.updatePantryItem(id, { expires_at: iso });
   pantryItems = Store.getPantry();
   renderPantry(); updateSyncStatus();
   const st = expiryStatus({ expires_at: iso });
-  toast(`${p ? p.name : 'Item'} now ${st.label || 'updated'} ⏳`);
+  toast(I18n.t('toast.expiryUpdated', { name: p ? p.name : I18n.t('misc.item'), label: st.label || I18n.t('misc.updated') }));
 }
 
 // Reset a pantry item's expiry back to the auto estimate (shelf-life from stock date).
@@ -630,12 +689,12 @@ function resetPantryExpiry(id, name) {
   const stamp = (typeof ShelfLife !== 'undefined')
     ? ShelfLife.stampExpiry(name || p.name, p.stocked_at)
     : {};
-  if (!stamp.expires_at) { toast('Could not estimate — pick a date instead'); return; }
+  if (!stamp.expires_at) { toast(I18n.t('toast.noEstimate')); return; }
   Store.updatePantryItem(id, { expires_at: stamp.expires_at, shelf_life_days: stamp.shelf_life_days });
   pantryItems = Store.getPantry();
   renderPantry(); updateSyncStatus();
   const st = expiryStatus({ expires_at: stamp.expires_at });
-  toast(`${p.name} reset to estimate — ${st.label || 'updated'} ↺`);
+  toast(I18n.t('toast.expiryReset', { name: p.name, label: st.label || I18n.t('misc.updated') }));
 }
 
 // Days between today (local midnight) and an ISO date (YYYY-MM-DD). Negative = past.
@@ -652,11 +711,7 @@ function daysUntil(iso) {
 function expiryStatus(p) {
   const d = daysUntil(p.expires_at);
   if (d === null) return { cls:'', label:'', sort: 9e9 };
-  let label;
-  if (d < 0)        label = d === -1 ? 'expired yesterday' : `expired ${-d} days ago`;
-  else if (d === 0) label = 'expires today';
-  else if (d === 1) label = 'expires tomorrow';
-  else              label = `expires in ${d} days`;
+  const label = I18n.expiryLabel(d);
   const cls = d <= 0 ? 'expiry-bad' : (d <= 3 ? 'expiry-warn' : 'expiry-ok');
   return { cls, label, sort: d };
 }
@@ -665,7 +720,7 @@ function renderPantry() {
   const container = document.getElementById('pantry-container');
   const empty = document.getElementById('pantry-empty');
   const count = document.getElementById('pantry-count');
-  count.textContent = `${pantryItems.length} item${pantryItems.length!==1?'s':''}`;
+  count.textContent = I18n.itemCount(pantryItems.length);
   if (!pantryItems.length) { container.innerHTML = ''; empty.classList.add('show'); return; }
   empty.classList.remove('show');
   // Most urgent (soonest/already expired) float to the top.
@@ -675,12 +730,12 @@ function renderPantry() {
     const info = CAT_INFO[p.category]||{emoji:'📦'};
     const qty = (p.qty && String(p.qty).trim()) ? `<span class="pantry-qty">×${esc(String(p.qty))}</span>` : '';
     const expiry = st.label ? `<span class="pantry-expiry ${st.cls}">${st.label}</span>` : '';
-    return `<div class="item pantry-item${freshClass(p.id)} ${st.cls}" data-id="${p.id}" data-name="${esc(p.name)}" role="button" tabindex="0" aria-label="${esc(p.name)} — ${st.label||'in pantry'}. Tap to see recipes.">
+    return `<div class="item pantry-item${freshClass(p.id)} ${st.cls}" data-id="${p.id}" data-name="${esc(p.name)}" role="button" tabindex="0" aria-label="${I18n.t('aria.pantryRow',{name:esc(p.name),label:st.label||I18n.t('badge.inPantry')})}">
       <div class="item-content">
         <div class="item-name">${info.emoji} ${esc(p.name)} ${qty}</div>
         ${expiry}
       </div>
-      <button class="item-delete" data-id="${p.id}" aria-label="Remove ${esc(p.name)} from pantry" title="Remove from pantry">✕</button>
+      <button class="item-delete" data-id="${p.id}" aria-label="${I18n.t('aria.removePantry',{name:esc(p.name)})}" title="${I18n.t('aria.removePantry',{name:esc(p.name)})}">✕</button>
     </div>`;
   }).join('');
   container.querySelectorAll('.item-delete').forEach(b => b.addEventListener('click',(e)=>{ e.stopPropagation(); removePantryItem(b.dataset.id); }));
@@ -731,20 +786,19 @@ function showRecipesUsing(name, pantryId) {
   const matches = recipesUsing(name);
   let recipeHtml;
   if (!matches.length) {
-    recipeHtml = `<p class="modal-empty">No recipes use <strong>${esc(name)}</strong> yet.</p>
-            <p class="modal-hint">Add recipes in the Recipes tab — they'll show up here automatically.</p>`;
+    recipeHtml = `<p class="modal-empty">${I18n.t('modal.noRecipesUse',{name:`<strong>${esc(name)}</strong>`})}</p>
+            <p class="modal-hint">${I18n.t('modal.noRecipesHint')}</p>`;
   } else {
-    recipeHtml = `<p class="modal-sub">${matches.length} recipe${matches.length!==1?'s':''} use ${esc(name)}:</p>
-      <div class="modal-recipe-list">` +
+    recipeHtml = `<div class="modal-recipe-list">` +
       matches.map(r => `
         <button class="modal-recipe-row" data-id="${r.id}">
           <span class="modal-recipe-name">${esc(r.name)}</span>
-          <span class="modal-recipe-meta">${(r.ingredients||[]).length} ingr · ${(r.steps||[]).length} steps ›</span>
+          <span class="modal-recipe-meta">${I18n.t('modal.recipeMeta',{ingr:(r.ingredients||[]).length,steps:(r.steps||[]).length})}</span>
         </button>`).join('') +
       `</div>`;
   }
   const body = expiryEditorHtml(pantryId) + recipeHtml;
-  const el = openModal(`🍳 Recipes with ${name}`, body);
+  const el = openModal(I18n.t('modal.recipesWith',{name}), body);
   el.querySelectorAll('.modal-recipe-row').forEach(btn => {
     btn.addEventListener('click', () => { closeModal(); jumpToRecipe(btn.dataset.id); });
   });
@@ -758,19 +812,19 @@ function expiryEditorHtml(pantryId) {
   const p = pantryItems.find(i => i.id === pantryId);
   if (!p) return '';
   const st = expiryStatus(p);
-  const statusLabel = st.label || 'no expiry set';
+  const statusLabel = st.label || I18n.t('expiry.none');
   // Pre-fill the date input with the current expiry as a local YYYY-MM-DD.
   const inputVal = isoToLocalDateInput(p.expires_at);
   return `<div class="expiry-editor">
       <div class="expiry-editor-head">
-        <span class="expiry-editor-title">⏳ Expiry</span>
+        <span class="expiry-editor-title">${I18n.t('expiry.title')}</span>
         <span class="pantry-expiry ${st.cls} expiry-editor-status">${esc(statusLabel)}</span>
       </div>
       <div class="expiry-editor-controls">
-        <input type="date" class="expiry-date-input" value="${inputVal}" aria-label="Pick a new expiry date for ${esc(p.name)}">
-        <button class="expiry-save-btn" type="button">Save</button>
+        <input type="date" class="expiry-date-input" value="${inputVal}" aria-label="${I18n.t('aria.pickExpiry',{name:esc(p.name)})}">
+        <button class="expiry-save-btn" type="button">${I18n.t('expiry.save')}</button>
       </div>
-      <button class="expiry-reset-btn" type="button">↺ Reset to estimate</button>
+      <button class="expiry-reset-btn" type="button">${I18n.t('expiry.reset')}</button>
     </div>`;
 }
 
@@ -781,7 +835,7 @@ function bindExpiryEditor(root, pantryId, name) {
   const resetBtn = root.querySelector('.expiry-reset-btn');
   if (saveBtn && input) {
     saveBtn.addEventListener('click', () => {
-      if (!input.value) { toast('Pick a date first'); return; }
+      if (!input.value) { toast(I18n.t('toast.pickDate')); return; }
       setPantryExpiry(pantryId, input.value);
       closeModal();
     });
@@ -803,6 +857,9 @@ function jumpToRecipe(id) {
 
 // ===== GUIDED COOKING =====
 let cookingRecipe = null, cookStep = 0, cookIngChecked = [];
+// Tracks the recipe whose detail view is currently open (null when on the list),
+// so a mid-view language switch can re-render it in the new language.
+let currentRecipeId = null;
 
 function renderCookSelect() {
   const grid = document.getElementById('cook-recipes-grid');
@@ -812,7 +869,7 @@ function renderCookSelect() {
   grid.innerHTML = recipes.map(r => `
     <div class="recipe-preview cook-recipe-card" data-id="${r.id}">
       <div class="recipe-preview-title">${esc(r.name)}</div>
-      <div class="recipe-preview-meta"><span>⏱️ ${r.time||'?'}</span><span>📝 ${(r.steps||[]).length} steps</span></div>
+      <div class="recipe-preview-meta"><span>⏱️ ${r.time||'?'}</span><span>📝 ${I18n.t('cook.stepsCount',{n:(r.steps||[]).length})}</span></div>
     </div>
   `).join('');
   grid.querySelectorAll('.cook-recipe-card').forEach(el => el.addEventListener('click',()=>startCooking(el.dataset.id)));
@@ -849,11 +906,11 @@ function renderCookMode() {
 
   const stepHtml = steps.length ? `
     <div class="cook-step-card">
-      <div class="cook-step-num">Step ${cookStep + 1} of ${steps.length}</div>
+      <div class="cook-step-num">${I18n.t('cook.step',{n:cookStep + 1,total:steps.length})}</div>
       <div class="cook-step-text">${esc(steps[cookStep])}</div>
       <div class="cook-step-nav">
-        <button class="cook-nav-btn" id="cook-prev" ${cookStep===0?'disabled':''}>← Previous</button>
-        <button class="cook-nav-btn cook-nav-next" id="cook-next">${cookStep===steps.length-1?'🎉 Done!':'Next →'}</button>
+        <button class="cook-nav-btn" id="cook-prev" ${cookStep===0?'disabled':''}>${I18n.t('cook.prevBtn')}</button>
+        <button class="cook-nav-btn cook-nav-next" id="cook-next">${cookStep===steps.length-1?I18n.t('cook.done'):I18n.t('cook.next')}</button>
       </div>
     </div>
   ` : '';
@@ -865,7 +922,7 @@ function renderCookMode() {
       <h2>${esc(r.name)}</h2>
       <div class="cook-progress"><div class="cook-progress-bar" style="width:${progress}%"></div></div>
     </div>
-    <div class="recipe-section-title">Ingredients — tick off as you prep</div>
+    <div class="recipe-section-title">${I18n.t('cook.ingredientsHint')}</div>
     <div class="cook-ings">${ingHtml}</div>
     ${stepHtml}
   `;
@@ -881,7 +938,7 @@ function renderCookMode() {
   document.getElementById('cook-prev')?.addEventListener('click', () => { if (cookStep > 0) { cookStep--; renderCookMode(); } });
   document.getElementById('cook-next')?.addEventListener('click', () => {
     if (cookStep < steps.length - 1) { cookStep++; renderCookMode(); }
-    else { toast('🎉 Recipe complete! Enjoy your meal!'); exitCooking(); }
+    else { toast(I18n.t('cook.complete')); exitCooking(); }
   });
 }
 
@@ -919,6 +976,22 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s||''
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
+  // i18n FIRST: detect language, set <html lang/dir>, fill static strings, so the
+  // very first paint is already in the right language + direction (no flash of English).
+  if (typeof I18n !== 'undefined') {
+    I18n.init();
+    applyStaticI18n();
+    // On language change: re-fill static DOM, re-render all dynamic views, refresh
+    // the theme button's aria (it's set imperatively, not via data-i18n).
+    I18n.onChange(() => {
+      applyStaticI18n();
+      Theme.apply(Theme.resolve());
+      updateLangButton();
+      renderAll();
+      rerenderOpenViews();
+      updateSyncStatus();
+    });
+  }
   // Load the shelf-life map FIRST and await it, so the very first optimistic
   // pantry stamp has the correct expiry (no "wrong estimate flashes then
   // corrects on sync" race). It's a tiny static JSON; if it fails we fall back
@@ -944,6 +1017,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Theme toggle (Theme.init already ran early; re-apply so the button icon is set)
   Theme.apply(Theme.resolve());
   document.getElementById('btn-theme').addEventListener('click', () => Theme.toggle());
+
+  // Language toggle (EN/עב). Flips language + direction; I18n.onChange re-renders.
+  updateLangButton();
+  document.getElementById('btn-lang')?.addEventListener('click', () => {
+    if (typeof I18n !== 'undefined') I18n.toggle();
+  });
 
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
@@ -1012,6 +1091,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Recipe & cook back buttons
   document.getElementById('recipe-back').addEventListener('click', () => {
+    currentRecipeId = null;
     document.getElementById('recipes-list-view').style.display = '';
     document.getElementById('recipe-detail-view').style.display = 'none';
   });

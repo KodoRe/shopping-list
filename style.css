@@ -140,8 +140,7 @@ button { font-family: inherit; }
 .tab-bar {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   display: flex;
   background: var(--bg-card);
   border-top: 1px solid var(--border);
@@ -214,7 +213,7 @@ button { font-family: inherit; }
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  margin-left: 4px;
+  margin-inline-start: 4px;
   vertical-align: middle;
   background: var(--text-muted);
   transition: background .3s ease;
@@ -388,10 +387,11 @@ button { font-family: inherit; }
 .item::before {
   content: "";
   position: absolute;
-  left: 0; top: 0; bottom: 0;
+  inset-inline-start: 0; top: 0; bottom: 0;
   width: 5px;
   background: var(--cat-default);
-  border-radius: var(--r-md) 0 0 var(--r-md);
+  border-start-start-radius: var(--r-md);
+  border-end-start-radius: var(--r-md);
 }
 .item[data-category="produce"]::before  { background: var(--cat-produce); }
 .item[data-category="dairy"]::before     { background: var(--cat-dairy); }
@@ -418,7 +418,7 @@ button { font-family: inherit; }
   inset: 0;
   display: flex;
   align-items: center;
-  padding-left: 18px;
+  padding-inline-start: 18px;
   font-weight: 700;
   font-size: 14px;
   color: #fff;
@@ -537,7 +537,7 @@ button { font-family: inherit; }
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
-  margin-left: 6px;
+  margin-inline-start: 6px;
 }
 .pantry-expiry {
   display: inline-block;
@@ -548,12 +548,12 @@ button { font-family: inherit; }
   border-radius: 999px;
   line-height: 1.4;
 }
-.pantry-expiry.expiry-ok   { color: var(--text-muted); background: transparent; padding-left: 0; }
+.pantry-expiry.expiry-ok   { color: var(--text-muted); background: transparent; padding-inline-start: 0; }
 .pantry-expiry.expiry-warn { color: var(--warn);   background: var(--warn-soft); }
 .pantry-expiry.expiry-bad  { color: var(--danger); background: var(--danger-soft); }
 /* Left accent bar to make urgency scannable at a glance */
-.pantry-item.expiry-warn { border-left: 3px solid var(--warn); }
-.pantry-item.expiry-bad  { border-left: 3px solid var(--danger); }
+.pantry-item.expiry-warn { border-inline-start: 3px solid var(--warn); }
+.pantry-item.expiry-bad  { border-inline-start: 3px solid var(--danger); }
 
 /* ===== Modal overlay (recipe cross-reference) ===== */
 .modal-overlay {
@@ -609,7 +609,7 @@ button { font-family: inherit; }
 .modal-recipe-list { display: flex; flex-direction: column; gap: 8px; }
 .modal-recipe-row {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  width: 100%; text-align: left; cursor: pointer;
+  width: 100%; text-align: start; cursor: pointer;
   background: var(--bg); border: 1px solid var(--border);
   border-radius: var(--r-md); padding: 12px 14px;
   transition: border-color .15s ease, background .15s ease;
@@ -684,7 +684,7 @@ button { font-family: inherit; }
   background: var(--accent-soft);
   padding: 2px 7px;
   border-radius: 999px;
-  margin-left: 6px;
+  margin-inline-start: 6px;
   vertical-align: middle;
 }
 
@@ -750,7 +750,7 @@ button { font-family: inherit; }
 .recipe-preview::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0; inset-inline: 0;
   height: 6px;
   background: linear-gradient(90deg,
     var(--cat-produce) 0%, var(--cat-dairy) 35%,
@@ -899,7 +899,7 @@ button { font-family: inherit; }
   font-size: 13px;
   font-weight: 600;
   min-width: 40px;
-  text-align: right;
+  text-align: end;
 }
 
 .ingredient-row .ing-add-btn {
@@ -932,7 +932,7 @@ button { font-family: inherit; }
   line-height: 1.75;
   color: var(--text);
 }
-.recipe-instructions ol { padding-left: 22px; }
+.recipe-instructions ol { padding-inline-start: 22px; }
 .recipe-instructions li { margin-bottom: 10px; }
 .recipe-instructions li::marker { color: var(--accent-recipe); font-weight: 700; }
 
@@ -1042,7 +1042,7 @@ textarea.field-input { resize: vertical; line-height: 1.45; }
   border-radius: 999px;
   background: var(--accent-recipe-soft);
   color: var(--accent-recipe);
-  margin-right: 4px;
+  margin-inline-end: 4px;
   margin-top: 4px;
   text-transform: capitalize;
 }
@@ -1258,7 +1258,7 @@ textarea.field-input { resize: vertical; line-height: 1.45; }
   display: flex;
   align-items: center;
   gap: 14px;
-  text-align: left;
+  text-align: start;
 }
 .toast-btn {
   flex: none;
