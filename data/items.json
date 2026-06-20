@@ -3,7 +3,7 @@
     "id": "3e934f86-36ca-47f9-b908-117e75045cb9",
     "name": "Cottage cheese",
     "category": "dairy",
-    "qty": "",
+    "qty": "1",
     "checked": false,
     "added_by": "jacopo",
     "created_at": "2026-06-12T08:34:35.917899+00:00"
@@ -21,9 +21,18 @@
     "id": "c8806bdb-1623-4480-93d1-74690ec98be8",
     "name": "Carrots, cut on the oblique",
     "category": "produce",
-    "qty": "3 chunky",
+    "qty": "5",
     "checked": false,
     "added_by": "recipe",
     "created_at": "2026-06-19T19:55:31.541Z"
+  },
+  {
+    "id": "d50caadc-c0b5-4488-bfdb-dd64e8415da5",
+    "name": "Beef chuck roast (chuck only)",
+    "category": "meat",
+    "qty": "2kg",
+    "checked": false,
+    "added_by": "recipe",
+    "created_at": "2026-06-20T11:16:33.431Z"
   }
 ]
