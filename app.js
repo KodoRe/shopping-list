@@ -286,6 +286,12 @@ function openQtyPicker(id) {
   const item = items.find(i => i.id === id);
   if (!item) return;
   const cur = String(item.qty || '');
+  // Parse an existing weight ("500g" / "2kg" / "1.5kg") so reopening the Weight
+  // panel pre-fills the number and selects the right unit. A plain count ("3")
+  // leaves the panel at defaults — the grid owns unitless counts.
+  const wm = cur.match(/^\s*(\d+(?:\.\d+)?)\s*(kg|g)\s*$/i);
+  const curNum = wm ? wm[1] : '';
+  const curUnit = wm ? wm[2].toLowerCase() : 'g';
   const grid = [1,2,3,4,5,6,7,8,9,10,11,12]
     .map(n => `<button type="button" class="qty-opt${cur===String(n)?' selected':''}" data-qty="${n}">${n}</button>`)
     .join('');
@@ -293,10 +299,16 @@ function openQtyPicker(id) {
     <div class="qty-grid">${grid}</div>
     <div class="qty-picker-actions">
       <button type="button" class="qty-clear${cur===''?' selected':''}">Clear</button>
-      <button type="button" class="qty-custom-btn">Custom…</button>
+      <button type="button" class="qty-custom-btn">Weight…</button>
     </div>
     <div class="qty-custom" hidden>
-      <input type="text" class="qty-custom-input" placeholder="e.g. 2kg, 500g" value="${esc(cur)}" autocomplete="off">
+      <div class="qty-custom-row">
+        <input type="number" inputmode="decimal" min="0" step="any" class="qty-custom-input" placeholder="0" value="${esc(curNum)}" autocomplete="off">
+        <div class="qty-unit-toggle" role="group" aria-label="Unit">
+          <button type="button" class="qty-unit${curUnit==='g'?' selected':''}" data-unit="g" aria-pressed="${curUnit==='g'}">g</button>
+          <button type="button" class="qty-unit${curUnit==='kg'?' selected':''}" data-unit="kg" aria-pressed="${curUnit==='kg'}">kg</button>
+        </div>
+      </div>
       <button type="button" class="qty-custom-save">Set</button>
     </div>
   </div>`;
@@ -309,7 +321,27 @@ function openQtyPicker(id) {
     customWrap.hidden = false;
     const inp = el.querySelector('.qty-custom-input'); inp.focus(); inp.select();
   });
-  const saveCustom = () => commit(el.querySelector('.qty-custom-input').value.trim());
+  // g/kg segmented toggle — tracks the chosen unit; default from parsed value.
+  let unit = curUnit;
+  const unitBtns = el.querySelectorAll('.qty-unit');
+  unitBtns.forEach(b => b.addEventListener('click', () => {
+    unit = b.dataset.unit;
+    unitBtns.forEach(x => { const on = x === b; x.classList.toggle('selected', on); x.setAttribute('aria-pressed', on); });
+    el.querySelector('.qty-custom-input').focus();
+  }));
+  // Numbers only: parse the input at the boundary, reject empty/non-positive,
+  // commit "<n><unit>" (e.g. "500g", "2kg"). type=number still lets "e"/"-"
+  // through on some browsers, so parseFloat + >0 is the real guard.
+  const saveCustom = () => {
+    const inp = el.querySelector('.qty-custom-input');
+    const num = parseFloat(inp.value);
+    if (!isFinite(num) || num <= 0) {
+      inp.focus(); inp.classList.add('shake');
+      setTimeout(() => inp.classList.remove('shake'), 400);
+      return;
+    }
+    commit(`${String(num)}${unit}`);   // String(2.0)→"2", String(1.5)→"1.5"
+  };
   el.querySelector('.qty-custom-save').addEventListener('click', saveCustom);
   el.querySelector('.qty-custom-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); saveCustom(); }
