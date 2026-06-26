@@ -1,8 +1,8 @@
 # 🛒 Shopping List
 
-_Auto-generated from the Home Kitchen app — 2026-06-20 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-06-26 23:00 UTC. Do not edit by hand._
 
-**3 to buy** · 1 done
+**6 to buy** · 7 done
 
 ### 🥬 Produce
 - [ ] Carrots, cut on the oblique — 5  _(via recipe)_
@@ -10,8 +10,19 @@ _Auto-generated from the Home Kitchen app — 2026-06-20 23:00 UTC. Do not edit 
 ### 🧀 Dairy
 - [ ] Cottage cheese — 1  _(via jacopo)_
 
-### 🥩 Meat & Fish
-- [ ] Beef chuck roast (chuck only) — 2kg  _(via recipe)_
+### 🍞 Bakery
+- [ ] Challah  _(via jacopo)_
+
+### 🥤 Drinks
+- [ ] Coke Zero  _(via jacopo)_
+- [ ] Soda  _(via jacopo)_
+- [ ] Juice  _(via jacopo)_
 
 ### ✅ Done
 - [x] Apples
+- [x] Watermelon
+- [x] Sweet potatoes
+- [x] Crisps
+- [x] Pringles
+- [x] Pizza squares
+- [x] Broccoli — 2 packs

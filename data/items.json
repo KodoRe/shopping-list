@@ -27,12 +27,93 @@
     "created_at": "2026-06-19T19:55:31.541Z"
   },
   {
-    "id": "d50caadc-c0b5-4488-bfdb-dd64e8415da5",
-    "name": "Beef chuck roast (chuck only)",
-    "category": "meat",
-    "qty": "2kg",
+    "id": "d3ab8716-72f9-4537-b71a-399521659fee",
+    "name": "Watermelon",
+    "category": "produce",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "0fe364fd-8a09-4507-ac2d-7548526089cf",
+    "name": "Sweet potatoes",
+    "category": "produce",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "0be0b091-65de-499f-b32d-a4823257d643",
+    "name": "Coke Zero",
+    "category": "drinks",
+    "qty": "",
     "checked": false,
-    "added_by": "recipe",
-    "created_at": "2026-06-20T11:16:33.431Z"
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "fc919112-10b7-4fe2-89e1-e2f743ad1ab9",
+    "name": "Soda",
+    "category": "drinks",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "0991c5ec-15ca-4684-add5-8482b5d6b8c3",
+    "name": "Juice",
+    "category": "drinks",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "041664ac-5c52-4b50-84e9-9e9789a92bbf",
+    "name": "Crisps",
+    "category": "snacks",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "2639aeea-b229-4a33-9cc1-1c8ddbd8d736",
+    "name": "Pringles",
+    "category": "snacks",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "33a81d32-eb10-4d67-86f3-dc6b2c5afd9b",
+    "name": "Pizza squares",
+    "category": "frozen",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "04aa99a3-42e8-4dcf-a304-36c4e132ee1a",
+    "name": "Broccoli",
+    "category": "produce",
+    "qty": "2 packs",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "a2753be1-4232-4d70-8614-2b3806a58356",
+    "name": "Challah",
+    "category": "bakery",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T05:57:38.478953+00:00"
   }
 ]

@@ -1,35 +1,18 @@
 # 🏪 Pantry
 
-_Auto-generated from the Home Kitchen app — 2026-06-12 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-06-26 23:00 UTC. Do not edit by hand._
 
-**17 items on hand**
+**8 items on hand**
 
 ### 🥬 Produce
 - Avocados
 - Cucumbers
-- Bananas
 - Lettuce
 - Apples
 
-### 🧀 Dairy
-- White cheese
-- Greek yogurt
-- Heavy cream
-- Cheese slices
-
 ### 🥩 Meat & Fish
+- Smoked turkey breast pastrami — ⏳ expires in 3 days
 - Chicken breast
-
-### 🍞 Bakery
-- Challah
-
-### 🥤 Drinks
-- Coke Zero
-- Soda
-- Juice
-
-### 🍿 Snacks
-- Crisps
 
 ### 🥫 Pantry
 - Tuna

@@ -1,12 +1,43 @@
 # 🍳 Recipes
 
-_Auto-generated from the Home Kitchen app — 2026-06-12 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-06-26 23:00 UTC. Do not edit by hand._
 
-**3 recipes**
+**4 recipes**
 
+- [Easy Honey Lemon Garlic Glazed Salmon](#easy-honey-lemon-garlic-glazed-salmon)
 - [Horseradish Yogurt Sauce](#horseradish-yogurt-sauce)
 - [Pot Roast (House Version)](#pot-roast--house-version)
 - [Morning Oats (non-jump days)](#morning-oats--non-jump-days)
+
+---
+
+## Easy Honey Lemon Garlic Glazed Salmon
+🍽️ 1 · ⏱️ ~15 min · 🏷️ salmon, dinner, high-protein, quick, to-try
+
+📎 [Social](Social media recipe (Instagram/TikTok))
+
+**Ingredients**
+
+- 120-150g Salmon fillet (cut into 2 pieces if thick)
+- 1 tbsp Honey
+- juice of 1/2 lemon Lemon juice
+- 1 tsp Soy sauce
+- 1-2 small Garlic clove, minced or grated
+- 1 tsp Chili flakes
+- 1 tsp Olive oil (for pan)
+- 1 tsp Butter (for finishing)
+- to taste Salt, black pepper, paprika (to season)
+- to taste Fresh parsley, chopped (to garnish)
+
+**Steps**
+
+1. Season the salmon with salt, black pepper, and paprika.
+2. In a small bowl, mix together honey, lemon juice, soy sauce, garlic, salt and chili flakes.
+3. Heat olive oil in a pan over medium heat. Place salmon skin-side down and cook for 4 minutes until the skin is crispy. Flip and cook the other side for 2 minutes.
+4. Pour in the glaze and let it bubble for a minute, spooning it over the salmon as it thickens and coats the fish.
+5. Add a bit of butter at the end, stirring it through the sauce.
+6. Garnish with fresh chopped parsley and serve with extra glaze spooned over the top.
+7. Serve with rice, roasted veggies, or a simple salad.
 
 ---
 

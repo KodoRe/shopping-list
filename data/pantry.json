@@ -18,52 +18,10 @@
     "created_at": "2026-06-12T17:45:12.035Z"
   },
   {
-    "id": "ac87d5ce-39c6-427e-a19b-a0d34574701b",
-    "name": "Bananas",
-    "category": "produce",
-    "created_at": "2026-06-12T17:45:16.824Z"
-  },
-  {
     "id": "c1ee885b-7828-4687-98b5-efb98635ddca",
     "name": "Lettuce",
     "category": "produce",
     "created_at": "2026-06-12T17:45:19.231Z"
-  },
-  {
-    "id": "2fffb8b5-0df9-488c-89ac-0c271a42dfd8",
-    "name": "Coke Zero",
-    "category": "drinks",
-    "created_at": "2026-06-12T17:45:20.967Z"
-  },
-  {
-    "id": "68fddb41-8f6f-43e7-8c7a-e3e5a4f19f61",
-    "name": "Soda",
-    "category": "drinks",
-    "created_at": "2026-06-12T17:45:22.317Z"
-  },
-  {
-    "id": "ab37194d-0ee8-4451-9365-b541ebcfbbf1",
-    "name": "Juice",
-    "category": "drinks",
-    "created_at": "2026-06-12T17:45:24.215Z"
-  },
-  {
-    "id": "d3867a02-255a-45ce-a6ab-143931e7e2a7",
-    "name": "White cheese",
-    "category": "dairy",
-    "created_at": "2026-06-12T17:45:31.556Z"
-  },
-  {
-    "id": "52e79344-d016-429b-ba61-d40430cd91bc",
-    "name": "Crisps",
-    "category": "snacks",
-    "created_at": "2026-06-12T17:45:32.746Z"
-  },
-  {
-    "id": "dbcf7722-d0f7-4ae8-a2fa-0ef9a4dde052",
-    "name": "Challah",
-    "category": "bakery",
-    "created_at": "2026-06-12T17:45:33.762Z"
   },
   {
     "id": "eb59ddca-e030-417d-b84b-96b0c2c4ca7d",
@@ -78,27 +36,19 @@
     "created_at": "2026-06-12T17:45:36.737Z"
   },
   {
-    "id": "d49139bb-9a13-490e-94ff-1cb9e197ae21",
-    "name": "Greek yogurt",
-    "category": "dairy",
-    "created_at": "2026-06-12T17:45:38.329Z"
-  },
-  {
-    "id": "7a6e31dc-157c-4a43-b768-1b9eea549503",
-    "name": "Heavy cream",
-    "category": "dairy",
-    "created_at": "2026-06-12T17:45:40.364Z"
-  },
-  {
     "id": "0bfd4f66-c1df-4173-aca4-637b68010ee0",
     "name": "Apples",
     "category": "produce",
     "created_at": "2026-06-12T17:45:42.659Z"
   },
   {
-    "id": "052dc91d-8c06-4398-b967-07009e6a23c1",
-    "name": "Cheese slices",
-    "category": "dairy",
-    "created_at": "2026-06-12T17:45:44.400Z"
+    "id": "8560d10e-df3c-4b46-81b2-308028dc8ce1",
+    "name": "Smoked turkey breast pastrami",
+    "category": "meat",
+    "qty": "",
+    "shelf_life_days": 3,
+    "stocked_at": "2026-06-26T13:16:14.715872+00:00",
+    "expires_at": "2026-06-29T13:16:14.715872+00:00",
+    "created_at": "2026-06-26T13:16:14.715872+00:00"
   }
 ]

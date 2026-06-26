@@ -1,5 +1,80 @@
 [
   {
+    "id": "honey-lemon-garlic-salmon",
+    "name": "Easy Honey Lemon Garlic Glazed Salmon",
+    "tags": [
+      "salmon",
+      "dinner",
+      "high-protein",
+      "quick",
+      "to-try"
+    ],
+    "servings": "1",
+    "time": "~15 min",
+    "cuisine": null,
+    "source": "Social media recipe (Instagram/TikTok)",
+    "source_type": "Social",
+    "ingredients": [
+      {
+        "name": "Salmon fillet (cut into 2 pieces if thick)",
+        "qty": "120-150g"
+      },
+      {
+        "name": "Honey",
+        "qty": "1 tbsp"
+      },
+      {
+        "name": "Lemon juice",
+        "qty": "juice of 1/2 lemon"
+      },
+      {
+        "name": "Soy sauce",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Garlic clove, minced or grated",
+        "qty": "1-2 small"
+      },
+      {
+        "name": "Chili flakes",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Olive oil (for pan)",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Butter (for finishing)",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Salt, black pepper, paprika (to season)",
+        "qty": "to taste"
+      },
+      {
+        "name": "Fresh parsley, chopped (to garnish)",
+        "qty": "to taste"
+      }
+    ],
+    "steps": [
+      "Season the salmon with salt, black pepper, and paprika.",
+      "In a small bowl, mix together honey, lemon juice, soy sauce, garlic, salt and chili flakes.",
+      "Heat olive oil in a pan over medium heat. Place salmon skin-side down and cook for 4 minutes until the skin is crispy. Flip and cook the other side for 2 minutes.",
+      "Pour in the glaze and let it bubble for a minute, spooning it over the salmon as it thickens and coats the fish.",
+      "Add a bit of butter at the end, stirring it through the sauce.",
+      "Garnish with fresh chopped parsley and serve with extra glaze spooned over the top.",
+      "Serve with rice, roasted veggies, or a simple salad."
+    ],
+    "nutrition": {
+      "cal": 430.0,
+      "protein": 28.0,
+      "carbs": 18.0,
+      "fat": 25.0
+    },
+    "added_by": "jacopo",
+    "created_at": "2026-06-26T15:47:08.691899+00:00"
+  },
+  {
     "id": "vault-horseradish-yogurt-sauce",
     "name": "Horseradish Yogurt Sauce",
     "tags": [
