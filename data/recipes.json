@@ -1,5 +1,157 @@
 [
   {
+    "id": "vault-quick-chili-oil",
+    "name": "Chili Oil (5-min + infused upgrade)",
+    "tags": [
+      "condiment",
+      "asian",
+      "staple",
+      "quick"
+    ],
+    "servings": "1 small jar",
+    "time": "5-10 min",
+    "cuisine": "Asian",
+    "source": "Homemade; infused version adapted from Made With Lau (Cantonese)",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Coarse red chili flakes (pul biber / gochugaru / Kirkland)",
+        "qty": "3-4 tbsp"
+      },
+      {
+        "name": "High-oleic canola oil (or neutral high-smoke-point)",
+        "qty": "1/2 cup"
+      },
+      {
+        "name": "Salt",
+        "qty": "pinch"
+      },
+      {
+        "name": "[Infused ver] Fresh ginger",
+        "qty": "2-3 slices"
+      },
+      {
+        "name": "[Infused ver] Garlic cloves, smashed",
+        "qty": "2-3"
+      },
+      {
+        "name": "[Infused ver] Onion or shallot, sliced",
+        "qty": "1/2 small"
+      },
+      {
+        "name": "[Infused ver, optional] Star anise (rinsed), sesame seeds, sesame oil",
+        "qty": "1 / 1 tsp / 1/2 tsp"
+      }
+    ],
+    "steps": [
+      "OIL + TEMP (both versions): high-oleic canola is ideal. Pour at ~150C / 300F, NOT hotter - hot oil scorches flakes bitter (esp. seed-heavy Kirkland). Shimmering, not smoking.",
+      "== VERSION A (5-min) ==",
+      "A1. Chili flakes + pinch salt in a heatproof bowl.",
+      "A2. Heat oil to ~150C (shimmering).",
+      "A3. Pour hot oil over flakes - it sizzles. Stir. Cool, jar it.",
+      "== VERSION B (~10-min infused, RECOMMENDED) ==",
+      "B1. Heat oil to ~150C. A piece of onion should bubble gently.",
+      "B2. Fry ginger ~15s, add garlic, add onion (+ rinsed star anise if using). Stir constantly ~2.5-3 min until browned; lower heat if too hot.",
+      "B3. Fish out ALL aromatics (squeeze oil back in). Nothing fresh stays in the oil = food-safe + freezer-friendly.",
+      "B4. If oil overheated, add ~1 tbsp room-temp oil to bring back to ~150C.",
+      "B5. Pour hot oil over the chili flakes - sizzle, stir.",
+      "B6. Optional: stir in sesame seeds, then a final 1/2 tsp sesame oil for aroma. Cool, jar it.",
+      "STORAGE: fridge 3-4 weeks; freezer months (oil goes thick/cloudy, not solid - scoop straight out, leave headspace in glass).",
+      "TIP - Zero-effort cheat: skip the batch entirely, bloom a pinch of flakes in the pot with the garlic+ginger when you make the ramen."
+    ],
+    "nutrition": {
+      "cal": 0.0,
+      "protein": 0.0,
+      "carbs": 0.0,
+      "fat": 0.0
+    },
+    "added_by": "jacopo",
+    "created_at": "2026-07-06T21:28:58.339562+00:00"
+  },
+  {
+    "id": "vault-quick-miso-chili-ramen",
+    "name": "Quick Miso-Chili Ramen (tantanmen-style)",
+    "tags": [
+      "ramen",
+      "noodles",
+      "quick",
+      "asian"
+    ],
+    "servings": "1",
+    "time": "~7 min",
+    "cuisine": "Japanese",
+    "source": "Adapted from a FB coconut-miso recipe, tuned to authentic tantanmen",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Chili oil",
+        "qty": "1 tbsp"
+      },
+      {
+        "name": "Minced ginger (Dorot frozen cube)",
+        "qty": "1 tbsp / 1 cube"
+      },
+      {
+        "name": "Minced garlic (Dorot frozen cube)",
+        "qty": "1 tbsp / 1 cube"
+      },
+      {
+        "name": "Chicken breast strips (or ground)",
+        "qty": "150g"
+      },
+      {
+        "name": "Chicken broth (low-sodium)",
+        "qty": "250ml"
+      },
+      {
+        "name": "Unsweetened soy milk",
+        "qty": "150ml"
+      },
+      {
+        "name": "Light soy sauce",
+        "qty": "1 tbsp"
+      },
+      {
+        "name": "Miso paste",
+        "qty": "1 tbsp (OFF heat)"
+      },
+      {
+        "name": "Tahini",
+        "qty": "1 tbsp (OFF heat)"
+      },
+      {
+        "name": "Sesame oil",
+        "qty": "1/2 tsp"
+      },
+      {
+        "name": "Rice vinegar",
+        "qty": "a few drops"
+      },
+      {
+        "name": "Ramen / wheat noodles",
+        "qty": "1 portion"
+      }
+    ],
+    "steps": [
+      "Bloom aromatics: heat chili oil in the pot, add ginger + garlic, ~45 sec until fragrant.",
+      "Chicken: add the chicken, cook through (~3-4 min).",
+      "Simmer: pour in broth + soy milk + soy sauce, simmer ~3 min.",
+      "Off the heat: whisk miso + tahini into a ladle of hot broth until smooth, stir back in. Never boil miso - it flattens the aroma.",
+      "Finish: sesame oil + a few drops rice vinegar. Taste and adjust.",
+      "Cook noodles separately, drain, pour broth over.",
+      "TIP - Coconut is a Western fusion move; authentic tantanmen uses UNSWEETENED SOY MILK (dairy-free, adds protein not just fat). Almond milk = thinner backup.",
+      "TIP - Laksa fork: keep coconut milk + lime + a little curry paste for a Thai-style coconut noodle soup instead. Different dish, also good."
+    ],
+    "nutrition": {
+      "cal": 880.0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0
+    },
+    "added_by": "jacopo",
+    "created_at": "2026-07-06T19:37:25.412926+00:00"
+  },
+  {
     "id": "honey-lemon-garlic-salmon",
     "name": "Easy Honey Lemon Garlic Glazed Salmon",
     "tags": [

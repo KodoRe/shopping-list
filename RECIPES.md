@@ -1,13 +1,82 @@
 # 🍳 Recipes
 
-_Auto-generated from the Home Kitchen app — 2026-06-26 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-07-06 23:00 UTC. Do not edit by hand._
 
-**4 recipes**
+**6 recipes**
 
+- [Chili Oil (5-min + infused upgrade)](#chili-oil--5-min---infused-upgrade)
+- [Quick Miso-Chili Ramen (tantanmen-style)](#quick-miso-chili-ramen--tantanmen-style)
 - [Easy Honey Lemon Garlic Glazed Salmon](#easy-honey-lemon-garlic-glazed-salmon)
 - [Horseradish Yogurt Sauce](#horseradish-yogurt-sauce)
 - [Pot Roast (House Version)](#pot-roast--house-version)
 - [Morning Oats (non-jump days)](#morning-oats--non-jump-days)
+
+---
+
+## Chili Oil (5-min + infused upgrade)
+🍽️ 1 small jar · ⏱️ 5-10 min · 🌍 Asian · 🏷️ condiment, asian, staple, quick
+
+📎 [Vault](Homemade; infused version adapted from Made With Lau (Cantonese))
+
+**Ingredients**
+
+- 3-4 tbsp Coarse red chili flakes (pul biber / gochugaru / Kirkland)
+- 1/2 cup High-oleic canola oil (or neutral high-smoke-point)
+- pinch Salt
+- 2-3 slices [Infused ver] Fresh ginger
+- 2-3 [Infused ver] Garlic cloves, smashed
+- 1/2 small [Infused ver] Onion or shallot, sliced
+- 1 / 1 tsp / 1/2 tsp [Infused ver, optional] Star anise (rinsed), sesame seeds, sesame oil
+
+**Steps**
+
+1. OIL + TEMP (both versions): high-oleic canola is ideal. Pour at ~150C / 300F, NOT hotter - hot oil scorches flakes bitter (esp. seed-heavy Kirkland). Shimmering, not smoking.
+2. == VERSION A (5-min) ==
+3. A1. Chili flakes + pinch salt in a heatproof bowl.
+4. A2. Heat oil to ~150C (shimmering).
+5. A3. Pour hot oil over flakes - it sizzles. Stir. Cool, jar it.
+6. == VERSION B (~10-min infused, RECOMMENDED) ==
+7. B1. Heat oil to ~150C. A piece of onion should bubble gently.
+8. B2. Fry ginger ~15s, add garlic, add onion (+ rinsed star anise if using). Stir constantly ~2.5-3 min until browned; lower heat if too hot.
+9. B3. Fish out ALL aromatics (squeeze oil back in). Nothing fresh stays in the oil = food-safe + freezer-friendly.
+10. B4. If oil overheated, add ~1 tbsp room-temp oil to bring back to ~150C.
+11. B5. Pour hot oil over the chili flakes - sizzle, stir.
+12. B6. Optional: stir in sesame seeds, then a final 1/2 tsp sesame oil for aroma. Cool, jar it.
+13. STORAGE: fridge 3-4 weeks; freezer months (oil goes thick/cloudy, not solid - scoop straight out, leave headspace in glass).
+14. TIP - Zero-effort cheat: skip the batch entirely, bloom a pinch of flakes in the pot with the garlic+ginger when you make the ramen.
+
+---
+
+## Quick Miso-Chili Ramen (tantanmen-style)
+🍽️ 1 · ⏱️ ~7 min · 🌍 Japanese · 🏷️ ramen, noodles, quick, asian
+
+📎 [Vault](Adapted from a FB coconut-miso recipe, tuned to authentic tantanmen)
+
+**Ingredients**
+
+- 1 tbsp Chili oil
+- 1 tbsp / 1 cube Minced ginger (Dorot frozen cube)
+- 1 tbsp / 1 cube Minced garlic (Dorot frozen cube)
+- 150g Chicken breast strips (or ground)
+- 250ml Chicken broth (low-sodium)
+- 150ml Unsweetened soy milk
+- 1 tbsp Light soy sauce
+- 1 tbsp (OFF heat) Miso paste
+- 1 tbsp (OFF heat) Tahini
+- 1/2 tsp Sesame oil
+- a few drops Rice vinegar
+- 1 portion Ramen / wheat noodles
+
+**Steps**
+
+1. Bloom aromatics: heat chili oil in the pot, add ginger + garlic, ~45 sec until fragrant.
+2. Chicken: add the chicken, cook through (~3-4 min).
+3. Simmer: pour in broth + soy milk + soy sauce, simmer ~3 min.
+4. Off the heat: whisk miso + tahini into a ladle of hot broth until smooth, stir back in. Never boil miso - it flattens the aroma.
+5. Finish: sesame oil + a few drops rice vinegar. Taste and adjust.
+6. Cook noodles separately, drain, pour broth over.
+7. TIP - Coconut is a Western fusion move; authentic tantanmen uses UNSWEETENED SOY MILK (dairy-free, adds protein not just fat). Almond milk = thinner backup.
+8. TIP - Laksa fork: keep coconut milk + lime + a little curry paste for a Thai-style coconut noodle soup instead. Different dish, also good.
 
 ---
 

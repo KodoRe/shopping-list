@@ -115,5 +115,32 @@
     "checked": false,
     "added_by": "jacopo",
     "created_at": "2026-06-26T05:57:38.478953+00:00"
+  },
+  {
+    "id": "dd6df5d0-1561-47d4-a267-ac0c04382a35",
+    "name": "Dorot frozen ginger cubes",
+    "category": "frozen",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-07-06T19:37:25.412926+00:00"
+  },
+  {
+    "id": "fbb527b0-3653-4077-b89f-9cb75ee17545",
+    "name": "Pul biber / red chili flakes (for chili oil)",
+    "category": "pantry",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-07-06T19:37:25.412926+00:00"
+  },
+  {
+    "id": "4c1b0fff-63da-43b3-95ec-c2c994a0d3a5",
+    "name": "Ramen / wheat noodles",
+    "category": "pantry",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-07-06T19:37:25.412926+00:00"
   }
 ]
