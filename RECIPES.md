@@ -1,15 +1,48 @@
 # 🍳 Recipes
 
-_Auto-generated from the Home Kitchen app — 2026-07-06 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-07-14 23:00 UTC. Do not edit by hand._
 
-**6 recipes**
+**7 recipes**
 
+- [Black Sesame Steak Dressing](#black-sesame-steak-dressing)
 - [Chili Oil (5-min + infused upgrade)](#chili-oil--5-min---infused-upgrade)
 - [Quick Miso-Chili Ramen (tantanmen-style)](#quick-miso-chili-ramen--tantanmen-style)
 - [Easy Honey Lemon Garlic Glazed Salmon](#easy-honey-lemon-garlic-glazed-salmon)
 - [Horseradish Yogurt Sauce](#horseradish-yogurt-sauce)
 - [Pot Roast (House Version)](#pot-roast--house-version)
 - [Morning Oats (non-jump days)](#morning-oats--non-jump-days)
+
+---
+
+## Black Sesame Steak Dressing
+🍽️ 4 · ⏱️ 5 min · 🌍 Japanese-style · 🏷️ dressing, sauce, sesame, steak, quick, no-cook
+
+📎 [Vault](Nitai (found + tuned))
+
+**Ingredients**
+
+- 1.5 tbsp Toasted black sesame seeds
+- 1 tbsp Honey
+- 1.5 tbsp Mayonnaise
+- 1.5 tsp Sesame oil
+- 1 small Lime, juiced
+- 1 heaping tbsp Natural almond butter
+- 1 tsp Rice vinegar
+- 1/3 tsp Salt
+- 1/3 tsp Ground black pepper
+- 2-3 tbsp Cold water
+- 1 clove Fresh garlic (or Dorot cube)
+- 1/4 cup Olive oil
+
+**Steps**
+
+1. Grind or crush the toasted black sesame slightly to release the aroma (or use as-is for a coarser dressing).
+2. Whisk sesame, almond butter, mayo, honey, rice vinegar, lime juice, grated garlic, salt and pepper into a paste.
+3. Stream in the sesame oil and olive oil while whisking to emulsify.
+4. Loosen with cold water 1 tbsp at a time to a pourable-but-clingy consistency.
+5. Spoon over warm sliced steak just before serving.
+6. TIP - Protein comes from the steak; this is sauce only. Very rich by design - lime + rice vinegar cut it; add more acid before more water if heavy.
+7. TIP - Fresh garlic rots; a Dorot frozen garlic cube (1 cube ~ 1 tsp) keeps for months. Dressing keeps 4-5 days; whisk in water to loosen when cold.
 
 ---
 
