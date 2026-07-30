@@ -9,15 +9,6 @@
     "created_at": "2026-06-12T08:34:35.917899+00:00"
   },
   {
-    "id": "cc76cfd6-2f93-4228-8a4d-877f46aacf8a",
-    "name": "Apples",
-    "category": "produce",
-    "qty": "",
-    "checked": true,
-    "added_by": "app",
-    "created_at": "2026-06-13T10:13:07.431Z"
-  },
-  {
     "id": "c8806bdb-1623-4480-93d1-74690ec98be8",
     "name": "Carrots, cut on the oblique",
     "category": "produce",
@@ -25,87 +16,6 @@
     "checked": false,
     "added_by": "recipe",
     "created_at": "2026-06-19T19:55:31.541Z"
-  },
-  {
-    "id": "d3ab8716-72f9-4537-b71a-399521659fee",
-    "name": "Watermelon",
-    "category": "produce",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "0fe364fd-8a09-4507-ac2d-7548526089cf",
-    "name": "Sweet potatoes",
-    "category": "produce",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "0be0b091-65de-499f-b32d-a4823257d643",
-    "name": "Coke Zero",
-    "category": "drinks",
-    "qty": "",
-    "checked": false,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "fc919112-10b7-4fe2-89e1-e2f743ad1ab9",
-    "name": "Soda",
-    "category": "drinks",
-    "qty": "",
-    "checked": false,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "0991c5ec-15ca-4684-add5-8482b5d6b8c3",
-    "name": "Juice",
-    "category": "drinks",
-    "qty": "",
-    "checked": false,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "041664ac-5c52-4b50-84e9-9e9789a92bbf",
-    "name": "Crisps",
-    "category": "snacks",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "2639aeea-b229-4a33-9cc1-1c8ddbd8d736",
-    "name": "Pringles",
-    "category": "snacks",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "33a81d32-eb10-4d67-86f3-dc6b2c5afd9b",
-    "name": "Pizza squares",
-    "category": "frozen",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
-  },
-  {
-    "id": "04aa99a3-42e8-4dcf-a304-36c4e132ee1a",
-    "name": "Broccoli",
-    "category": "produce",
-    "qty": "2 packs",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-06-26T05:57:38.478953+00:00"
   },
   {
     "id": "a2753be1-4232-4d70-8614-2b3806a58356",
@@ -144,219 +54,210 @@
     "created_at": "2026-07-06T19:37:25.412926+00:00"
   },
   {
-    "id": "665b0346-d50d-4270-a939-ae17bcc77243",
-    "name": "Carrots",
+    "id": "cb2f7e7c-977b-4bb6-89be-9cc2ac3bffd2",
+    "name": "Cherry tomatoes",
     "category": "produce",
     "qty": "",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "11004030-134e-492d-9abb-19bcb91700de",
-    "name": "Potatoes",
+    "id": "cfed5689-461a-4ac3-af2b-c9bcf63145cb",
+    "name": "Lettuce",
     "category": "produce",
     "qty": "",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "e3967a66-71b1-4979-8213-d973f21e44e8",
-    "name": "Garlic heads",
+    "id": "7542d78c-7080-4f74-bc42-2ec0673591bb",
+    "name": "Rocket leaves",
     "category": "produce",
     "qty": "",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "ff652b67-561d-414f-b815-f432b42ffe24",
-    "name": "Milk",
+    "id": "050a7017-9e0f-4158-b55a-ca779fbb1ee8",
+    "name": "Feta cheese",
     "category": "dairy",
     "qty": "",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "6ee8738c-1298-4f8b-b2c9-c31e4f3c1dbf",
-    "name": "Erin's round cheese slices",
-    "category": "dairy",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "5988900c-fe29-4ae0-a662-ccd0ccc80610",
-    "name": "Watermelon",
-    "category": "produce",
-    "qty": "",
-    "checked": false,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "7fa4decf-5000-4d6a-887c-d79cd4c81df1",
-    "name": "Cucumbers",
+    "id": "d4379708-c78c-44f6-9f59-d0c71c654caf",
+    "name": "Green spicy pepper",
     "category": "produce",
     "qty": "",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "9a847fb8-007a-4f28-ab72-e8bb7895c2eb",
-    "name": "Red peppers",
-    "category": "produce",
-    "qty": "~5",
+    "id": "0abd3089-39a6-46b2-9902-9ec9bc70d60e",
+    "name": "Juices for kids (2 of each)",
+    "category": "drinks",
+    "qty": "2",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "ea217e8c-65e1-4919-b62f-cab162130c19",
+    "id": "95be204d-e8f1-4232-8797-77c9cc51ee35",
     "name": "Coke Zero",
     "category": "drinks",
-    "qty": "",
-    "checked": false,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "d76600dc-0396-4a74-931d-3daba9ca09ce",
-    "name": "Sprite",
-    "category": "drinks",
-    "qty": "",
-    "checked": false,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "279c9664-261e-4842-b112-05de7f38c8a9",
-    "name": "Martini",
-    "category": "drinks",
-    "qty": "",
-    "checked": false,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "3093a42a-0c6a-46d5-9ad4-3c19c9b5c9b5",
-    "name": "Lemons",
-    "category": "produce",
-    "qty": "",
+    "qty": "6",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "d877819e-8871-45cc-bc2e-b80305f9511b",
+    "id": "015ac27e-017c-4ce6-a189-4ec1aa6ea7bd",
     "name": "Soda",
     "category": "drinks",
     "qty": "",
-    "checked": false,
+    "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "410b6540-a655-41f8-8f77-8f6a7939c2b0",
-    "name": "Strawberry & banana juice",
-    "category": "drinks",
+    "id": "246570ac-7360-4aae-944b-22d650846fdd",
+    "name": "Dishwasher tablets",
+    "category": "household",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "1e7e73c0-4aac-4c5d-b811-740ce10d9dba",
+    "name": "Kitchen paper",
+    "category": "household",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "9ab81fe7-0e69-41d4-aa0d-f626db99f98b",
+    "name": "Toilet paper",
+    "category": "household",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "da5c6beb-b62d-456f-8e13-b092808b6893",
+    "name": "Air freshener spray (photo coming)",
+    "category": "household",
     "qty": "",
     "checked": false,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "404ec9f5-b6bd-4e21-966b-c240fbd7170b",
-    "name": "Crisps (a range)",
+    "id": "e58efb30-6194-4bd9-832f-daaab6f6a80e",
+    "name": "Pasta",
+    "category": "pantry",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "84bd596b-1d22-4884-9fdc-3e8e53811b57",
+    "name": "Noodles for Erin",
+    "category": "pantry",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "dea27ea1-a08a-413f-b69e-2f15dbe30a91",
+    "name": "Square pizza",
+    "category": "frozen",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "cf3ff0b8-05d9-4b8d-af82-798c3d7b70b4",
+    "name": "Cheese slices",
+    "category": "dairy",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "04c78576-1529-4b0c-9d95-6ed130b7c647",
+    "name": "Sour cream crisps (Erin's)",
     "category": "snacks",
     "qty": "",
     "checked": true,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "fe59774b-3358-4815-9bef-9c1041b5b44d",
-    "name": "Grapes (red)",
-    "category": "produce",
+    "id": "ec0c3089-2e55-4cbf-a601-df1b13e9f1cf",
+    "name": "Pringles",
+    "category": "snacks",
     "qty": "",
-    "checked": true,
+    "checked": false,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   },
   {
-    "id": "fbb1b391-b168-4a0b-9d21-b64f3b504043",
-    "name": "Broccoli",
-    "category": "produce",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "66fcc7d2-bbf1-4d8b-bb39-513dc52e8701",
-    "name": "Baked beans",
-    "category": "pantry",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "8b6ee342-d059-4740-831a-0780e07a9677",
-    "name": "Eggs",
-    "category": "dairy",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "c4694ea7-d3be-4bbd-962c-31b3edcdd89c",
-    "name": "Sour cream",
-    "category": "dairy",
-    "qty": "1",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "d3522a16-d4ad-4a06-a78a-32bda97dbe38",
-    "name": "Gnocchi",
-    "category": "pantry",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "8012ebf0-d41e-4bb2-a172-6ab5f1ef9781",
-    "name": "Pasta sauce (glass bottle in fridge)",
-    "category": "pantry",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "1a77efef-f3a5-4b99-88f1-f298a5c4abca",
-    "name": "Challah",
-    "category": "bakery",
-    "qty": "",
-    "checked": true,
-    "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
-  },
-  {
-    "id": "8c1ab31d-3462-4f59-a80a-136a88a5eebb",
-    "name": "Bagels",
+    "id": "cecd92e8-2ce3-4411-8de7-a3cf8b31e819",
+    "name": "Croissants (to freeze)",
     "category": "bakery",
     "qty": "",
     "checked": false,
     "added_by": "jacopo",
-    "created_at": "2026-07-24T07:23:02.908750+00:00"
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "2b999715-1545-4a31-a266-5392227404c1",
+    "name": "Martini",
+    "category": "drinks",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "1c69e50c-2e4f-4e9a-bfab-ab2f60bfc84a",
+    "name": "Beers",
+    "category": "drinks",
+    "qty": "",
+    "checked": false,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "fab0c42c-4e07-4de5-a732-04ff6e92cac2",
+    "name": "Dish soap",
+    "category": "household",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
+  },
+  {
+    "id": "fb690eb4-e2fa-4890-91b4-fb9da65329ce",
+    "name": "Hand soap",
+    "category": "household",
+    "qty": "",
+    "checked": true,
+    "added_by": "jacopo",
+    "created_at": "2026-07-30T15:44:41.908980+00:00"
   }
 ]
