@@ -1,11 +1,8 @@
 # 🛒 Shopping List
 
-_Auto-generated from the Home Kitchen app — 2026-07-30 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-08-12 23:00 UTC. Do not edit by hand._
 
-**12 to buy** · 17 done
-
-### 🥬 Produce
-- [ ] Carrots, cut on the oblique — 5  _(via recipe)_
+**11 to buy** · 18 done
 
 ### 🧀 Dairy
 - [ ] Cottage cheese — 1  _(via jacopo)_
@@ -17,7 +14,7 @@ _Auto-generated from the Home Kitchen app — 2026-07-30 23:00 UTC. Do not edit 
 
 ### 🧊 Frozen
 - [ ] Dorot frozen ginger cubes  _(via jacopo)_
-- [ ] Square pizza  _(via jacopo)_
+- [ ] Square pizza — 6  _(via jacopo)_
 
 ### 🥤 Drinks
 - [ ] Beers  _(via jacopo)_
@@ -33,6 +30,7 @@ _Auto-generated from the Home Kitchen app — 2026-07-30 23:00 UTC. Do not edit 
 - [ ] Air freshener spray (photo coming)  _(via jacopo)_
 
 ### ✅ Done
+- [x] Carrots, cut on the oblique — 5
 - [x] Cherry tomatoes
 - [x] Lettuce
 - [x] Rocket leaves
