@@ -1,5 +1,82 @@
 [
   {
+    "id": "vault-oven-grill-pork-ribs",
+    "name": "Oven + Grill Pork Ribs",
+    "tags": [
+      "pork",
+      "ribs",
+      "grill",
+      "low-and-slow",
+      "bbq",
+      "weekend"
+    ],
+    "servings": "4",
+    "time": "4-5 h oven + 10 min grill",
+    "cuisine": "BBQ",
+    "source": "Nitai (found + filed)",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Pork ribs",
+        "qty": "2 kg"
+      },
+      {
+        "name": "Paprika",
+        "qty": "3 tbsp"
+      },
+      {
+        "name": "Brown sugar",
+        "qty": "1 tbsp"
+      },
+      {
+        "name": "Salt",
+        "qty": "2 tsp"
+      },
+      {
+        "name": "Black pepper",
+        "qty": "2 tsp"
+      },
+      {
+        "name": "Garlic powder",
+        "qty": "2 tsp"
+      },
+      {
+        "name": "Onion powder",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Cumin",
+        "qty": "1 tsp"
+      },
+      {
+        "name": "Dried oregano",
+        "qty": "1 tsp"
+      }
+    ],
+    "steps": [
+      "Remove the membrane from the bone side and pat the ribs completely dry.",
+      "Mix all the rub spices and massage well into the ribs on all sides.",
+      "Wrap tightly in foil - two layers is better.",
+      "Refrigerate 24 hours (or 1-2 hours if short on time).",
+      "Bake at 110-120C, no fan, for 4-5 hours.",
+      "Open the foil and let the ribs dry 10-15 min. If very wet, blot gently with paper towel.",
+      "Heat the grill to very high heat.",
+      "Sear 2-4 min per side until good char and a dark crust.",
+      "Rest 5-10 min, slice and serve.",
+      "TIP - No BBQ sauce on the ribs. Serve sauce on the side.",
+      "TIP - Membrane removal is not optional; it blocks the rub and turns leathery.",
+      "TIP - The oven stage tenderizes, the grill stage is only for crust. Don't finish cooking on the grill."
+    ],
+    "nutrition": {
+      "cal": 750.0,
+      "protein": 52.0,
+      "carbs": 4.0,
+      "fat": 58.0
+    },
+    "added_by": "jacopo",
+    "created_at": "2026-08-18T09:39:43.025791+00:00"
+  },
+  {
     "id": "vault-black-sesame-steak-dressing",
     "name": "Black Sesame Steak Dressing",
     "tags": [

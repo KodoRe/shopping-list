@@ -1,9 +1,10 @@
 # 🍳 Recipes
 
-_Auto-generated from the Home Kitchen app — 2026-07-14 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-08-18 23:00 UTC. Do not edit by hand._
 
-**7 recipes**
+**8 recipes**
 
+- [Oven + Grill Pork Ribs](#oven---grill-pork-ribs)
 - [Black Sesame Steak Dressing](#black-sesame-steak-dressing)
 - [Chili Oil (5-min + infused upgrade)](#chili-oil--5-min---infused-upgrade)
 - [Quick Miso-Chili Ramen (tantanmen-style)](#quick-miso-chili-ramen--tantanmen-style)
@@ -11,6 +12,40 @@ _Auto-generated from the Home Kitchen app — 2026-07-14 23:00 UTC. Do not edit 
 - [Horseradish Yogurt Sauce](#horseradish-yogurt-sauce)
 - [Pot Roast (House Version)](#pot-roast--house-version)
 - [Morning Oats (non-jump days)](#morning-oats--non-jump-days)
+
+---
+
+## Oven + Grill Pork Ribs
+🍽️ 4 · ⏱️ 4-5 h oven + 10 min grill · 🌍 BBQ · 🏷️ pork, ribs, grill, low-and-slow, bbq, weekend
+
+📎 [Vault](Nitai (found + filed))
+
+**Ingredients**
+
+- 2 kg Pork ribs
+- 3 tbsp Paprika
+- 1 tbsp Brown sugar
+- 2 tsp Salt
+- 2 tsp Black pepper
+- 2 tsp Garlic powder
+- 1 tsp Onion powder
+- 1 tsp Cumin
+- 1 tsp Dried oregano
+
+**Steps**
+
+1. Remove the membrane from the bone side and pat the ribs completely dry.
+2. Mix all the rub spices and massage well into the ribs on all sides.
+3. Wrap tightly in foil - two layers is better.
+4. Refrigerate 24 hours (or 1-2 hours if short on time).
+5. Bake at 110-120C, no fan, for 4-5 hours.
+6. Open the foil and let the ribs dry 10-15 min. If very wet, blot gently with paper towel.
+7. Heat the grill to very high heat.
+8. Sear 2-4 min per side until good char and a dark crust.
+9. Rest 5-10 min, slice and serve.
+10. TIP - No BBQ sauce on the ribs. Serve sauce on the side.
+11. TIP - Membrane removal is not optional; it blocks the rub and turns leathery.
+12. TIP - The oven stage tenderizes, the grill stage is only for crust. Don't finish cooking on the grill.
 
 ---
 
