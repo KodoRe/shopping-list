@@ -1,5 +1,107 @@
 [
   {
+    "id": "vault-buldak-carbonara-steak-ramen",
+    "name": "Buldak Carbonara Ramen with Steak",
+    "tags": [
+      "korean",
+      "ramen",
+      "spicy",
+      "beef",
+      "quick",
+      "high-protein"
+    ],
+    "servings": "2",
+    "time": "20 min (+ overnight eggs)",
+    "cuisine": "Korean-fusion",
+    "source": "TikTok/IG viral recipe, tuned",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Buldak ramen packs",
+        "qty": "2"
+      },
+      {
+        "name": "Buldak sauce packet + powder packet",
+        "qty": "1 each (not both packs')"
+      },
+      {
+        "name": "Mayo",
+        "qty": "2 Tbsp"
+      },
+      {
+        "name": "Dorot frozen crushed garlic cubes",
+        "qty": "2 (~2 tsp)"
+      },
+      {
+        "name": "Egg yolks",
+        "qty": "2"
+      },
+      {
+        "name": "Chili oil",
+        "qty": "2 tsp"
+      },
+      {
+        "name": "Reserved noodle water",
+        "qty": "1/2 cup"
+      },
+      {
+        "name": "Green onion, chopped",
+        "qty": "to top"
+      },
+      {
+        "name": "Sirloin / entrecote",
+        "qty": "350 g"
+      },
+      {
+        "name": "Eggs (for ramen eggs)",
+        "qty": "4"
+      },
+      {
+        "name": "Soy sauce",
+        "qty": "3/4 cup"
+      },
+      {
+        "name": "Sugar",
+        "qty": "3 Tbsp"
+      },
+      {
+        "name": "Sesame oil",
+        "qty": "1 Tbsp"
+      },
+      {
+        "name": "Hot sauce",
+        "qty": "1 Tbsp"
+      },
+      {
+        "name": "Rice vinegar",
+        "qty": "1 Tbsp"
+      },
+      {
+        "name": "Water",
+        "qty": "60 ml"
+      }
+    ],
+    "steps": [
+      "Night before - ramen eggs: boil eggs exactly 6:30, ice bath, peel. Stir together soy sauce, sugar, sesame oil, hot sauce, rice vinegar and water; submerge eggs in a jar and refrigerate overnight (8h+).",
+      "Steak: salt, hard sear in a screaming pan, pull at 52-55C internal. Rest 5 min, then slice thin against the grain.",
+      "Boil the noodles ~5 min. Reserve 1/2 cup noodle water before draining.",
+      "Warm the chili oil in a small pan, drop in the Dorot garlic cubes, 20-30 sec until fragrant. Don't brown it.",
+      "In a large bowl combine sauce packet, powder packet, mayo, bloomed garlic + oil and egg yolks. Stir to a paste.",
+      "Whisk in the hot noodle water gradually - this tempers the yolks into a sauce instead of scrambling them.",
+      "Toss the drained noodles through the sauce. Top with sliced steak, halved ramen eggs, green onion and a final drizzle of chili oil.",
+      "TIP - Original used 4 Tbsp mayo, 2 Tbsp chili oil and both packs' seasoning: ~2600mg sodium and ~90g fat per serving before the steak. This version is dialled back.",
+      "TIP - 2h marinating gives pale, underseasoned eggs. Overnight or skip. Marinade is reusable once within a few days."
+    ],
+    "nutrition": {
+      "cal": 1130.0,
+      "protein": 72.0,
+      "carbs": 80.0,
+      "fat": 52.0
+    },
+    "added_by": "jacopo",
+    "created_at": "2026-08-19T14:37:40.042811+00:00"
+  },
+  {
     "id": "vault-oven-grill-pork-ribs",
     "name": "Oven + Grill Pork Ribs",
     "tags": [

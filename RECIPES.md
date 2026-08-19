@@ -1,9 +1,10 @@
 # 🍳 Recipes
 
-_Auto-generated from the Home Kitchen app — 2026-08-18 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-08-19 23:00 UTC. Do not edit by hand._
 
-**8 recipes**
+**9 recipes**
 
+- [Buldak Carbonara Ramen with Steak](#buldak-carbonara-ramen-with-steak)
 - [Oven + Grill Pork Ribs](#oven---grill-pork-ribs)
 - [Black Sesame Steak Dressing](#black-sesame-steak-dressing)
 - [Chili Oil (5-min + infused upgrade)](#chili-oil--5-min---infused-upgrade)
@@ -12,6 +13,44 @@ _Auto-generated from the Home Kitchen app — 2026-08-18 23:00 UTC. Do not edit 
 - [Horseradish Yogurt Sauce](#horseradish-yogurt-sauce)
 - [Pot Roast (House Version)](#pot-roast--house-version)
 - [Morning Oats (non-jump days)](#morning-oats--non-jump-days)
+
+---
+
+## Buldak Carbonara Ramen with Steak
+🍽️ 2 · ⏱️ 20 min (+ overnight eggs) · 🌍 Korean-fusion · 🏷️ korean, ramen, spicy, beef, quick, high-protein
+
+📎 [Vault](TikTok/IG viral recipe, tuned)
+
+**Ingredients**
+
+- 2 Buldak ramen packs
+- 1 each (not both packs') Buldak sauce packet + powder packet
+- 2 Tbsp Mayo
+- 2 (~2 tsp) Dorot frozen crushed garlic cubes
+- 2 Egg yolks
+- 2 tsp Chili oil
+- 1/2 cup Reserved noodle water
+- to top Green onion, chopped
+- 350 g Sirloin / entrecote
+- 4 Eggs (for ramen eggs)
+- 3/4 cup Soy sauce
+- 3 Tbsp Sugar
+- 1 Tbsp Sesame oil
+- 1 Tbsp Hot sauce
+- 1 Tbsp Rice vinegar
+- 60 ml Water
+
+**Steps**
+
+1. Night before - ramen eggs: boil eggs exactly 6:30, ice bath, peel. Stir together soy sauce, sugar, sesame oil, hot sauce, rice vinegar and water; submerge eggs in a jar and refrigerate overnight (8h+).
+2. Steak: salt, hard sear in a screaming pan, pull at 52-55C internal. Rest 5 min, then slice thin against the grain.
+3. Boil the noodles ~5 min. Reserve 1/2 cup noodle water before draining.
+4. Warm the chili oil in a small pan, drop in the Dorot garlic cubes, 20-30 sec until fragrant. Don't brown it.
+5. In a large bowl combine sauce packet, powder packet, mayo, bloomed garlic + oil and egg yolks. Stir to a paste.
+6. Whisk in the hot noodle water gradually - this tempers the yolks into a sauce instead of scrambling them.
+7. Toss the drained noodles through the sauce. Top with sliced steak, halved ramen eggs, green onion and a final drizzle of chili oil.
+8. TIP - Original used 4 Tbsp mayo, 2 Tbsp chili oil and both packs' seasoning: ~2600mg sodium and ~90g fat per serving before the steak. This version is dialled back.
+9. TIP - 2h marinating gives pale, underseasoned eggs. Overnight or skip. Marinade is reusable once within a few days.
 
 ---
 
