@@ -1,8 +1,12 @@
 # 🛒 Shopping List
 
-_Auto-generated from the Home Kitchen app — 2026-08-12 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-08-23 23:00 UTC. Do not edit by hand._
 
-**11 to buy** · 18 done
+**17 to buy** · 18 done
+
+### 🥬 Produce
+- [ ] Spring onions (6)
+- [ ] Red chillies (4)
 
 ### 🧀 Dairy
 - [ ] Cottage cheese — 1  _(via jacopo)_
@@ -25,9 +29,15 @@ _Auto-generated from the Home Kitchen app — 2026-08-12 23:00 UTC. Do not edit 
 ### 🥫 Pantry
 - [ ] Pul biber / red chili flakes (for chili oil)  _(via jacopo)_
 - [ ] Ramen / wheat noodles  _(via jacopo)_
+- [ ] Fish sauce
+- [ ] Rice wine vinegar
+- [ ] Sesame seeds
 
 ### 🧹 Household
 - [ ] Air freshener spray (photo coming)  _(via jacopo)_
+
+### 📦 Other
+- [ ] Eggs (12, for mayak eggs)
 
 ### ✅ Done
 - [x] Carrots, cut on the oblique — 5

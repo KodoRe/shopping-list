@@ -1,9 +1,10 @@
 # 🍳 Recipes
 
-_Auto-generated from the Home Kitchen app — 2026-08-19 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-08-23 23:00 UTC. Do not edit by hand._
 
-**9 recipes**
+**10 recipes**
 
+- [Korean Marinated Eggs (Mayak Eggs)](#korean-marinated-eggs--mayak-eggs)
 - [Buldak Carbonara Ramen with Steak](#buldak-carbonara-ramen-with-steak)
 - [Oven + Grill Pork Ribs](#oven---grill-pork-ribs)
 - [Black Sesame Steak Dressing](#black-sesame-steak-dressing)
@@ -13,6 +14,40 @@ _Auto-generated from the Home Kitchen app — 2026-08-19 23:00 UTC. Do not edit 
 - [Horseradish Yogurt Sauce](#horseradish-yogurt-sauce)
 - [Pot Roast (House Version)](#pot-roast--house-version)
 - [Morning Oats (non-jump days)](#morning-oats--non-jump-days)
+
+---
+
+## Korean Marinated Eggs (Mayak Eggs)
+🍽️ 4 · ⏱️ 15 min (+ overnight in fridge) · 🌍 Korean · 🏷️ korean, eggs, meal-prep, high-protein, quick
+
+📎 [Vault](Mob / Finn Tonry - mob.co.uk/recipes/korean-marinated-eggs)
+
+**Ingredients**
+
+- 12 Eggs (fridge cold)
+- 6 Garlic cloves, finely minced (or 3 Dorot cubes)
+- 6 Spring onions, finely sliced
+- 4 Red chillies, finely sliced
+- 250 ml (or 200 ml + extra water) Soy sauce
+- 100 ml Water
+- 3 Tbsp Rice wine vinegar
+- 2 Tbsp Fish sauce
+- 100 ml Honey
+- 40 g Sesame seeds
+- as needed Cooked rice, to serve
+
+**Steps**
+
+1. Bring a large pan of water to a boil. Lower in fridge-cold eggs and simmer 7 minutes (7:30 if you want the whites fully set).
+2. Transfer straight to iced water. Once cool enough to handle, peel. TIP - crack all over and peel under running water; older eggs peel far easier than fresh.
+3. Make the marinade: mince the garlic, thinly slice the spring onions and chillies. Add to a container with the soy sauce, water, rice vinegar, fish sauce, honey and sesame seeds. Whisk to combine.
+4. Submerge the peeled eggs in the marinade and lay a sheet of kitchen paper on the surface so the tops stay wet and everything marinates evenly.
+5. Refrigerate overnight. Keeps up to 4 days; flavour deepens, but past ~3 days they get salty.
+6. Serve cold or at room temperature over freshly cooked hot rice, spooning over as much marinade as you like.
+7. TIP - Do NOT reheat. The yolk keeps cooking and you lose the jammy centre. Take them out of the fridge ~15 min before eating instead.
+8. TIP - Sodium: 250 ml soy plus 2 Tbsp fish sauce is a lot. Cut to 200 ml soy and top up with water; you lose almost nothing.
+9. TIP - Don't bin the leftover marinade - it's excellent on rice, noodles or as a dressing.
+10. TIP - Macros per 3-egg serving (no rice): ~19 g protein, ~15 g fat, ~10 g carbs, ~260 kcal.
 
 ---
 

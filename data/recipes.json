@@ -1,5 +1,82 @@
 [
   {
+    "id": "vault-korean-marinated-eggs",
+    "name": "Korean Marinated Eggs (Mayak Eggs)",
+    "tags": [
+      "korean",
+      "eggs",
+      "meal-prep",
+      "high-protein",
+      "quick"
+    ],
+    "servings": "4",
+    "time": "15 min (+ overnight in fridge)",
+    "cuisine": "Korean",
+    "source": "Mob / Finn Tonry - mob.co.uk/recipes/korean-marinated-eggs",
+    "source_type": "Vault",
+    "ingredients": [
+      {
+        "name": "Eggs (fridge cold)",
+        "qty": "12"
+      },
+      {
+        "name": "Garlic cloves, finely minced (or 3 Dorot cubes)",
+        "qty": "6"
+      },
+      {
+        "name": "Spring onions, finely sliced",
+        "qty": "6"
+      },
+      {
+        "name": "Red chillies, finely sliced",
+        "qty": "4"
+      },
+      {
+        "name": "Soy sauce",
+        "qty": "250 ml (or 200 ml + extra water)"
+      },
+      {
+        "name": "Water",
+        "qty": "100 ml"
+      },
+      {
+        "name": "Rice wine vinegar",
+        "qty": "3 Tbsp"
+      },
+      {
+        "name": "Fish sauce",
+        "qty": "2 Tbsp"
+      },
+      {
+        "name": "Honey",
+        "qty": "100 ml"
+      },
+      {
+        "name": "Sesame seeds",
+        "qty": "40 g"
+      },
+      {
+        "name": "Cooked rice, to serve",
+        "qty": "as needed"
+      }
+    ],
+    "steps": [
+      "Bring a large pan of water to a boil. Lower in fridge-cold eggs and simmer 7 minutes (7:30 if you want the whites fully set).",
+      "Transfer straight to iced water. Once cool enough to handle, peel. TIP - crack all over and peel under running water; older eggs peel far easier than fresh.",
+      "Make the marinade: mince the garlic, thinly slice the spring onions and chillies. Add to a container with the soy sauce, water, rice vinegar, fish sauce, honey and sesame seeds. Whisk to combine.",
+      "Submerge the peeled eggs in the marinade and lay a sheet of kitchen paper on the surface so the tops stay wet and everything marinates evenly.",
+      "Refrigerate overnight. Keeps up to 4 days; flavour deepens, but past ~3 days they get salty.",
+      "Serve cold or at room temperature over freshly cooked hot rice, spooning over as much marinade as you like.",
+      "TIP - Do NOT reheat. The yolk keeps cooking and you lose the jammy centre. Take them out of the fridge ~15 min before eating instead.",
+      "TIP - Sodium: 250 ml soy plus 2 Tbsp fish sauce is a lot. Cut to 200 ml soy and top up with water; you lose almost nothing.",
+      "TIP - Don't bin the leftover marinade - it's excellent on rice, noodles or as a dressing.",
+      "TIP - Macros per 3-egg serving (no rice): ~19 g protein, ~15 g fat, ~10 g carbs, ~260 kcal."
+    ],
+    "nutrition": {},
+    "added_by": "app",
+    "created_at": "2026-08-23T13:12:58.015123+00:00"
+  },
+  {
     "id": "vault-buldak-carbonara-steak-ramen",
     "name": "Buldak Carbonara Ramen with Steak",
     "tags": [
