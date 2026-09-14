@@ -1,6 +1,6 @@
 # 🏪 Pantry
 
-_Auto-generated from the Home Kitchen app — 2026-09-13 23:00 UTC. Do not edit by hand._
+_Auto-generated from the Home Kitchen app — 2026-09-14 23:00 UTC. Do not edit by hand._
 
 **8 items on hand**
 
@@ -11,7 +11,7 @@ _Auto-generated from the Home Kitchen app — 2026-09-13 23:00 UTC. Do not edit 
 - Apples
 
 ### 🥩 Meat & Fish
-- Smoked turkey breast pastrami — ⚠️ **expired 76 days ago**
+- Smoked turkey breast pastrami — ⚠️ **expired 77 days ago**
 - Chicken breast
 
 ### 🥫 Pantry
